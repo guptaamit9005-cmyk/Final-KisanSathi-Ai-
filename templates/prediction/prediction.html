@@ -1,0 +1,1044 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    :root {
+        --crop-green: #237a45;
+        --crop-green-dark: #185c34;
+        --crop-green-light: #eaf7ee;
+        --crop-text: #183126;
+        --crop-muted: #718078;
+        --crop-border: #dce8df;
+        --crop-bg: #f5f8f5;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    .crop-page {
+        min-height: 100vh;
+        background:
+            radial-gradient(900px 420px at 100% -10%, #e4f5ea 0%, rgba(228, 245, 234, 0) 60%),
+            var(--crop-bg);
+        padding: 40px 20px 64px;
+        color: var(--crop-text);
+        font-family: Inter, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .crop-container {
+        max-width: 1120px;
+        margin: auto;
+    }
+
+    .crop-heading {
+        margin-bottom: 32px;
+    }
+
+    .crop-heading .eyebrow {
+        color: var(--crop-green);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+    }
+
+    .crop-heading h1 {
+        font-size: clamp(28px, 4vw, 38px);
+        margin: 10px 0;
+        font-weight: 800;
+        letter-spacing: -1px;
+        color: var(--crop-text);
+    }
+
+    .crop-heading p {
+        color: var(--crop-muted);
+        line-height: 1.7;
+        max-width: 650px;
+        margin: 0;
+        font-size: 15px;
+    }
+
+    .crop-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.5fr) minmax(260px, .8fr);
+        gap: 24px;
+        align-items: start;
+    }
+
+    .crop-card {
+        background: #fff;
+        border: 1px solid var(--crop-border);
+        border-radius: 22px;
+        padding: 28px;
+        box-shadow: 0 10px 34px rgba(24, 60, 38, .06);
+        transition: box-shadow .25s ease;
+    }
+
+    .crop-card:hover {
+        box-shadow: 0 16px 44px rgba(24, 60, 38, .09);
+    }
+
+    .crop-card-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 8px;
+    }
+
+    .crop-card-title h2 {
+        font-size: 20px;
+        margin: 0;
+        font-weight: 750;
+        letter-spacing: -.2px;
+    }
+
+    .crop-step {
+        width: 34px;
+        height: 34px;
+        border-radius: 11px;
+        display: grid;
+        place-items: center;
+        background: var(--crop-green-light);
+        color: var(--crop-green);
+        font-weight: 800;
+        font-size: 13px;
+        flex: 0 0 34px;
+    }
+
+    .crop-subtitle {
+        color: var(--crop-muted);
+        font-size: 14px;
+        line-height: 1.6;
+        margin: 0 0 22px 46px;
+    }
+
+    .crop-dropzone {
+        position: relative;
+        min-height: 300px;
+        border: 2px dashed #b8d8c1;
+        border-radius: 18px;
+        background: #f9fcf9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 24px;
+        cursor: pointer;
+        transition: border-color .25s ease, background-color .25s ease, transform .2s ease;
+        overflow: hidden;
+    }
+
+    .crop-dropzone:hover {
+        border-color: var(--crop-green);
+        background: #f0faf3;
+    }
+
+    .crop-dropzone.dragover {
+        border-color: var(--crop-green);
+        background: #eefaf1;
+        transform: scale(1.008);
+    }
+
+    .crop-dropzone:focus-within {
+        border-color: var(--crop-green);
+        box-shadow: 0 0 0 4px var(--crop-green-light);
+    }
+
+    .crop-dropzone input {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 3;
+    }
+
+    .upload-content {
+        pointer-events: none;
+    }
+
+    .upload-icon {
+        width: 72px;
+        height: 72px;
+        margin: 0 auto 18px;
+        border-radius: 22px;
+        background: var(--crop-green-light);
+        color: var(--crop-green);
+        display: grid;
+        place-items: center;
+        transition: transform .25s ease;
+    }
+
+    .upload-icon svg {
+        width: 30px;
+        height: 30px;
+    }
+
+    .crop-dropzone:hover .upload-icon,
+    .crop-dropzone.dragover .upload-icon {
+        transform: translateY(-3px);
+    }
+
+    .upload-content h3 {
+        font-size: 18px;
+        margin: 0 0 6px;
+        font-weight: 700;
+    }
+
+    .upload-content p {
+        color: var(--crop-muted);
+        font-size: 13px;
+        margin: 0 0 14px;
+    }
+
+    .browse-label {
+        display: inline-block;
+        color: var(--crop-green);
+        font-weight: 750;
+        font-size: 14px;
+        padding-bottom: 1px;
+        border-bottom: 1.5px solid transparent;
+        transition: border-color .2s ease;
+    }
+
+    .crop-dropzone:hover .browse-label {
+        border-color: var(--crop-green);
+    }
+
+    .upload-hint {
+        color: #89968e;
+        font-size: 12px;
+        margin-top: 16px;
+    }
+
+    .upload-divider {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 16px auto 0;
+        max-width: 200px;
+        color: #a9b8ae;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: .6px;
+        pointer-events: none;
+    }
+
+    .upload-divider::before,
+    .upload-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--crop-border);
+    }
+
+    .scan-button {
+        position: relative;
+        z-index: 4;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 14px;
+        border: 1.5px solid var(--crop-green);
+        background: #fff;
+        color: var(--crop-green);
+        font-weight: 750;
+        font-size: 13px;
+        padding: 10px 18px;
+        border-radius: 11px;
+        cursor: pointer;
+        pointer-events: auto;
+        transition: background-color .2s ease, color .2s ease, transform .15s ease;
+    }
+
+    .scan-button:hover {
+        background: var(--crop-green);
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    .scan-button svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .camera-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(10, 20, 14, .72);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        backdrop-filter: blur(2px);
+    }
+
+    .camera-overlay.is-open {
+        display: flex;
+    }
+
+    .camera-panel {
+        background: #0f1f16;
+        border-radius: 20px;
+        padding: 18px;
+        max-width: 460px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, .4);
+    }
+
+    .camera-panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .camera-panel-head h4 {
+        color: #fff;
+        font-size: 15px;
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .camera-close-x {
+        border: 0;
+        background: rgba(255, 255, 255, .12);
+        color: #fff;
+        width: 30px;
+        height: 30px;
+        border-radius: 9px;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        flex: 0 0 30px;
+    }
+
+    .camera-close-x svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .camera-video-wrap {
+        position: relative;
+        border-radius: 14px;
+        overflow: hidden;
+        background: #000;
+        aspect-ratio: 4 / 3;
+    }
+
+    .camera-video-wrap video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .camera-status {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #cfe3d6;
+        font-size: 13px;
+        text-align: center;
+        padding: 16px;
+    }
+
+    .camera-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 14px;
+    }
+
+    .camera-btn {
+        flex: 1;
+        border: 0;
+        border-radius: 12px;
+        padding: 13px;
+        font-weight: 800;
+        font-size: 14px;
+        cursor: pointer;
+        transition: transform .15s ease, opacity .2s ease, background-color .2s ease;
+    }
+
+    .camera-btn:active {
+        transform: translateY(1px);
+    }
+
+    .camera-btn:disabled {
+        opacity: .5;
+        cursor: not-allowed;
+    }
+
+    .camera-btn-primary {
+        background: var(--crop-green);
+        color: #fff;
+    }
+
+    .camera-btn-primary:hover:not(:disabled) {
+        background: var(--crop-green-dark);
+    }
+
+    .camera-btn-secondary {
+        background: rgba(255, 255, 255, .1);
+        color: #fff;
+    }
+
+    .camera-btn-secondary:hover {
+        background: rgba(255, 255, 255, .18);
+    }
+
+    .camera-hint {
+        color: #b7c7bd;
+        font-size: 11px;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    @media (max-width: 480px) {
+        .camera-panel {
+            padding: 14px;
+        }
+    }
+
+    .preview-wrap {
+        display: none;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+    }
+
+    .preview-frame {
+        position: relative;
+        border-radius: 14px;
+        overflow: hidden;
+        background: #eef4f0;
+        border: 1px solid var(--crop-border);
+        box-shadow: 0 6px 18px rgba(24, 60, 38, .06);
+    }
+
+    .preview-wrap img {
+        display: block;
+        width: 100%;
+        max-height: 320px;
+        margin: auto;
+        object-fit: contain;
+        background: #eef4f0;
+    }
+
+    .preview-meta {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 14px;
+        text-align: left;
+    }
+
+    .preview-name {
+        font-size: 13px;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    .preview-size {
+        color: var(--crop-muted);
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    .remove-image {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        z-index: 5;
+        border: 0;
+        background: rgba(255, 255, 255, .95);
+        color: #b42318;
+        border-radius: 10px;
+        padding: 9px 13px;
+        font-weight: 700;
+        font-size: 13px;
+        cursor: pointer;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, .14);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .remove-image:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 5px 16px rgba(0, 0, 0, .18);
+    }
+
+    .remove-image svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .crop-error {
+        display: none;
+        align-items: center;
+        gap: 9px;
+        color: #b42318;
+        background: #fff1f0;
+        border: 1px solid #ffd5d2;
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-top: 14px;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .crop-error svg {
+        width: 16px;
+        height: 16px;
+        flex: 0 0 16px;
+    }
+
+    .analyze-button {
+        width: 100%;
+        border: 0;
+        border-radius: 13px;
+        background: var(--crop-green);
+        color: white;
+        padding: 16px 20px;
+        font-size: 15px;
+        font-weight: 800;
+        cursor: pointer;
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: background-color .2s ease, transform .15s ease, box-shadow .2s ease;
+        box-shadow: 0 8px 20px rgba(35, 122, 69, .18);
+    }
+
+    .analyze-button:hover:not(:disabled) {
+        background: var(--crop-green-dark);
+        transform: translateY(-1px);
+        box-shadow: 0 10px 24px rgba(35, 122, 69, .24);
+    }
+
+    .analyze-button:active:not(:disabled) {
+        transform: translateY(0);
+    }
+
+    .analyze-button:disabled {
+        opacity: .5;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .analyze-button .spinner {
+        display: none;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, .4);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: crop-spin .7s linear infinite;
+    }
+
+    .analyze-button.is-loading .spinner {
+        display: inline-block;
+    }
+
+    @keyframes crop-spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .crop-side-card {
+        background: linear-gradient(150deg, #1d6b3c, #124b2b 70%);
+        color: #fff;
+        border-radius: 22px;
+        padding: 26px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .crop-side-card::after {
+        content: "";
+        position: absolute;
+        width: 220px;
+        height: 220px;
+        right: -70px;
+        top: -90px;
+        background: radial-gradient(circle, rgba(255, 255, 255, .10), rgba(255, 255, 255, 0) 70%);
+        pointer-events: none;
+    }
+
+    .crop-side-card h3 {
+        font-size: 19px;
+        margin: 0 0 10px;
+        font-weight: 750;
+        position: relative;
+    }
+
+    .crop-side-card p {
+        color: #e0f1e5;
+        font-size: 13px;
+        line-height: 1.7;
+        margin: 0;
+        position: relative;
+    }
+
+    .crop-tips {
+        display: grid;
+        gap: 18px;
+        margin-top: 24px;
+        position: relative;
+    }
+
+    .crop-tip {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .crop-tip-icon {
+        width: 34px;
+        height: 34px;
+        flex: 0 0 34px;
+        display: grid;
+        place-items: center;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, .13);
+    }
+
+    .crop-tip-icon svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .crop-tip strong {
+        display: block;
+        font-size: 13px;
+        margin-bottom: 3px;
+        font-weight: 700;
+    }
+
+    .crop-tip span {
+        display: block;
+        color: #d7eadc;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .crop-disclaimer {
+        color: var(--crop-muted);
+        font-size: 12px;
+        line-height: 1.6;
+        margin-top: 18px;
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible {
+        outline: 2px solid var(--crop-green);
+        outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: .001ms !important;
+            transition-duration: .001ms !important;
+        }
+    }
+
+    @media (max-width: 800px) {
+        .crop-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .crop-page {
+            padding: 24px 14px 40px;
+        }
+
+        .crop-card {
+            padding: 20px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .crop-dropzone {
+            min-height: 250px;
+            padding: 16px;
+        }
+
+        .crop-heading h1 {
+            font-size: 28px;
+        }
+
+        .crop-card-title h2 {
+            font-size: 17px;
+        }
+    }
+</style>
+
+<div class="crop-page">
+    <div class="crop-container">
+
+        <header class="crop-heading">
+            <div class="eyebrow">KisanSathi AI / Crop Health</div>
+            <h1>Crop Disease Analysis</h1>
+            <p>
+                Upload a clear image of your crop or leaf to begin an AI-assisted
+                health analysis and view the result.
+            </p>
+        </header>
+
+        <div class="crop-layout">
+
+            <!-- IMAGE UPLOAD FORM -->
+            <section class="crop-card">
+
+                <div class="crop-card-title">
+                    <span class="crop-step">01</span>
+                    <h2>Upload crop image</h2>
+                </div>
+
+                <p class="crop-subtitle">
+                    Select a photo from your device or drag it into the upload area.
+                </p>
+
+                <form method="POST"
+                      enctype="multipart/form-data"
+                      id="cropUploadForm">
+
+                    {% csrf_token %}
+
+                    <div class="crop-dropzone" id="cropDropzone">
+
+                        <input
+                            type="file"
+                            name="{{ form.image.name }}"
+                            id="cropImageInput"
+                            accept="image/jpeg,image/png,image/webp"
+                            required
+                        >
+
+                        <div class="upload-content" id="uploadContent">
+                            <div class="upload-icon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 16V4M12 4L7 9M12 4l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <h3>Drop your crop image here</h3>
+                            <p>or</p>
+                            <span class="browse-label">Browse files</span>
+                            <div class="upload-hint">
+                                JPG, PNG or WEBP · Maximum 10 MB
+                            </div>
+
+                            <div class="upload-divider">or</div>
+
+                            <button type="button" class="scan-button" id="scanButton">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 8V6a2 2 0 012-2h2M18 4h2a2 2 0 012 2v2M20 16v2a2 2 0 01-2 2h-2M6 20H4a2 2 0 01-2-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <circle cx="12" cy="12" r="3.5" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Scan with camera
+                            </button>
+                        </div>
+
+                        <div class="preview-wrap" id="previewWrap">
+                            <div class="preview-frame">
+                                <button type="button"
+                                        class="remove-image"
+                                        id="removeImage">
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                    Remove
+                                </button>
+
+                                <img id="imagePreview" src="" alt="Selected crop preview">
+                            </div>
+
+                            <div class="preview-meta">
+                                <div class="preview-name" id="previewName"></div>
+                                <div class="preview-size" id="previewSize"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="camera-overlay" id="cameraOverlay">
+                        <div class="camera-panel">
+                            <div class="camera-panel-head">
+                                <h4>Scan crop image</h4>
+                                <button type="button" class="camera-close-x" id="cameraCloseX" aria-label="Close camera">
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div class="camera-video-wrap">
+                                <video id="cameraVideo" autoplay playsinline muted></video>
+                                <div class="camera-status" id="cameraStatus">Starting camera...</div>
+                            </div>
+
+                            <canvas id="cameraCanvas" style="display:none;"></canvas>
+
+                            <div class="camera-actions">
+                                <button type="button" class="camera-btn camera-btn-secondary" id="cameraCancelBtn">Cancel</button>
+                                <button type="button" class="camera-btn camera-btn-primary" id="cameraCaptureBtn" disabled>Capture</button>
+                            </div>
+
+                            <p class="camera-hint">Position the leaf or affected area clearly in the frame.</p>
+                        </div>
+                    </div>
+
+                    <div class="crop-error" id="cropError" role="alert">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <span id="cropErrorText"></span>
+                    </div>
+
+                    {% if form.image.errors %}
+                        <div class="crop-error" style="display:flex;">
+                            {{ form.image.errors }}
+                        </div>
+                    {% endif %}
+
+                    <button type="submit"
+                            class="analyze-button"
+                            id="analyzeButton"
+                            disabled>
+                        <span class="spinner"></span>
+                        <span id="analyzeButtonText">Analyze Crop Image →</span>
+                    </button>
+
+                </form>
+
+                <p class="crop-disclaimer">
+                    Note: AI results are preliminary guidance. Confirm disease
+                    identification and treatment decisions with a qualified
+                    agricultural expert.
+                </p>
+
+            </section>
+
+            <!-- UPLOAD GUIDANCE -->
+            <aside class="crop-side-card">
+
+                <h3>Tips for accurate analysis</h3>
+                <p>
+                    A clear, well-lit image helps the analysis process.
+                    Follow these simple photo tips before uploading.
+                </p>
+
+                <div class="crop-tips">
+
+                    <div class="crop-tip">
+                        <div class="crop-tip-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="2"/>
+                                <path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <strong>Use good lighting</strong>
+                            <span>Take the photo in natural daylight where possible.</span>
+                        </div>
+                    </div>
+
+                    <div class="crop-tip">
+                        <div class="crop-tip-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <strong>Focus on affected areas</strong>
+                            <span>Keep the leaf or crop symptom clearly visible.</span>
+                        </div>
+                    </div>
+
+                    <div class="crop-tip">
+                        <div class="crop-tip-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="2"/>
+                                <path d="M4 15l4.5-4.5a1.5 1.5 0 012.1 0L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="15.5" cy="9" r="1.4" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <strong>Avoid blurry images</strong>
+                            <span>Hold your phone steady and capture a sharp photo.</span>
+                        </div>
+                    </div>
+
+                    <div class="crop-tip">
+                        <div class="crop-tip-icon">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 13l4 4 10-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <strong>Upload supported formats</strong>
+                            <span>Use JPG, PNG or WEBP image files.</span>
+                        </div>
+                    </div>
+
+                </div>
+            </aside>
+
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    const input = document.getElementById("cropImageInput");
+    const dropzone = document.getElementById("cropDropzone");
+    const uploadContent = document.getElementById("uploadContent");
+    const previewWrap = document.getElementById("previewWrap");
+    const imagePreview = document.getElementById("imagePreview");
+    const previewName = document.getElementById("previewName");
+    const previewSize = document.getElementById("previewSize");
+    const removeButton = document.getElementById("removeImage");
+    const errorBox = document.getElementById("cropError");
+    const errorText = document.getElementById("cropErrorText");
+    const analyzeButton = document.getElementById("analyzeButton");
+    const analyzeButtonText = document.getElementById("analyzeButtonText");
+    const form = document.getElementById("cropUploadForm");
+
+    const MAX_SIZE = 10 * 1024 * 1024;
+    let currentObjectUrl = null;
+
+    function showError(message) {
+        errorText.textContent = message;
+        errorBox.style.display = "flex";
+    }
+
+    function clearError() {
+        errorText.textContent = "";
+        errorBox.style.display = "none";
+    }
+
+    function clearPreview() {
+        if (currentObjectUrl) {
+            URL.revokeObjectURL(currentObjectUrl);
+            currentObjectUrl = null;
+        }
+
+        input.value = "";
+        imagePreview.src = "";
+        previewName.textContent = "";
+        previewSize.textContent = "";
+
+        previewWrap.style.display = "none";
+        uploadContent.style.display = "block";
+        analyzeButton.disabled = true;
+        clearError();
+    }
+
+    function displayImage(file) {
+        clearError();
+
+        if (!file) return;
+
+        const allowedTypes = [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+            clearPreview();
+            showError("Please select a JPG, PNG or WEBP image.");
+            return;
+        }
+
+        if (file.size > MAX_SIZE) {
+            clearPreview();
+            showError("Image size must be less than 10 MB.");
+            return;
+        }
+
+        if (currentObjectUrl) {
+            URL.revokeObjectURL(currentObjectUrl);
+        }
+
+        currentObjectUrl = URL.createObjectURL(file);
+
+        imagePreview.src = currentObjectUrl;
+        previewName.textContent = file.name;
+        previewSize.textContent =
+            (file.size / (1024 * 1024)).toFixed(2) + " MB";
+
+        uploadContent.style.display = "none";
+        previewWrap.style.display = "block";
+        analyzeButton.disabled = false;
+    }
+
+    input.addEventListener("change", function () {
+        displayImage(input.files[0]);
+    });
+
+    removeButton.addEventListener("click", function (event) {
+        event.stopPropagation();
+        clearPreview();
+    });
+
+    ["dragenter", "dragover"].forEach(function (eventName) {
+        dropzone.addEventListener(eventName, function (event) {
+            event.preventDefault();
+            dropzone.classList.add("dragover");
+        });
+    });
+
+    ["dragleave", "drop"].forEach(function (eventName) {
+        dropzone.addEventListener(eventName, function (event) {
+            event.preventDefault();
+            dropzone.classList.remove("dragover");
+        });
+    });
+
+    dropzone.addEventListener("drop", function (event) {
+        const files = event.dataTransfer.files;
+
+        if (!files.length) return;
+
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(files[0]);
+        input.files = dataTransfer.files;
+
+        displayImage(files[0]);
+    });
+
+    form.addEventListener("submit", function (event) {
+        if (!input.files.length) {
+            event.preventDefault();
+            showError("Please select a crop image before analyzing.");
+            return;
+        }
+
+        analyzeButton.disabled = true;
+        analyzeButton.classList.add("is-loading");
+        analyzeButtonText.textContent = "Analyzing image...";
+    });
+})();
+</script>
+
+{% endblock %}

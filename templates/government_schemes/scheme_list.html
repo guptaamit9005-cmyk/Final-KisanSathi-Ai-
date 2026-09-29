@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Government Schemes | KisanSathi AI</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f8f3;
+            color: #24352a;
+        }
+
+        header {
+            background: #176b3a;
+            color: white;
+            padding: 25px 8%;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .scheme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 22px;
+        }
+
+        .scheme-card {
+            background: white;
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+        }
+
+        .category {
+            color: #176b3a;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .scheme-card h2 {
+            font-size: 20px;
+        }
+
+        .scheme-card a {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 11px 17px;
+            background: #176b3a;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+        }
+
+        .scheme-card a:hover {
+            background: #10542c;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🌾 KisanSathi AI</h1>
+    <p>Government Agricultural Schemes</p>
+</header>
+
+<main>
+    <h1>Government Schemes for Farmers</h1>
+    <p>Explore agricultural support programs and official information.</p>
+
+    <div class="scheme-grid">
+
+        {% for scheme in schemes %}
+        <div class="scheme-card">
+
+            <span class="category">{{ scheme.category }}</span>
+
+            <h2>{{ scheme.name }}</h2>
+
+            <p>{{ scheme.description }}</p>
+
+            <strong>Benefits:</strong>
+            <p>{{ scheme.benefits }}</p>
+
+            <a href="{{ scheme.official_url }}"
+               target="_blank"
+               rel="noopener noreferrer">
+                Official Website →
+            </a>
+
+        </div>
+        {% empty %}
+        <p>No schemes available currently.</p>
+        {% endfor %}
+
+    </div>
+</main>
+
+</body>
+</html>

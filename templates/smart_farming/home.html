@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Smart Farming | AgriVisionAI
+    </title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+
+<body class="bg-slate-950 text-white">
+
+
+<div class="max-w-7xl mx-auto px-5 py-10">
+
+
+    <!-- HERO -->
+
+    <section
+        class="relative overflow-hidden
+               rounded-3xl
+               border border-green-500/20
+               bg-gradient-to-br
+               from-green-500/10
+               via-slate-900
+               to-slate-950
+               p-8 md:p-12 mb-10"
+    >
+
+        <div class="max-w-3xl">
+
+            <span
+                class="inline-block
+                       bg-green-500/10
+                       text-green-400
+                       px-4 py-2
+                       rounded-full
+                       text-sm font-semibold"
+            >
+                🌱 AGRIVISIONAI
+            </span>
+
+
+            <h1
+                class="text-4xl md:text-6xl
+                       font-bold mt-5"
+            >
+
+                Smart Farming
+                <span class="text-green-400">
+                    Techniques
+                </span>
+
+            </h1>
+
+
+            <p
+                class="text-slate-400
+                       text-lg mt-5"
+            >
+
+                Discover modern farming techniques,
+                technologies and practical video
+                tutorials to improve crop production.
+
+            </p>
+
+        </div>
+
+
+        <div
+            class="absolute
+                   right-8 bottom-5
+                   text-8xl opacity-10"
+        >
+            🚜
+        </div>
+
+    </section>
+
+
+    <!-- FILTER -->
+
+    <section
+        class="bg-slate-900
+               border border-slate-800
+               rounded-3xl
+               p-6 mb-10"
+    >
+
+        <form method="GET">
+
+            <div class="grid md:grid-cols-3 gap-4">
+
+
+                <div>
+
+                    <label
+                        class="text-sm
+                               text-slate-400"
+                    >
+                        Select Crop
+                    </label>
+
+                    <select
+                        name="crop"
+                        class="field"
+                    >
+
+                        <option value="">
+                            All Crops
+                        </option>
+
+                        {% for crop in crops %}
+
+                        <option
+                            value="{{ crop }}"
+                            {% if selected_crop == crop %}
+                                selected
+                            {% endif %}
+                        >
+
+                            {{ crop }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label
+                        class="text-sm
+                               text-slate-400"
+                    >
+                        Technology Category
+                    </label>
+
+                    <select
+                        name="category"
+                        class="field"
+                    >
+
+                        <option value="">
+                            All Technologies
+                        </option>
+
+                        {% for value, label in categories %}
+
+                        <option
+                            value="{{ value }}"
+                            {% if selected_category == value %}
+                                selected
+                            {% endif %}
+                        >
+
+                            {{ label }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div
+                    class="flex items-end"
+                >
+
+                    <button
+                        type="submit"
+                        class="w-full
+                               py-3
+                               rounded-xl
+                               bg-green-500
+                               hover:bg-green-400
+                               text-black
+                               font-bold
+                               transition"
+                    >
+
+                        🔍 Find Techniques
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- SECTION HEADER -->
+
+    <div
+        class="flex
+               items-center
+               justify-between
+               mb-6"
+    >
+
+        <div>
+
+            <h2 class="text-2xl font-bold">
+
+                Latest Farming Techniques
+
+            </h2>
+
+            <p class="text-slate-500 mt-1">
+
+                Technology-powered farming ideas
+
+            </p>
+
+        </div>
+
+
+        <div
+            class="bg-green-500/10
+                   text-green-400
+                   px-4 py-2
+                   rounded-full
+                   text-sm"
+        >
+
+            {{ techniques|length }} Techniques
+
+        </div>
+
+    </div>
+
+
+    <!-- CARDS -->
+
+    {% if techniques %}
+
+    <div
+        class="grid
+               sm:grid-cols-2
+               lg:grid-cols-3
+               gap-6"
+    >
+
+        {% for technique in techniques %}
+
+        <article
+            class="group
+                   bg-slate-900
+                   border border-slate-800
+                   rounded-3xl
+                   overflow-hidden
+                   hover:border-green-500/40
+                   transition"
+        >
+
+
+            <!-- VIDEO THUMBNAIL -->
+
+            <div
+                class="relative
+                       h-48
+                       bg-slate-800
+                       overflow-hidden"
+            >
+
+                {% if technique.thumbnail_url %}
+
+                <img
+                    src="{{ technique.thumbnail_url }}"
+                    alt="{{ technique.title }}"
+                    class="w-full h-full
+                           object-cover
+                           group-hover:scale-105
+                           transition"
+                >
+
+                {% else %}
+
+                <div
+                    class="w-full h-full
+                           flex items-center
+                           justify-center
+                           bg-gradient-to-br
+                           from-green-900
+                           to-slate-900"
+                >
+
+                    <span class="text-6xl">
+                        🌱
+                    </span>
+
+                </div>
+
+                {% endif %}
+
+
+                {% if technique.video_url %}
+
+                <div
+                    class="absolute
+                           bottom-4 left-4
+                           w-12 h-12
+                           rounded-full
+                           bg-green-500
+                           text-black
+                           flex items-center
+                           justify-center
+                           shadow-lg"
+                >
+
+                    ▶
+
+                </div>
+
+                {% endif %}
+
+
+                {% if technique.is_featured %}
+
+                <span
+                    class="absolute
+                           top-4 right-4
+                           bg-yellow-400
+                           text-black
+                           text-xs
+                           font-bold
+                           px-3 py-1
+                           rounded-full"
+                >
+
+                    ⭐ Featured
+
+                </span>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- CONTENT -->
+
+            <div class="p-6">
+
+
+                <div
+                    class="flex
+                           items-center
+                           justify-between
+                           mb-4"
+                >
+
+                    <span
+                        class="text-xs
+                               text-green-400
+                               bg-green-500/10
+                               px-3 py-1
+                               rounded-full"
+                    >
+
+                        {{ technique.crop_name }}
+
+                    </span>
+
+
+                    <span
+                        class="text-xs
+                               text-slate-500"
+                    >
+
+                        {{ technique.get_difficulty_display }}
+
+                    </span>
+
+                </div>
+
+
+                <h3
+                    class="text-xl
+                           font-bold
+                           group-hover:text-green-400
+                           transition"
+                >
+
+                    {{ technique.title }}
+
+                </h3>
+
+
+                <p
+                    class="text-slate-400
+                           text-sm
+                           mt-3
+                           line-clamp-3"
+                >
+
+                    {{ technique.short_description }}
+
+                </p>
+
+
+                <div
+                    class="mt-5
+                           p-3
+                           bg-slate-800
+                           rounded-xl"
+                >
+
+                    <p
+                        class="text-xs
+                               text-slate-500"
+                    >
+                        TECHNOLOGY
+                    </p>
+
+                    <p
+                        class="text-sm
+                               font-medium mt-1"
+                    >
+
+                        {{ technique.technology_used }}
+
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="flex
+                           justify-between
+                           items-center
+                           mt-5"
+                >
+
+                    <span
+                        class="text-sm
+                               text-slate-500"
+                    >
+
+                        💰 {{ technique.estimated_cost }}
+
+                    </span>
+
+
+                    <a
+                        href="{% url 'smart_farming:detail' technique.id %}"
+                        class="text-green-400
+                               font-semibold
+                               text-sm
+                               hover:text-green-300"
+                    >
+
+                        Explore →
+                    </a>
+
+                </div>
+
+            </div>
+
+        </article>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div
+        class="text-center
+               bg-slate-900
+               border border-slate-800
+               rounded-3xl
+               py-20"
+    >
+
+        <div class="text-6xl">
+            🌱
+        </div>
+
+        <h3
+            class="text-2xl
+                   font-bold
+                   mt-5"
+        >
+
+            No techniques found
+
+        </h3>
+
+        <p
+            class="text-slate-500
+                   mt-2"
+        >
+
+            Try another crop or technology category.
+
+        </p>
+
+    </div>
+
+    {% endif %}
+
+
+</div>
+
+
+<style>
+
+.field {
+
+    width: 100%;
+
+    margin-top: 8px;
+
+    padding: 13px 15px;
+
+    background: #0f172a;
+
+    border: 1px solid #334155;
+
+    border-radius: 12px;
+
+    color: white;
+
+    outline: none;
+
+}
+
+.field:focus {
+
+    border-color: #22c55e;
+
+}
+
+</style>
+
+
+</body>
+
+</html>

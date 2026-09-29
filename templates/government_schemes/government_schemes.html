@@ -1,0 +1,1855 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Government Schemes | KisanSathi AI{% endblock %}
+
+{% block extra_css %}
+<style>
+/* =========================
+   KISANSATHI GOVERNMENT SCHEMES
+   Single-file CSS
+========================= */
+
+.schemes-page {
+  --green: #087443;
+  --green-dark: #075b36;
+  --green-light: #eaf7ee;
+  --text: #182a20;
+  --muted: #68776e;
+  --border: #e1eae4;
+  --surface: #ffffff;
+  --page-bg: #f5f8f6;
+  color: var(--text);
+  background: var(--page-bg);
+  padding: 18px;
+  font-family: inherit;
+}
+
+.schemes-page * {
+  box-sizing: border-box;
+}
+
+.schemes-page button,
+.schemes-page input,
+.schemes-page select {
+  font: inherit;
+}
+
+.schemes-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 245px;
+  padding: 34px 38px;
+  overflow: hidden;
+  border-radius: 16px;
+  color: #fff;
+  background:
+    linear-gradient(90deg, rgba(5, 54, 34, .96), rgba(7, 89, 52, .84) 62%, rgba(7, 89, 52, .32)),
+    url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=85")
+    center 52% / cover;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+}
+
+.hero-eyebrow {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: #d5f5df;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.schemes-hero h1 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(27px, 4vw, 43px);
+  line-height: 1.15;
+  font-weight: 800;
+}
+
+.schemes-hero p {
+  margin: 11px 0 22px;
+  color: #edf8f0;
+  font-size: 15px;
+}
+
+.hero-highlights {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(130px, 1fr));
+  gap: 9px;
+}
+
+.hero-highlight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 58px;
+  padding: 10px;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 9px;
+  background: rgba(255,255,255,.94);
+  color: #20352a;
+}
+
+.highlight-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 31px;
+  width: 31px;
+  height: 31px;
+  border-radius: 9px;
+  background: #e4f5e9;
+  color: var(--green);
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.hero-highlight strong,
+.hero-highlight small {
+  display: block;
+}
+
+.hero-highlight strong {
+  font-size: 11px;
+}
+
+.hero-highlight small {
+  margin-top: 3px;
+  color: #6c7a71;
+  font-size: 9px;
+}
+
+.hero-decoration {
+  position: absolute;
+  right: 7%;
+  bottom: -10px;
+  display: grid;
+  place-items: center;
+  width: 190px;
+  height: 190px;
+  opacity: .8;
+  pointer-events: none;
+}
+
+.hero-plant {
+  font-size: 125px;
+  filter: drop-shadow(0 8px 8px rgba(0,0,0,.15));
+}
+
+.hero-leaf {
+  position: absolute;
+  color: #d8f5a7;
+  font-size: 34px;
+}
+
+.leaf-one { top: 15px; left: 8px; }
+.leaf-two { top: 50px; right: 0; }
+
+.schemes-workspace {
+  display: grid;
+  grid-template-columns: 245px minmax(0, 1fr) 310px;
+  align-items: start;
+  gap: 15px;
+  margin-top: 16px;
+}
+
+.filter-panel,
+.details-panel {
+  position: sticky;
+  top: 15px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 3px 14px rgba(20, 60, 35, .04);
+}
+
+.filter-panel {
+  padding: 15px;
+  background: #f0f8f2;
+}
+
+.filter-search {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 9px;
+  border: 1px solid #dce7df;
+  border-radius: 7px;
+  background: #fff;
+}
+
+.filter-search > span {
+  color: #64756a;
+  font-size: 20px;
+}
+
+.filter-search input {
+  width: 100%;
+  min-width: 0;
+  height: 39px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 12px;
+}
+
+.filter-search button {
+  border: 0;
+  background: transparent;
+  color: #64756a;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.filter-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0 13px;
+}
+
+.filter-heading h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.text-button {
+  border: 0;
+  background: transparent;
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.filter-label {
+  display: block;
+  margin: 13px 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.filter-panel select {
+  width: 100%;
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid #dce6df;
+  border-radius: 7px;
+  outline-color: var(--green);
+  background: #fff;
+  color: #33443a;
+  font-size: 12px;
+}
+
+.saved-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 18px 0;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.saved-toggle input {
+  position: absolute;
+  right: 0;
+  width: 40px;
+  height: 23px;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.toggle-track {
+  position: relative;
+  width: 40px;
+  height: 23px;
+  flex: 0 0 40px;
+  border-radius: 20px;
+  background: #cbd5ce;
+  transition: .2s;
+}
+
+.toggle-track::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #fff;
+  transition: .2s;
+}
+
+.saved-toggle input:checked + .toggle-track {
+  background: var(--green);
+}
+
+.saved-toggle input:checked + .toggle-track::after {
+  transform: translateX(17px);
+}
+
+.reset-button {
+  width: 100%;
+  height: 39px;
+  margin-top: 16px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--green);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.reset-button:hover,
+.eligibility-form button:hover,
+.details-button:hover {
+  background: var(--green-dark);
+}
+
+.filter-note {
+  margin: 12px 0 0;
+  color: #748178;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.scheme-results {
+  min-width: 0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 72px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.stat-icon {
+  display: grid;
+  place-items: center;
+  width: 39px;
+  height: 39px;
+  flex: 0 0 39px;
+  border-radius: 10px;
+  font-size: 21px;
+}
+
+.stat-card strong,
+.stat-card small {
+  display: block;
+}
+
+.stat-card strong {
+  font-size: 21px;
+  line-height: 1.1;
+}
+
+.stat-card small {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.stat-green .stat-icon { background: #e3f6e9; color: #087443; }
+.stat-blue .stat-icon { background: #e7f0ff; color: #2866bd; }
+.stat-pink .stat-icon { background: #fff0f4; color: #db2860; }
+.stat-orange .stat-icon { background: #fff2dc; color: #bd7514; }
+
+.results-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 20px 0 12px;
+}
+
+.results-heading h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.results-heading p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.refresh-button {
+  padding: 8px 11px;
+  border: 1px solid #dce7df;
+  border-radius: 7px;
+  background: #fff;
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.category-chips {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  padding: 2px 0 12px;
+}
+
+.category-chip {
+  flex: 0 0 auto;
+  padding: 7px 11px;
+  border: 1px solid #dce7df;
+  border-radius: 20px;
+  background: #fff;
+  color: #53645a;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.category-chip.active {
+  border-color: var(--green);
+  background: var(--green);
+  color: #fff;
+}
+
+.scheme-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 11px;
+}
+
+.scheme-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #e0e8e2;
+  border-radius: 10px;
+  background: #fff;
+  transition: transform .18s, box-shadow .18s, border-color .18s;
+}
+
+.scheme-card:hover,
+.scheme-card.selected {
+  transform: translateY(-2px);
+  border-color: #a8d5b7;
+  box-shadow: 0 7px 18px rgba(20, 70, 40, .09);
+}
+
+.card-art {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 91px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 75% 15%, rgba(255,255,255,.55), transparent 28%),
+    linear-gradient(135deg, #c9e8cf, #78b98a 55%, #287c4b);
+}
+
+.art-symbol {
+  color: rgba(255,255,255,.95);
+  font-size: 47px;
+  text-shadow: 0 3px 8px rgba(0,0,0,.15);
+}
+
+.card-category,
+.card-verified {
+  position: absolute;
+  z-index: 1;
+  top: 8px;
+  padding: 5px 7px;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.card-category {
+  left: 8px;
+  background: rgba(6, 92, 52, .92);
+}
+
+.card-verified {
+  right: 8px;
+  background: #087443;
+}
+
+.save-scheme {
+  position: absolute;
+  z-index: 2;
+  top: 7px;
+  right: 7px;
+  display: grid;
+  place-items: center;
+  width: 29px;
+  height: 29px;
+  border: 1px solid #e7ece8;
+  border-radius: 50%;
+  background: #fff;
+  color: #d92956;
+  font-size: 19px;
+  cursor: pointer;
+}
+
+.card-verified + .save-scheme {
+  top: 43px;
+}
+
+.save-scheme.saved {
+  color: #e11d48;
+}
+
+.save-scheme:disabled {
+  opacity: .55;
+  cursor: wait;
+}
+
+.card-body {
+  padding: 10px;
+}
+
+.card-body h3 {
+  margin: 0 0 5px;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.card-summary {
+  display: -webkit-box;
+  min-height: 34px;
+  margin: 0 0 10px;
+  overflow: hidden;
+  color: #66736a;
+  font-size: 10px;
+  line-height: 1.5;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 7px 0;
+  color: #59675e;
+  font-size: 10px;
+}
+
+.card-meta span {
+  color: #344f3d;
+  font-size: 14px;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 9px;
+  border-top: 1px solid #edf1ee;
+}
+
+.card-deadline {
+  color: #b43a3a;
+  font-size: 9px;
+}
+
+.details-button {
+  flex: 0 0 auto;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--green);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.details-panel {
+  max-height: calc(100vh - 30px);
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.details-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.details-top h2,
+.details-empty h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.details-close {
+  border: 0;
+  background: transparent;
+  color: #65736a;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.details-art {
+  display: grid;
+  place-items: center;
+  height: 130px;
+  margin-bottom: 12px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #d9f0df, #73b88a);
+  color: #fff;
+  font-size: 62px;
+}
+
+.details-badge {
+  display: inline-block;
+  padding: 5px 8px;
+  border-radius: 5px;
+  background: #e7f6ec;
+  color: #087443;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.details-panel h3 {
+  margin: 10px 0 6px;
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.details-summary,
+.details-panel p {
+  color: #66736a;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.details-summary {
+  margin: 0 0 15px;
+}
+
+.detail-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.detail-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #eaf6ee;
+  color: var(--green);
+  font-size: 17px;
+}
+
+.detail-block strong {
+  display: block;
+  margin: 1px 0 5px;
+  font-size: 12px;
+}
+
+.detail-block p {
+  margin: 0;
+}
+
+.detail-block ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  color: #536258;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.official-link {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 8px 11px;
+  border-radius: 6px;
+  background: #eaf2ff;
+  color: #205ca8;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.details-disclaimer {
+  padding: 11px;
+  border: 1px solid #f0e1b2;
+  border-radius: 8px;
+  background: #fff9e8;
+  color: #75643b !important;
+  font-size: 10px !important;
+}
+
+.details-empty {
+  padding: 35px 10px;
+  text-align: center;
+}
+
+.details-empty-icon {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 42px;
+}
+
+.details-empty p {
+  margin: 9px 0 0;
+}
+
+.loading-state,
+.empty-state,
+.error-state {
+  grid-column: 1 / -1;
+  padding: 30px 15px;
+  border: 1px dashed #cbdacf;
+  border-radius: 10px;
+  background: #fff;
+  color: #65736a;
+  text-align: center;
+  font-size: 13px;
+}
+
+.empty-state p,
+.error-state p {
+  font-size: 12px;
+}
+
+.error-state button {
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--green);
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Eligibility Finder */
+.eligibility-finder {
+  margin-bottom: 15px;
+  padding: 16px;
+  border: 1px solid #cfe5d5;
+  border-radius: 12px;
+  background: linear-gradient(120deg, #f0faf2, #fff);
+}
+
+.eligibility-heading {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 14px;
+}
+
+.eligibility-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 39px;
+  width: 39px;
+  height: 39px;
+  border-radius: 11px;
+  background: #dff3e5;
+  color: var(--green);
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.eligibility-heading h2 {
+  margin: 0 0 4px;
+  font-size: 17px;
+}
+
+.eligibility-heading p {
+  margin: 0;
+  color: #64736a;
+  font-size: 11px;
+}
+
+.eligibility-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: end;
+  gap: 10px;
+}
+
+.eligibility-form label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.eligibility-form select {
+  width: 100%;
+  height: 39px;
+  padding: 0 10px;
+  border: 1px solid #d5e3d9;
+  border-radius: 7px;
+  background: #fff;
+  color: #27392f;
+  font-size: 12px;
+}
+
+.eligibility-form button {
+  height: 39px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--green);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.eligibility-results {
+  margin-top: 13px;
+  color: #526258;
+  font-size: 12px;
+}
+
+.eligibility-results p {
+  margin: 0 0 5px;
+}
+
+.eligibility-match-list {
+  display: grid;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.eligibility-match {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid #dcebe0;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.eligibility-match strong,
+.eligibility-match small {
+  display: block;
+}
+
+.eligibility-match strong {
+  color: #20372a;
+  font-size: 12px;
+}
+
+.eligibility-match small {
+  margin-top: 4px;
+  color: #6b796f;
+  font-size: 10px;
+}
+
+.eligibility-match button {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border: 1px solid #cfe3d5;
+  border-radius: 6px;
+  background: #edf8f0;
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.eligibility-disclaimer {
+  margin: 12px 0 0;
+  color: #7b704d;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.feature-strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 17px;
+  padding: 15px;
+  border: 1px solid #d9ebdf;
+  border-radius: 12px;
+  background: #eaf7ee;
+}
+
+.feature-strip-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  grid-column: 1 / -1;
+  font-size: 14px;
+}
+
+.feature-strip-title span {
+  font-size: 21px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 62px;
+  padding: 10px;
+  border: 1px solid #e3ece5;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.feature-item > span {
+  display: grid;
+  place-items: center;
+  flex: 0 0 31px;
+  width: 31px;
+  height: 31px;
+  border-radius: 8px;
+  background: #e7f6ec;
+  color: var(--green);
+  font-size: 17px;
+}
+
+.feature-item strong,
+.feature-item small {
+  display: block;
+}
+
+.feature-item strong {
+  font-size: 10px;
+}
+
+.feature-item small {
+  margin-top: 4px;
+  color: #69766e;
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+@media (max-width: 1200px) {
+  .schemes-workspace {
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+
+  .details-panel {
+    position: static;
+    grid-column: 1 / -1;
+    max-height: none;
+  }
+
+  .scheme-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .feature-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .schemes-page {
+    padding: 10px;
+  }
+
+  .schemes-hero {
+    min-height: auto;
+    padding: 25px 18px;
+  }
+
+  .hero-highlights {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-decoration {
+    right: -35px;
+    opacity: .2;
+  }
+
+  .schemes-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-panel {
+    position: static;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .scheme-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .eligibility-form {
+    grid-template-columns: 1fr;
+  }
+
+  .eligibility-form button {
+    width: 100%;
+  }
+
+  .feature-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 450px) {
+  .scheme-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-highlights {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .results-heading {
+    align-items: flex-start;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="schemes-page">
+
+  <!-- HERO -->
+  <section class="schemes-hero">
+    <div class="hero-content">
+      <span class="hero-eyebrow">KISANSATHI AI • FARMER SUPPORT</span>
+      <h1>Government Schemes for Farmers</h1>
+      <p>Discover schemes, understand eligibility, and find official application information.</p>
+
+      <div class="hero-highlights">
+        <div class="hero-highlight">
+          <span class="highlight-icon">✓</span>
+          <span><strong>Verified information</strong><small>Source status shown on each scheme</small></span>
+        </div>
+        <div class="hero-highlight">
+          <span class="highlight-icon">▦</span>
+          <span><strong>Central & State</strong><small>Explore available scheme listings</small></span>
+        </div>
+        <div class="hero-highlight">
+          <span class="highlight-icon">▤</span>
+          <span><strong>Easy to understand</strong><small>Benefits and eligibility in one place</small></span>
+        </div>
+        <div class="hero-highlight">
+          <span class="highlight-icon">♧</span>
+          <span><strong>Stay informed</strong><small>Check official sources for updates</small></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-decoration" aria-hidden="true">
+      <span class="hero-leaf leaf-one">✦</span>
+      <span class="hero-leaf leaf-two">❋</span>
+      <span class="hero-plant">🌾</span>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <section class="schemes-workspace">
+
+    <!-- FILTER SIDEBAR -->
+    <aside class="filter-panel">
+      <div class="filter-search">
+        <span>⌕</span>
+        <input id="schemeSearch" type="search" placeholder="Search schemes..." aria-label="Search schemes">
+        <button id="clearSearch" type="button" aria-label="Clear search">×</button>
+      </div>
+
+      <div class="filter-heading">
+        <h2>Filters</h2>
+        <button id="clearFilters" class="text-button" type="button">Clear all</button>
+      </div>
+
+      <label class="filter-label" for="categoryFilter">Scheme Category</label>
+      <select id="categoryFilter">
+        <option value="">All Categories</option>
+        <option value="income">Income Support</option>
+        <option value="insurance">Insurance & Protection</option>
+        <option value="irrigation">Irrigation & Water</option>
+        <option value="equipment">Farm Equipment</option>
+        <option value="credit">Credit & Loans</option>
+        <option value="training">Training & Development</option>
+        <option value="other">Other</option>
+      </select>
+
+      <label class="filter-label" for="regionFilter">State / Region</label>
+      <select id="regionFilter">
+        <option value="">All Regions</option>
+        <option value="central">Central Government</option>
+        <option value="uttar-pradesh">Uttar Pradesh</option>
+        <option value="other-state">Other State</option>
+      </select>
+
+      <label class="filter-label" for="applicantFilter">Applicant Type</label>
+      <select id="applicantFilter">
+        <option value="">All Farmers</option>
+        <option value="small-marginal">Small & Marginal Farmers</option>
+        <option value="all-farmers">All Farmers</option>
+        <option value="women">Women</option>
+        <option value="youth">Youth / Entrepreneurs</option>
+      </select>
+
+      <label class="saved-toggle">
+        <span>Show only saved schemes</span>
+        <input id="savedOnly" type="checkbox">
+        <span class="toggle-track" aria-hidden="true"></span>
+      </label>
+
+      <label class="filter-label" for="sortFilter">Sort By</label>
+      <select id="sortFilter">
+        <option value="recommended">Recommended</option>
+        <option value="name">Name: A to Z</option>
+        <option value="deadline">Application deadline</option>
+      </select>
+
+      <button id="resetFilters" class="reset-button" type="button">
+        <span>↻</span> Reset Filters
+      </button>
+      <p class="filter-note">Scheme details may change. Always confirm eligibility and deadlines on the official portal.</p>
+    </aside>
+
+    <!-- RESULTS -->
+    <main class="scheme-results">
+
+      <div class="stats-grid">
+        <div class="stat-card stat-green">
+          <span class="stat-icon">▣</span>
+          <div><strong id="totalCount">—</strong><small>Total Schemes</small></div>
+        </div>
+        <div class="stat-card stat-blue">
+          <span class="stat-icon">☷</span>
+          <div><strong id="matchingCount">—</strong><small>Matching Results</small></div>
+        </div>
+        <div class="stat-card stat-pink">
+          <span class="stat-icon">♡</span>
+          <div><strong id="savedCount">0</strong><small>Saved Schemes</small></div>
+        </div>
+        <div class="stat-card stat-orange">
+          <span class="stat-icon">◷</span>
+          <div><strong id="deadlineCount">—</strong><small>With Deadlines</small></div>
+        </div>
+      </div>
+
+      <div class="results-heading">
+        <div>
+          <h2>Explore Schemes</h2>
+          <p id="resultsMessage">Loading available schemes…</p>
+        </div>
+        <button id="refreshSchemes" class="refresh-button" type="button">↻ Refresh</button>
+      </div>
+
+      <!-- ELIGIBILITY FINDER -->
+      <section class="eligibility-finder">
+        <div class="eligibility-heading">
+          <div class="eligibility-icon">✓</div>
+          <div>
+            <h2>Find Schemes for You</h2>
+            <p>Choose your applicant type and location to find potentially relevant schemes.</p>
+          </div>
+        </div>
+
+        <div class="eligibility-form">
+          <div>
+            <label for="eligibilityApplicant">I am applying as</label>
+            <select id="eligibilityApplicant">
+              <option value="">Select applicant type</option>
+              <option value="all-farmers">Farmer</option>
+              <option value="small-marginal">Small / Marginal Farmer</option>
+              <option value="women">Woman Applicant</option>
+              <option value="youth">Youth / Entrepreneur</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="eligibilityRegion">My location</label>
+            <select id="eligibilityRegion">
+              <option value="">Select location</option>
+              <option value="uttar-pradesh">Uttar Pradesh</option>
+              <option value="central">Central Government Schemes</option>
+              <option value="other-state">Other State</option>
+            </select>
+          </div>
+
+          <button id="checkEligibility" type="button">Find Matching Schemes →</button>
+        </div>
+
+        <div id="eligibilityResults" class="eligibility-results" aria-live="polite">
+          <p>Select your details and click “Find Matching Schemes”.</p>
+        </div>
+
+        <p class="eligibility-disclaimer">
+          These are preliminary matches based on scheme information stored in KisanSathi.
+          Confirm eligibility, documents and application conditions on the official portal.
+        </p>
+      </section>
+
+      <div class="category-chips" id="categoryChips">
+        <button type="button" class="category-chip active" data-category="">All schemes</button>
+        <button type="button" class="category-chip" data-category="income">Income support</button>
+        <button type="button" class="category-chip" data-category="insurance">Insurance</button>
+        <button type="button" class="category-chip" data-category="irrigation">Irrigation</button>
+        <button type="button" class="category-chip" data-category="equipment">Equipment</button>
+      </div>
+
+      <div id="schemeGrid" class="scheme-grid" aria-live="polite">
+        <div class="loading-state">Loading schemes…</div>
+      </div>
+    </main>
+
+    <!-- DETAILS PANEL -->
+    <aside id="schemeDetails" class="details-panel" aria-live="polite">
+      <div class="details-empty">
+        <span class="details-empty-icon">🌱</span>
+        <h2>Scheme Details</h2>
+        <p>Select a scheme card to view its benefits, eligibility and official application link.</p>
+      </div>
+    </aside>
+
+  </section>
+
+  <!-- FEATURE STRIP -->
+  <section class="feature-strip">
+    <div class="feature-strip-title"><span>🌱</span><strong>Designed for farmers</strong></div>
+    <div class="feature-item"><span>⌕</span><div><strong>Quick Search</strong><small>Find schemes by name or keyword</small></div></div>
+    <div class="feature-item"><span>⚙</span><div><strong>Useful Filters</strong><small>Filter by category, region and applicant</small></div></div>
+    <div class="feature-item"><span>⇅</span><div><strong>Smart Sorting</strong><small>Sort by name or deadline</small></div></div>
+    <div class="feature-item"><span>♡</span><div><strong>Save Schemes</strong><small>Keep a shortlist in your account</small></div></div>
+    <div class="feature-item"><span>▤</span><div><strong>Scheme Details</strong><small>Review benefits and eligibility</small></div></div>
+    <div class="feature-item"><span>✓</span><div><strong>Source Status</strong><small>Check verification information</small></div></div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(() => {
+  "use strict";
+
+  const API_URL = "/schemes/api/government-schemes/";
+  const SAVED_API_URL = "/schemes/api/saved/";
+  const $ = (selector) => document.querySelector(selector);
+
+  const elements = {
+    search: $("#schemeSearch"),
+    clearSearch: $("#clearSearch"),
+    category: $("#categoryFilter"),
+    region: $("#regionFilter"),
+    applicant: $("#applicantFilter"),
+    savedOnly: $("#savedOnly"),
+    sort: $("#sortFilter"),
+    clearFilters: $("#clearFilters"),
+    reset: $("#resetFilters"),
+    refresh: $("#refreshSchemes"),
+    chips: $("#categoryChips"),
+    grid: $("#schemeGrid"),
+    details: $("#schemeDetails"),
+    total: $("#totalCount"),
+    matching: $("#matchingCount"),
+    saved: $("#savedCount"),
+    deadlines: $("#deadlineCount"),
+    message: $("#resultsMessage")
+  };
+
+  const eligibilityApplicant = $("#eligibilityApplicant");
+  const eligibilityRegion = $("#eligibilityRegion");
+  const checkEligibilityButton = $("#checkEligibility");
+  const eligibilityResults = $("#eligibilityResults");
+
+  let schemes = [];
+  let selectedId = null;
+  let savedIds = new Set();
+
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
+  }
+
+  function normalize(value) {
+    return String(value ?? "").trim().toLowerCase().replace(/[_\s]+/g, "-");
+  }
+
+  function categoryLabel(scheme) {
+    if (scheme.categoryLabel) return scheme.categoryLabel;
+
+    const labels = {
+      income: "Income Support",
+      insurance: "Insurance & Protection",
+      irrigation: "Irrigation & Water",
+      equipment: "Farm Equipment",
+      credit: "Credit & Loans",
+      training: "Training & Development",
+      other: "Other"
+    };
+
+    return labels[normalize(scheme.category)] || "Government Scheme";
+  }
+
+  function categoryIcon(scheme) {
+    const icons = {
+      income: "₹",
+      insurance: "🛡️",
+      irrigation: "💧",
+      equipment: "🚜",
+      credit: "🌱",
+      training: "🎓",
+      other: "🌾"
+    };
+
+    return icons[normalize(scheme.category)] || "🌾";
+  }
+
+  function formatDate(value) {
+    if (!value) return "Not specified";
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return String(value);
+
+    return date.toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric"
+    });
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const url = new URL(value, window.location.origin);
+      return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+    } catch {
+      return "";
+    }
+  }
+
+  function getApplicants(scheme) {
+    const applicants = scheme.applicants ?? scheme.applicant_types ?? [];
+    return Array.isArray(applicants) ? applicants.map(normalize) : [];
+  }
+
+  function applicantLabel(scheme) {
+    const applicants = getApplicants(scheme);
+
+    if (applicants.includes("women")) return "Women";
+    if (applicants.includes("youth")) return "Youth / Entrepreneurs";
+    if (applicants.includes("small-marginal")) return "Small & Marginal Farmers";
+
+    return "All Farmers";
+  }
+
+  function regionLabel(scheme) {
+    const region = normalize(scheme.region);
+
+    if (region === "central") return "Central Government";
+    if (region === "uttar-pradesh") return "Uttar Pradesh";
+    if (region === "other-state") return "Other State";
+
+    return scheme.region || "Government Scheme";
+  }
+
+  function deadlineValue(scheme) {
+    if (!scheme.deadline) return null;
+
+    const date = new Date(scheme.deadline);
+    return Number.isNaN(date.getTime()) ? null : date.getTime();
+  }
+
+  function matchesFilters(scheme) {
+    const query = elements.search.value.trim().toLowerCase();
+    const category = normalize(elements.category.value);
+    const region = normalize(elements.region.value);
+    const applicant = normalize(elements.applicant.value);
+
+    const searchable = [
+      scheme.name,
+      scheme.summary,
+      scheme.benefit,
+      categoryLabel(scheme),
+      regionLabel(scheme),
+      ...(Array.isArray(scheme.eligibility) ? scheme.eligibility : [])
+    ].join(" ").toLowerCase();
+
+    if (query && !searchable.includes(query)) return false;
+    if (category && normalize(scheme.category) !== category) return false;
+    if (region && normalize(scheme.region) !== region) return false;
+    if (applicant && !getApplicants(scheme).includes(applicant)) return false;
+    if (elements.savedOnly.checked && !savedIds.has(String(scheme.id))) return false;
+
+    return true;
+  }
+
+  function getFilteredSchemes() {
+    const filtered = schemes.filter(matchesFilters);
+    const sort = elements.sort.value;
+
+    if (sort === "name") {
+      filtered.sort((a, b) => String(a.name).localeCompare(String(b.name)));
+    } else if (sort === "deadline") {
+      filtered.sort((a, b) => {
+        const aDate = deadlineValue(a) ?? Number.MAX_SAFE_INTEGER;
+        const bDate = deadlineValue(b) ?? Number.MAX_SAFE_INTEGER;
+        return aDate - bDate;
+      });
+    }
+
+    return filtered;
+  }
+
+  function renderStats(filtered) {
+    elements.total.textContent = schemes.length;
+    elements.matching.textContent = filtered.length;
+    elements.saved.textContent = savedIds.size;
+    elements.deadlines.textContent =
+      schemes.filter((scheme) => Boolean(scheme.deadline)).length;
+  }
+
+  function renderCards() {
+    const filtered = getFilteredSchemes();
+    renderStats(filtered);
+
+    elements.message.textContent =
+      `${filtered.length} scheme${filtered.length === 1 ? "" : "s"} found`;
+
+    if (!filtered.length) {
+      elements.grid.innerHTML = `
+        <div class="empty-state">
+          <strong>No schemes match your filters.</strong>
+          <p>Try changing your search or clearing the filters.</p>
+        </div>`;
+      return;
+    }
+
+    elements.grid.innerHTML = filtered.map((scheme) => {
+      const id = String(scheme.id);
+      const isSaved = savedIds.has(id);
+      const isSelected = id === String(selectedId);
+      const deadline = scheme.deadline ? formatDate(scheme.deadline) : "Not specified";
+      const verified = scheme.verified === true;
+
+      return `
+        <article class="scheme-card ${isSelected ? "selected" : ""}" data-id="${escapeHTML(id)}">
+          <div class="card-art">
+            <span class="card-category">${escapeHTML(categoryLabel(scheme))}</span>
+            ${verified ? '<span class="card-verified">✓ Verified</span>' : ""}
+            <span class="art-symbol" aria-hidden="true">${categoryIcon(scheme)}</span>
+            <button class="save-scheme ${isSaved ? "saved" : ""}"
+                    type="button"
+                    data-save-id="${escapeHTML(id)}"
+                    aria-label="${isSaved ? "Remove saved scheme" : "Save scheme"}"
+                    title="${isSaved ? "Remove saved scheme" : "Save scheme"}">
+              ${isSaved ? "♥" : "♡"}
+            </button>
+          </div>
+
+          <div class="card-body">
+            <h3>${escapeHTML(scheme.name)}</h3>
+            <p class="card-summary">${escapeHTML(scheme.summary || scheme.benefit || "View this scheme for details.")}</p>
+            <div class="card-meta"><span aria-hidden="true">▦</span>${escapeHTML(regionLabel(scheme))}</div>
+            <div class="card-meta"><span aria-hidden="true">♙</span>${escapeHTML(applicantLabel(scheme))}</div>
+            <div class="card-footer">
+              <span class="card-deadline">▢ ${escapeHTML(deadline)}</span>
+              <button class="details-button" type="button" data-details-id="${escapeHTML(id)}">View Details →</button>
+            </div>
+          </div>
+        </article>`;
+    }).join("");
+
+    if (selectedId && !filtered.some((scheme) => String(scheme.id) === String(selectedId))) {
+      selectedId = null;
+      renderDetails(null);
+    }
+  }
+
+  function renderDetails(scheme) {
+    if (!scheme) {
+      elements.details.innerHTML = `
+        <div class="details-empty">
+          <span class="details-empty-icon">🌱</span>
+          <h2>Scheme Details</h2>
+          <p>Select a scheme card to view its benefits, eligibility and official application link.</p>
+        </div>`;
+      return;
+    }
+
+    const officialUrl = safeHttpUrl(scheme.officialUrl || scheme.official_url);
+    const eligibility = Array.isArray(scheme.eligibility)
+      ? scheme.eligibility
+      : String(scheme.eligibility || "").split(/\r?\n/).filter(Boolean);
+
+    const eligibilityHTML = eligibility.length
+      ? `<ul>${eligibility.map((item) => `<li>${escapeHTML(item)}</li>`).join("")}</ul>`
+      : "<p>Eligibility details have not been added yet. Check the official source.</p>";
+
+    const verifiedText = scheme.verified
+      ? `Verified${scheme.lastVerifiedAt ? ` on ${formatDate(scheme.lastVerifiedAt)}` : ""}`
+      : "Not yet marked as verified";
+
+    elements.details.innerHTML = `
+      <div class="details-top">
+        <h2>Scheme Details</h2>
+        <button class="details-close" id="closeDetails" type="button" aria-label="Close details">×</button>
+      </div>
+
+      <div class="details-art" aria-hidden="true">${categoryIcon(scheme)}</div>
+      <span class="details-badge">${escapeHTML(categoryLabel(scheme))}</span>
+      <h3>${escapeHTML(scheme.name)}</h3>
+      <p class="details-summary">${escapeHTML(scheme.summary || scheme.benefit || "No summary available.")}</p>
+
+      <div class="detail-block">
+        <span class="detail-icon">▤</span>
+        <div>
+          <strong>Benefit / Support</strong>
+          <p>${escapeHTML(scheme.benefit || "Refer to the official scheme portal for benefit details.")}</p>
+        </div>
+      </div>
+
+      <div class="detail-block">
+        <span class="detail-icon">✓</span>
+        <div><strong>Eligibility Checklist</strong>${eligibilityHTML}</div>
+      </div>
+
+      <div class="detail-block">
+        <span class="detail-icon">▣</span>
+        <div>
+          <strong>Application Deadline</strong>
+          <p>${escapeHTML(formatDate(scheme.deadline))}</p>
+        </div>
+      </div>
+
+      <div class="detail-block">
+        <span class="detail-icon">↗</span>
+        <div>
+          <strong>Official Source</strong>
+          ${officialUrl
+            ? `<a class="official-link" href="${escapeHTML(officialUrl)}" target="_blank" rel="noopener noreferrer">Visit Official Website ↗</a>`
+            : "<p>Official link has not been provided.</p>"}
+        </div>
+      </div>
+
+      <div class="detail-block">
+        <span class="detail-icon">🛡</span>
+        <div>
+          <strong>Information Status</strong>
+          <p>${escapeHTML(verifiedText)}</p>
+        </div>
+      </div>
+
+      <p class="details-disclaimer">
+        Scheme rules, benefits, deadlines and application procedures may change.
+        Confirm the latest information on the official government portal before applying.
+      </p>`;
+  }
+
+  function selectScheme(id) {
+    const scheme = schemes.find((item) => String(item.id) === String(id));
+    if (!scheme) return;
+
+    selectedId = String(id);
+    renderCards();
+    renderDetails(scheme);
+  }
+
+  function setCategory(category) {
+    elements.category.value = category;
+
+    document.querySelectorAll(".category-chip").forEach((chip) => {
+      chip.classList.toggle(
+        "active",
+        normalize(chip.dataset.category) === normalize(category)
+      );
+    });
+
+    renderCards();
+  }
+
+  function resetFilters() {
+    elements.search.value = "";
+    elements.category.value = "";
+    elements.region.value = "";
+    elements.applicant.value = "";
+    elements.savedOnly.checked = false;
+    elements.sort.value = "recommended";
+    elements.clearSearch.style.visibility = "hidden";
+    setCategory("");
+    renderCards();
+  }
+
+  function getCookie(name) {
+    const cookie = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith(`${name}=`));
+
+    return cookie ? decodeURIComponent(cookie.split("=")[1]) : "";
+  }
+
+  async function loadSavedFromServer() {
+    const response = await fetch(SAVED_API_URL, {
+      headers: { "Accept": "application/json" },
+      credentials: "same-origin"
+    });
+
+    if (response.status === 401) return false;
+    if (!response.ok) throw new Error("Could not load saved schemes.");
+
+    const data = await response.json();
+    savedIds = new Set((data.saved_ids || []).map(String));
+    return true;
+  }
+
+  async function updateSavedOnServer(schemeId, shouldSave) {
+    const response = await fetch(SAVED_API_URL, {
+      method: shouldSave ? "POST" : "DELETE",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrftoken"),
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({ scheme_id: Number(schemeId) })
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (response.status === 401) {
+      throw new Error("Please log in to save schemes to your account.");
+    }
+
+    if (!response.ok) {
+      throw new Error(data.error || "Unable to update saved scheme.");
+    }
+
+    return data;
+  }
+
+  function findPotentialMatches() {
+    const applicant = normalize(eligibilityApplicant.value);
+    const region = normalize(eligibilityRegion.value);
+
+    if (!applicant || !region) {
+      eligibilityResults.innerHTML =
+        "<p>Please select both your applicant type and location.</p>";
+      return;
+    }
+
+    const matches = schemes.filter((scheme) => {
+      const applicants = getApplicants(scheme);
+      const schemeRegion = normalize(scheme.region);
+
+      const applicantMatches =
+        applicants.includes(applicant) ||
+        applicants.includes("all-farmers");
+
+      const regionMatches =
+        region === "central"
+          ? schemeRegion === "central"
+          : schemeRegion === region || schemeRegion === "central";
+
+      return applicantMatches && regionMatches;
+    });
+
+    if (!matches.length) {
+      eligibilityResults.innerHTML = `
+        <p><strong>No potential matches found.</strong></p>
+        <p>Try another applicant type or location, or browse all schemes below.</p>`;
+      return;
+    }
+
+    eligibilityResults.innerHTML = `
+      <p><strong>${matches.length} potential match${matches.length === 1 ? "" : "es"} found.</strong></p>
+      <div class="eligibility-match-list">
+        ${matches.map((scheme) => `
+          <div class="eligibility-match">
+            <div>
+              <strong>${escapeHTML(scheme.name)}</strong>
+              <small>${escapeHTML(categoryLabel(scheme))} · ${escapeHTML(regionLabel(scheme))}</small>
+            </div>
+            <button type="button" data-eligibility-details="${escapeHTML(scheme.id)}">
+              View Details
+            </button>
+          </div>`).join("")}
+      </div>`;
+  }
+
+  async function loadSchemes() {
+    elements.grid.innerHTML = '<div class="loading-state">Loading schemes…</div>';
+    elements.message.textContent = "Connecting to scheme database…";
+
+    try {
+      const response = await fetch(API_URL, {
+        headers: { "Accept": "application/json" },
+        credentials: "same-origin"
+      });
+
+      if (!response.ok) {
+        throw new Error(`Schemes request failed (${response.status})`);
+      }
+
+      const data = await response.json();
+      schemes = Array.isArray(data) ? data : (data.results || data.schemes || []);
+      if (!Array.isArray(schemes)) schemes = [];
+
+      try {
+        const isLoggedIn = await loadSavedFromServer();
+        if (!isLoggedIn) {
+          elements.message.textContent = "Log in to save schemes to your account.";
+        }
+      } catch (savedError) {
+        console.warn("Saved schemes could not be loaded:", savedError);
+      }
+
+      selectedId = schemes.length ? String(schemes[0].id) : null;
+      renderCards();
+
+      if (selectedId) {
+        renderDetails(schemes.find((scheme) => String(scheme.id) === selectedId));
+      } else {
+        renderDetails(null);
+      }
+
+      if (!schemes.length) {
+        elements.message.textContent = "No active schemes have been added yet.";
+      }
+    } catch (error) {
+      console.error("Government schemes load error:", error);
+
+      elements.grid.innerHTML = `
+        <div class="error-state">
+          <strong>Unable to load schemes.</strong>
+          <p>Check that the Django API route is configured and the server is running.</p>
+          <button type="button" id="retrySchemes">Try Again</button>
+        </div>`;
+
+      elements.message.textContent = "Could not connect to the schemes API.";
+      elements.total.textContent = "—";
+      elements.matching.textContent = "—";
+      elements.deadlines.textContent = "—";
+    }
+  }
+
+  // Search and filter controls
+  [elements.search, elements.category, elements.region, elements.applicant,
+   elements.savedOnly, elements.sort].forEach((control) => {
+    control.addEventListener("input", renderCards);
+    control.addEventListener("change", renderCards);
+  });
+
+  elements.search.addEventListener("input", () => {
+    elements.clearSearch.style.visibility =
+      elements.search.value ? "visible" : "hidden";
+  });
+
+  elements.clearSearch.addEventListener("click", () => {
+    elements.search.value = "";
+    elements.clearSearch.style.visibility = "hidden";
+    renderCards();
+  });
+
+  elements.clearFilters.addEventListener("click", resetFilters);
+  elements.reset.addEventListener("click", resetFilters);
+  elements.refresh.addEventListener("click", loadSchemes);
+
+  elements.chips.addEventListener("click", (event) => {
+    const chip = event.target.closest("[data-category]");
+    if (chip) setCategory(chip.dataset.category || "");
+  });
+
+  // Scheme cards: save and details
+  elements.grid.addEventListener("click", async (event) => {
+    const saveButton = event.target.closest("[data-save-id]");
+
+    if (saveButton) {
+      const id = String(saveButton.dataset.saveId);
+      const shouldSave = !savedIds.has(id);
+      saveButton.disabled = true;
+
+      try {
+        await updateSavedOnServer(id, shouldSave);
+
+        if (shouldSave) savedIds.add(id);
+        else savedIds.delete(id);
+
+        renderCards();
+      } catch (error) {
+        alert(error.message);
+      }
+
+      return;
+    }
+
+    if (event.target.closest("#retrySchemes")) {
+      loadSchemes();
+      return;
+    }
+
+    const detailsButton = event.target.closest("[data-details-id]");
+    const card = event.target.closest(".scheme-card");
+    const id = detailsButton?.dataset.detailsId || card?.dataset.id;
+
+    if (id) selectScheme(id);
+  });
+
+  elements.details.addEventListener("click", (event) => {
+    if (event.target.closest("#closeDetails")) {
+      selectedId = null;
+      renderCards();
+      renderDetails(null);
+    }
+  });
+
+  // Eligibility Finder
+  checkEligibilityButton.addEventListener("click", findPotentialMatches);
+
+  eligibilityResults.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-eligibility-details]");
+    if (!button) return;
+
+    selectScheme(button.dataset.eligibilityDetails);
+
+    elements.details.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest"
+    });
+  });
+
+  elements.clearSearch.style.visibility = "hidden";
+  loadSchemes();
+})();
+</script>
+{% endblock %}

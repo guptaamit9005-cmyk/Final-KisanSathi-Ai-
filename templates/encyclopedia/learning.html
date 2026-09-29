@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Farmer Learning Roadmap | KisanSathi AI</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f8f1;
+            color: #183b20;
+        }
+
+        .navbar {
+            background: #174d2a;
+            color: white;
+            padding: 16px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: 800;
+        }
+
+        .logo span {
+            color: #8bd36d;
+        }
+
+        .back {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .hero {
+            padding: 55px 7%;
+            background:
+                linear-gradient(
+                    135deg,
+                    #dcefd4,
+                    #f5f9ef
+                );
+        }
+
+        .hero-content {
+            max-width: 900px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #d0eac5;
+            color: #216b31;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 17px;
+            color: #53675a;
+            line-height: 1.7;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1250px;
+            margin: 35px auto;
+        }
+
+        .crop-filter {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 35px;
+        }
+
+        .crop-filter a {
+            text-decoration: none;
+            background: white;
+            border: 1px solid #dce7d8;
+            color: #23572d;
+            padding: 11px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+        .crop-filter a:hover {
+            background: #216b31;
+            color: white;
+        }
+
+        .roadmap {
+            background: white;
+            border-radius: 22px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 30px rgba(30, 70, 35, 0.08);
+        }
+
+        .roadmap-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .crop-title {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .crop-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            background: #edf7e8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .crop-title h2 {
+            font-size: 25px;
+            margin-bottom: 6px;
+        }
+
+        .crop-title p {
+            color: #718073;
+        }
+
+        .duration {
+            background: #eaf6e4;
+            color: #287139;
+            padding: 9px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 35px;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 12px;
+            top: 5px;
+            bottom: 5px;
+            width: 3px;
+            background: #cfe3c8;
+        }
+
+        .step {
+            position: relative;
+            margin-bottom: 28px;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-number {
+            position: absolute;
+            left: -35px;
+            top: 0;
+            width: 27px;
+            height: 27px;
+            border-radius: 50%;
+            background: #287139;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        .step-card {
+            border: 1px solid #e4ece1;
+            border-radius: 16px;
+            padding: 20px;
+            background: #fbfdf9;
+        }
+
+        .step-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .step-title span {
+            font-size: 22px;
+        }
+
+        .step-title h3 {
+            font-size: 18px;
+        }
+
+        .step-card p {
+            color: #637267;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .modern-box {
+            background: #eef8e9;
+            border-left: 4px solid #4b9c52;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .modern-title {
+            font-weight: 800;
+            color: #246a31;
+            margin-bottom: 8px;
+        }
+
+        .modern-box ul {
+            padding-left: 20px;
+        }
+
+        .modern-box li {
+            margin: 6px 0;
+            color: #506451;
+            line-height: 1.5;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 60px;
+            background: white;
+            border-radius: 20px;
+        }
+
+        @media(max-width: 700px) {
+
+            h1 {
+                font-size: 30px;
+            }
+
+            .roadmap {
+                padding: 20px;
+            }
+
+            .roadmap-header {
+                flex-direction: column;
+            }
+
+            .duration {
+                align-self: flex-start;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        🌱 Kisan<span>Sathi</span> AI
+    </div>
+
+    <a href="{% url 'dashboard:home' %}" class="back">
+        ← Dashboard
+    </a>
+
+</nav>
+
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="badge">
+            🎓 FARMER LEARNING CENTER
+        </div>
+
+        <h1>
+            Learn. Grow. Modernize.
+        </h1>
+
+        <p>
+            Step-by-step farming roadmaps to help farmers learn
+            new crops, modern agricultural techniques, smart
+            irrigation, crop monitoring and better farm management.
+        </p>
+
+    </div>
+
+</section>
+
+
+<div class="container">
+
+    <div class="crop-filter">
+
+        <a href="{% url 'encyclopedia:home' %}">
+            🌱 All Crops
+        </a>
+
+        {% for roadmap in all_roadmaps %}
+
+            <a href="?crop={{ roadmap.id }}">
+                {{ roadmap.icon }} {{ roadmap.crop }}
+            </a>
+
+        {% endfor %}
+
+    </div>
+
+
+    {% for roadmap in roadmaps %}
+
+    <section class="roadmap">
+
+        <div class="roadmap-header">
+
+            <div class="crop-title">
+
+                <div class="crop-icon">
+                    {{ roadmap.icon }}
+                </div>
+
+                <div>
+
+                    <h2>
+                        {{ roadmap.title }}
+                    </h2>
+
+                    <p>
+                        {{ roadmap.description }}
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="duration">
+                ⏱ {{ roadmap.duration }}
+            </div>
+
+        </div>
+
+
+        <div class="timeline">
+
+            {% for step in roadmap.steps %}
+
+            <div class="step">
+
+                <div class="step-number">
+                    {{ forloop.counter }}
+                </div>
+
+                <div class="step-card">
+
+                    <div class="step-title">
+
+                        <span>
+                            {{ step.icon }}
+                        </span>
+
+                        <h3>
+                            {{ step.title }}
+                        </h3>
+
+                    </div>
+
+                    <p>
+                        {{ step.description }}
+                    </p>
+
+
+                    <div class="modern-box">
+
+                        <div class="modern-title">
+                            🚀 Modern Farming Tips
+                        </div>
+
+                        <ul>
+
+                            {% for tip in step.modern %}
+
+                            <li>
+                                {{ tip }}
+                            </li>
+
+                            {% endfor %}
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    {% empty %}
+
+    <div class="empty">
+
+        <h2>🌱 Roadmap not found</h2>
+
+        <p>
+            Please select another crop.
+        </p>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+</body>
+</html>

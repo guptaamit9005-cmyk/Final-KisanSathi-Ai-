@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KisanSathi AI | Weather Intelligence</title>
+
+<style>
+:root {
+    --green: #168044;
+    --green-dark: #0c542d;
+    --green-light: #e9f7ed;
+    --bg: #f4f8f4;
+    --white: #ffffff;
+    --text: #173321;
+    --muted: #718178;
+    --border: #dce9df;
+    --shadow: 0 10px 30px rgba(17,63,35,.07);
+    --red: #dc2626;
+    --orange: #d97706;
+    --blue: #2563eb;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+button, input, select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.navbar {
+    height: 72px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.nav-inner {
+    width: min(1200px, calc(100% - 32px));
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--green-dark);
+    font-size: 21px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.brand-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    background: var(--green-light);
+    font-size: 23px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #496152;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.nav-links a:hover {
+    background: var(--green-light);
+    color: var(--green-dark);
+}
+
+.container {
+    width: min(1200px, calc(100% - 32px));
+    margin: auto;
+}
+
+.hero {
+    padding: 35px 0 22px;
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: 1.35fr .65fr;
+    gap: 20px;
+}
+
+.hero-main {
+    background: linear-gradient(135deg, #0c542d, #239653);
+    color: white;
+    border-radius: 25px;
+    padding: 35px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 18px 40px rgba(13,74,40,.16);
+}
+
+.hero-main::after {
+    content: "";
+    position: absolute;
+    width: 230px;
+    height: 230px;
+    right: -70px;
+    top: -90px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.08);
+}
+
+.eyebrow {
+    color: #ccefd5;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+
+.hero h1 {
+    font-size: clamp(30px, 4vw, 46px);
+    line-height: 1.12;
+    margin-top: 12px;
+}
+
+.hero-main p {
+    color: #dcefe1;
+    line-height: 1.7;
+    margin-top: 12px;
+    max-width: 620px;
+}
+
+.hero-side {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 25px;
+    padding: 27px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.hero-side small {
+    color: var(--muted);
+    font-weight: 700;
+}
+
+.hero-side strong {
+    color: var(--green-dark);
+    font-size: 27px;
+    margin-top: 9px;
+}
+
+.hero-side p {
+    color: var(--muted);
+    line-height: 1.6;
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+.card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 22px;
+    box-shadow: var(--shadow);
+}
+
+.section-title {
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--green-dark);
+}
+
+.section-subtitle {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 6px;
+    line-height: 1.5;
+}
+
+.search-card {
+    margin-top: 5px;
+}
+
+.search-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 17px;
+}
+
+.search-input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid var(--border);
+    background: #fbfdfb;
+    border-radius: 12px;
+    padding: 14px 15px;
+    outline: none;
+}
+
+.search-input:focus,
+.form-control:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(22,128,68,.1);
+}
+
+.primary-btn {
+    border: none;
+    background: linear-gradient(135deg, #188044, #22a457);
+    color: white;
+    border-radius: 12px;
+    padding: 13px 22px;
+    font-weight: 700;
+    transition: .2s;
+}
+
+.primary-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(24,128,68,.2);
+}
+
+.location-btn {
+    width: 48px;
+    border: 1px solid var(--border);
+    background: var(--green-light);
+    border-radius: 12px;
+    color: var(--green-dark);
+    font-size: 19px;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 13px;
+    margin-top: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 12px;
+    color: #52665a;
+    font-weight: 700;
+    margin-bottom: 7px;
+}
+
+.form-control {
+    width: 100%;
+    border: 1px solid var(--border);
+    background: #fbfdfb;
+    border-radius: 10px;
+    padding: 12px;
+    color: var(--text);
+    outline: none;
+}
+
+.message {
+    display: none;
+    margin-top: 14px;
+    padding: 13px 15px;
+    border-radius: 12px;
+    font-size: 14px;
+}
+
+.message.error {
+    display: block;
+    color: #991b1b;
+    background: #fff1f1;
+    border: 1px solid #fecaca;
+}
+
+.message.info {
+    display: block;
+    color: #1e40af;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+}
+
+.loader {
+    display: none;
+    width: 42px;
+    height: 42px;
+    margin: 28px auto;
+    border: 4px solid #dcebdd;
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.weather-section {
+    display: none;
+    margin: 24px 0 45px;
+}
+
+.weather-section.active {
+    display: block;
+}
+
+.weather-top {
+    display: grid;
+    grid-template-columns: 1.2fr .8fr;
+    gap: 18px;
+}
+
+.current-card {
+    min-height: 300px;
+    padding: 28px;
+    border-radius: 24px;
+    color: white;
+    background: linear-gradient(135deg, #166534, #239653);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 18px 40px rgba(22,101,52,.16);
+}
+
+.current-card::after {
+    content: "";
+    position: absolute;
+    width: 210px;
+    height: 210px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.07);
+    right: -60px;
+    bottom: -90px;
+}
+
+.current-label {
+    color: #d5f4dc;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.location {
+    font-size: 23px;
+    font-weight: 800;
+    margin-top: 8px;
+}
+
+.current-weather-row {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-top: 22px;
+}
+
+.weather-icon {
+    font-size: 68px;
+    line-height: 1;
+}
+
+.temperature {
+    font-size: 58px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.description {
+    color: #e0f4e5;
+    margin-top: 9px;
+    text-transform: capitalize;
+}
+
+.feels-like {
+    color: #d5f4dc;
+    font-size: 13px;
+    margin-top: 7px;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.metric {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+}
+
+.metric-icon {
+    font-size: 23px;
+}
+
+.metric-label {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 12px;
+    font-weight: 700;
+}
+
+.metric-value {
+    color: var(--green-dark);
+    font-size: 23px;
+    font-weight: 800;
+    margin-top: 5px;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 18px;
+}
+
+.forecast-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.forecast-day {
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 15px 9px;
+    text-align: center;
+    background: #fbfdfb;
+    min-width: 0;
+}
+
+.forecast-day strong {
+    font-size: 12px;
+    color: #52665a;
+    display: block;
+    overflow-wrap: anywhere;
+}
+
+.forecast-icon {
+    font-size: 27px;
+    margin: 12px 0;
+}
+
+.forecast-temp {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--green-dark);
+}
+
+.forecast-day p {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.5;
+    margin-top: 8px;
+}
+
+.advice-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 17px;
+}
+
+.advice-item {
+    padding: 14px;
+    border-radius: 13px;
+    background: #f5faf5;
+    border: 1px solid #e3efe5;
+}
+
+.advice-item strong {
+    display: block;
+    color: var(--green-dark);
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.advice-item p {
+    color: #52665a;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.alert-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.alert-item {
+    background: #fff8e8;
+    color: #854d0e;
+    border: 1px solid #f8dfaa;
+    border-radius: 12px;
+    padding: 13px 14px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.alert-item.safe {
+    background: #effaf1;
+    border-color: #cdebd3;
+    color: #166534;
+}
+
+.disclaimer {
+    margin-top: 18px;
+    padding: 15px 17px;
+    border-radius: 13px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1e40af;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.hidden-panel {
+    display: none !important;
+}
+
+.footer {
+    padding: 25px 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+}
+
+@media (max-width: 850px) {
+    .hero-grid,
+    .weather-top,
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 560px) {
+    .nav-links a:not(:last-child) {
+        display: none;
+    }
+
+    .hero-main {
+        padding: 25px;
+    }
+
+    .search-row {
+        flex-wrap: wrap;
+    }
+
+    .search-input {
+        flex-basis: 100%;
+    }
+
+    .primary-btn {
+        flex: 1;
+    }
+
+    .profile-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .forecast-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .forecast-day:last-child {
+        grid-column: span 2;
+    }
+
+    .current-card {
+        padding: 23px;
+    }
+
+    .temperature {
+        font-size: 48px;
+    }
+
+    .weather-icon {
+        font-size: 55px;
+    }
+
+    .metric {
+        padding: 15px;
+    }
+
+    .metric-value {
+        font-size: 20px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="/" class="brand">
+            <span class="brand-icon">🌱</span>
+            <span>KisanSathi AI</span>
+        </a>
+
+        <div class="nav-links">
+            <a href="/dashboard/">Dashboard</a>
+            <a href="/prediction/">Crop Analysis</a>
+            <a href="/ai-assistant/">AI Assistant</a>
+        </div>
+    </div>
+</nav>
+
+<main class="container">
+
+    <section class="hero">
+        <div class="hero-grid">
+
+            <div class="hero-main">
+                <div class="eyebrow">Smart Farming • Weather Intelligence</div>
+                <h1>Weather Insights<br>for Smarter Farming</h1>
+                <p>
+                    Check local weather conditions, monitor upcoming forecasts,
+                    and view farming insights to support better field decisions.
+                </p>
+            </div>
+
+            <div class="hero-side">
+                <small>🌾 FARMER WEATHER CENTER</small>
+                <strong>Plan with Confidence</strong>
+                <p>
+                    Use local weather information alongside crop stage,
+                    field conditions, and expert agricultural guidance.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="card search-card">
+        <h2 class="section-title">Check Your Farm Weather</h2>
+        <p class="section-subtitle">
+            Enter your village, town, or city to fetch current weather information.
+        </p>
+
+        <div class="search-row">
+            <input
+                type="text"
+                id="cityInput"
+                class="search-input"
+                placeholder="Enter city or village (e.g. Hardoi)"
+                autocomplete="off"
+            >
+
+            <button class="primary-btn" id="searchBtn" type="button">
+                Check Weather
+            </button>
+
+            <button
+                class="location-btn"
+                id="locationBtn"
+                type="button"
+                title="Use my current location"
+            >⌖</button>
+        </div>
+
+        <div class="profile-grid">
+
+            <div class="form-group">
+                <label for="cropInput">Crop</label>
+                <input
+                    class="form-control"
+                    id="cropInput"
+                    type="text"
+                    placeholder="e.g. Wheat"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="cropStageInput">Crop Stage</label>
+                <select class="form-control" id="cropStageInput">
+                    <option value="">Select stage</option>
+                    <option value="sowing">Sowing</option>
+                    <option value="germination">Germination</option>
+                    <option value="vegetative">Vegetative</option>
+                    <option value="flowering">Flowering</option>
+                    <option value="fruiting">Fruiting</option>
+                    <option value="maturity">Maturity</option>
+                    <option value="harvesting">Harvesting</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="soilTypeInput">Soil Type</label>
+                <select class="form-control" id="soilTypeInput">
+                    <option value="">Select soil</option>
+                    <option value="alluvial">Alluvial</option>
+                    <option value="clay">Clay</option>
+                    <option value="sandy">Sandy</option>
+                    <option value="loamy">Loamy</option>
+                    <option value="black">Black Soil</option>
+                    <option value="red">Red Soil</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="irrigationInput">Irrigation Method</label>
+                <select class="form-control" id="irrigationInput">
+                    <option value="">Select method</option>
+                    <option value="drip">Drip</option>
+                    <option value="sprinkler">Sprinkler</option>
+                    <option value="flood">Flood</option>
+                    <option value="rainfed">Rainfed</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div id="message" class="message"></div>
+    </section>
+
+    <div class="loader" id="loader"></div>
+
+    <section class="weather-section" id="weatherSection">
+
+        <div class="weather-top">
+
+            <div class="current-card">
+                <div class="current-label">CURRENT WEATHER</div>
+                <div class="location" id="location">—</div>
+
+                <div class="current-weather-row">
+                    <div class="weather-icon" id="weatherIcon">🌤️</div>
+
+                    <div>
+                        <div class="temperature" id="temperature">--°</div>
+                        <div class="description" id="description">Weather condition</div>
+                        <div class="feels-like" id="feelsLike">Feels like --°C</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metrics-grid">
+
+                <div class="metric">
+                    <div class="metric-icon">💧</div>
+                    <div class="metric-label">HUMIDITY</div>
+                    <div class="metric-value" id="humidity">--%</div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-icon">🌬️</div>
+                    <div class="metric-label">WIND SPEED</div>
+                    <div class="metric-value" id="wind">--</div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-icon">🌧️</div>
+                    <div class="metric-label">RAINFALL</div>
+                    <div class="metric-value" id="rainfall">--</div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-icon">🌡️</div>
+                    <div class="metric-label">PRESSURE</div>
+                    <div class="metric-value" id="pressure">--</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="content-grid">
+
+            <section class="card" id="forecastPanel">
+                <h2 class="section-title">📅 5-Day Weather Forecast</h2>
+                <p class="section-subtitle">
+                    Upcoming weather information for your selected location.
+                </p>
+
+                <div class="forecast-grid" id="forecastGrid"></div>
+                <p class="section-subtitle" id="forecastError"></p>
+            </section>
+
+            <section class="card">
+                <h2 class="section-title">🌾 Farm Weather Advisory</h2>
+                <p class="section-subtitle">
+                    Weather-related information for your selected crop and field profile.
+                </p>
+
+                <div class="advice-list">
+                    <div class="advice-item">
+                        <strong id="adviceTitle">Weather-based field insights</strong>
+                        <p id="adviceText">
+                            Search for your location to view weather insights.
+                        </p>
+                    </div>
+
+                    <div class="advice-item">
+                        <strong>💧 Irrigation Insight</strong>
+                        <p id="irrigationAdvice">
+                            Irrigation information will appear here.
+                        </p>
+                    </div>
+
+                    <div class="advice-item">
+                        <strong>🦠 Crop Health Watch</strong>
+                        <p id="diseaseAdvice">
+                            Monitor your crop regularly for unusual symptoms.
+                        </p>
+                    </div>
+
+                    <div class="advice-item">
+                        <strong>🚜 Field Activity</strong>
+                        <p id="fieldAdvice">
+                            Field activity insights will appear here.
+                        </p>
+                    </div>
+
+                    <div class="advice-item">
+                        <strong>Advisory Status</strong>
+                        <p id="adviceBadge">Waiting for weather data</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card" id="alertsPanel">
+                <h2 class="section-title">⚠️ Weather Alerts</h2>
+                <p class="section-subtitle">
+                    Important weather notices returned by the weather service.
+                </p>
+                <div class="alert-list" id="alertsList">
+                    <div class="alert-item safe">
+                        Search a location to check available alerts.
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2 class="section-title">📍 Farm Profile</h2>
+                <p class="section-subtitle">
+                    Your selected crop and field details are sent with the weather request.
+                </p>
+
+                <div class="advice-list">
+                    <div class="advice-item">
+                        <strong>Selected Crop</strong>
+                        <p id="profileCrop">Not specified</p>
+                    </div>
+
+                    <div class="advice-item">
+                        <strong>Crop Stage</strong>
+                        <p id="profileStage">Not specified</p>
+                    </div>
+
+                    <div class="advice-item">
+                        <strong>Soil Type</strong>
+                        <p id="profileSoil">Not specified</p>
+                    </div>
+
+                    <div class="advice-item">
+                        <strong>Irrigation Method</strong>
+                        <p id="profileIrrigation">Not specified</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <div class="disclaimer hidden-panel" id="advisoryDisclaimer">
+            Weather-based information is for general awareness only.
+            Verify important farming decisions with local agricultural experts.
+        </div>
+
+    </section>
+</main>
+
+<footer class="footer">
+    © 2026 KisanSathi AI · Smart Farming Weather Intelligence
+</footer>
+
+<script>
+const cityInput = document.getElementById("cityInput");
+const loader = document.getElementById("loader");
+const message = document.getElementById("message");
+const weatherSection = document.getElementById("weatherSection");
+
+let lastCity = "";
+
+function showMessage(text, type = "info") {
+    message.textContent = text;
+    message.className = "message " + type;
+}
+
+function hideMessage() {
+    message.textContent = "";
+    message.className = "message";
+}
+
+function getWeatherIcon(description = "") {
+    const value = description.toLowerCase();
+
+    if (value.includes("thunder")) return "⛈️";
+    if (value.includes("rain") || value.includes("drizzle")) return "🌧️";
+    if (value.includes("snow")) return "❄️";
+    if (value.includes("cloud")) return "☁️";
+    if (value.includes("mist") || value.includes("fog") || value.includes("haze")) return "🌫️";
+    if (value.includes("clear")) return "☀️";
+
+    return "🌤️";
+}
+
+function generateFarmAdvice(temperature, humidity, rainfall, windSpeed, description) {
+    let irrigation = "Check soil moisture before deciding irrigation.";
+    let disease = "Inspect leaves and stems regularly for symptoms.";
+    let field = "Review local conditions before scheduling field operations.";
+    let title = "Weather-based field insights";
+    let badge = "General advisory";
+
+    if (rainfall > 0) {
+        irrigation = "Rainfall is reported. Check actual field moisture before irrigating.";
+    } else if (temperature >= 32) {
+        irrigation = "High temperature reported. Check soil moisture and crop water needs.";
+    }
+
+    if (humidity >= 80) {
+        disease = "High humidity can favor some crop diseases. Monitor crops and follow local expert guidance.";
+    }
+
+    if (windSpeed >= 8) {
+        field = "Wind speed is elevated. Review conditions before spraying or other exposed field activities.";
+    }
+
+    if (temperature >= 35) {
+        title = "High temperature awareness";
+        badge = "Heat monitoring";
+    } else if (rainfall > 0) {
+        title = "Rainfall awareness";
+        badge = "Rain reported";
+    }
+
+    document.getElementById("adviceTitle").textContent = title;
+    document.getElementById("adviceText").textContent =
+        `${description}. Temperature is ${temperature}°C and humidity is ${humidity}%.`;
+    document.getElementById("irrigationAdvice").textContent = irrigation;
+    document.getElementById("diseaseAdvice").textContent = disease;
+    document.getElementById("fieldAdvice").textContent = field;
+    document.getElementById("adviceBadge").textContent = badge;
+}
+
+function renderWeatherIntelligence(data) {
+    const forecastPanel = document.getElementById("forecastPanel");
+    const forecastGrid = document.getElementById("forecastGrid");
+    const forecastError = document.getElementById("forecastError");
+
+    const rawForecast = data.forecast;
+    const days = Array.isArray(rawForecast)
+        ? rawForecast
+        : ((rawForecast && (rawForecast.days || rawForecast.items)) || []);
+
+    forecastGrid.innerHTML = "";
+
+    if (days.length) {
+        forecastPanel.classList.remove("hidden-panel");
+
+        days.slice(0, 5).forEach((day, index) => {
+            const description =
+                day.description || day.summary || day.weather || "Forecast";
+
+            const min =
+                day.min_temperature ??
+                day.temp_min ??
+                day.min_temp;
+
+            const max =
+                day.max_temperature ??
+                day.temp_max ??
+                day.max_temp ??
+                day.temperature;
+
+            const rain =
+                day.rainfall ??
+                day.rain ??
+                day.precipitation;
+
+            const card = document.createElement("article");
+            card.className = "forecast-day";
+
+            const date = document.createElement("strong");
+            date.textContent =
+                day.date || day.day || day.datetime || `Day ${index + 1}`;
+
+            const icon = document.createElement("div");
+            icon.className = "forecast-icon";
+            icon.textContent = getWeatherIcon(String(description));
+
+            const temperature = document.createElement("div");
+            temperature.className = "forecast-temp";
+            temperature.textContent =
+                (min != null || max != null)
+                    ? `${min ?? "—"}° / ${max ?? "—"}°`
+                    : "Temperature n/a";
+
+            const details = document.createElement("p");
+            details.textContent =
+                `${description}${rain != null ? ` · Rain ${rain} mm` : ""}`;
+
+            card.append(date, icon, temperature, details);
+            forecastGrid.appendChild(card);
+        });
+
+        forecastError.textContent = "";
+    } else {
+        forecastPanel.classList.add("hidden-panel");
+        forecastError.textContent = data.forecast_error || "";
+    }
+
+    const alerts = Array.isArray(data.alerts) ? data.alerts : [];
+    const alertsList = document.getElementById("alertsList");
+
+    alertsList.innerHTML = "";
+
+    if (!alerts.length) {
+        const item = document.createElement("div");
+        item.className = "alert-item safe";
+        item.textContent =
+            "No additional weather alerts returned. Continue routine field monitoring.";
+        alertsList.appendChild(item);
+    } else {
+        alerts.forEach(alert => {
+            const item = document.createElement("div");
+            item.className = "alert-item";
+
+            item.textContent =
+                typeof alert === "string"
+                    ? alert
+                    : (alert.message || alert.title || JSON.stringify(alert));
+
+            alertsList.appendChild(item);
+        });
+    }
+
+    const disclaimer = document.getElementById("advisoryDisclaimer");
+
+    if (data.advisory_disclaimer) {
+        disclaimer.textContent = data.advisory_disclaimer;
+        disclaimer.classList.remove("hidden-panel");
+    } else {
+        disclaimer.classList.add("hidden-panel");
+    }
+
+    const advice = data.farm_advice;
+
+    if (advice) {
+        if (typeof advice === "string") {
+            document.getElementById("adviceText").textContent = advice;
+        } else {
+            if (advice.title) {
+                document.getElementById("adviceTitle").textContent = advice.title;
+            }
+
+            if (advice.summary || advice.message) {
+                document.getElementById("adviceText").textContent =
+                    advice.summary || advice.message;
+            }
+
+            if (advice.irrigation) {
+                document.getElementById("irrigationAdvice").textContent =
+                    advice.irrigation;
+            }
+
+            if (advice.disease_risk || advice.disease) {
+                document.getElementById("diseaseAdvice").textContent =
+                    advice.disease_risk || advice.disease;
+            }
+
+            if (advice.field_activity || advice.field) {
+                document.getElementById("fieldAdvice").textContent =
+                    advice.field_activity || advice.field;
+            }
+
+            if (advice.badge) {
+                document.getElementById("adviceBadge").textContent =
+                    advice.badge;
+            }
+        }
+    }
+}
+
+async function getWeather() {
+    const city = cityInput.value.trim();
+
+    if (!city) {
+        showMessage("Please enter your city or village.", "error");
+        return;
+    }
+
+    if (
+        city === lastCity &&
+        weatherSection.classList.contains("active")
+    ) {
+        return;
+    }
+
+    lastCity = city;
+    hideMessage();
+    weatherSection.classList.remove("active");
+    loader.style.display = "block";
+
+    const crop = document.getElementById("cropInput").value.trim();
+    const cropStage = document.getElementById("cropStageInput").value;
+    const soilType = document.getElementById("soilTypeInput").value;
+    const irrigationType = document.getElementById("irrigationInput").value;
+
+    document.getElementById("profileCrop").textContent = crop || "Not specified";
+    document.getElementById("profileStage").textContent = cropStage || "Not specified";
+    document.getElementById("profileSoil").textContent = soilType || "Not specified";
+    document.getElementById("profileIrrigation").textContent = irrigationType || "Not specified";
+
+    const params = new URLSearchParams({
+        city: city,
+        crop: crop,
+        crop_stage: cropStage,
+        soil_type: soilType,
+        irrigation_type: irrigationType
+    });
+
+    try {
+        const response = await fetch(`/weather/api/?${params.toString()}`, {
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error("Weather API request failed.");
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+            showMessage(data.message || "Unable to fetch weather.", "error");
+            return;
+        }
+
+        const weather = data.weather;
+
+        document.getElementById("location").textContent =
+            `${weather.city}, ${weather.country}`;
+
+        document.getElementById("description").textContent =
+            weather.description;
+
+        document.getElementById("temperature").textContent =
+            `${weather.temperature}°`;
+
+        document.getElementById("feelsLike").textContent =
+            `Feels like ${weather.feels_like}°C`;
+
+        document.getElementById("weatherIcon").textContent =
+            getWeatherIcon(weather.description);
+
+        document.getElementById("humidity").textContent =
+            `${weather.humidity}%`;
+
+        document.getElementById("wind").textContent =
+            `${weather.wind_speed} m/s`;
+
+        document.getElementById("rainfall").textContent =
+            `${weather.rainfall} mm`;
+
+        document.getElementById("pressure").textContent =
+            `${weather.pressure} hPa`;
+
+        generateFarmAdvice(
+            Number(weather.temperature),
+            Number(weather.humidity),
+            Number(weather.rainfall),
+            Number(weather.wind_speed),
+            weather.description
+        );
+
+        renderWeatherIntelligence(data);
+
+        weatherSection.classList.add("active");
+        hideMessage();
+
+    } catch (error) {
+        console.error(error);
+        showMessage(
+            "Unable to connect to the weather service. Please try again.",
+            "error"
+        );
+    } finally {
+        loader.style.display = "none";
+    }
+}
+
+function useCurrentLocation() {
+    if (!navigator.geolocation) {
+        showMessage(
+            "Location services are not supported by your browser.",
+            "error"
+        );
+        return;
+    }
+
+    showMessage("Detecting your location...", "info");
+
+    navigator.geolocation.getCurrentPosition(
+        async position => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            try {
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
+                );
+
+                const data = await response.json();
+                const address = data.address || {};
+
+                const city =
+                    address.city ||
+                    address.town ||
+                    address.village ||
+                    address.county;
+
+                if (!city) {
+                    throw new Error("Location not found.");
+                }
+
+                cityInput.value = city;
+                lastCity = "";
+                getWeather();
+
+            } catch (error) {
+                showMessage(
+                    "Could not detect your city. Please enter it manually.",
+                    "error"
+                );
+            }
+        },
+
+        () => {
+            showMessage(
+                "Location permission was denied. Please enter your city manually.",
+                "error"
+            );
+        },
+
+        {
+            enableHighAccuracy: false,
+            timeout: 10000,
+            maximumAge: 300000
+        }
+    );
+}
+
+document.getElementById("searchBtn").addEventListener("click", () => {
+    lastCity = "";
+    getWeather();
+});
+
+document.getElementById("locationBtn").addEventListener("click", useCurrentLocation);
+
+cityInput.addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+        lastCity = "";
+        getWeather();
+    }
+});
+</script>
+
+</body>
+</html>

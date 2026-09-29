@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Lands | AgriVisionAI</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body class="bg-slate-950 text-white">
+
+<div class="max-w-7xl mx-auto px-6 py-10">
+
+    <div class="flex justify-between items-center mb-10">
+
+        <div>
+
+            <p class="text-green-400 font-semibold">
+                AGRIVISIONAI
+            </p>
+
+            <h1 class="text-4xl font-bold mt-2">
+                My Land Listings
+            </h1>
+
+            <p class="text-slate-400 mt-2">
+                Manage your agricultural land.
+            </p>
+
+        </div>
+
+        <a
+            href="{% url 'land_marketplace:create' %}"
+            class="bg-green-500 text-black
+                   px-5 py-3 rounded-xl
+                   font-bold"
+        >
+            + Add Land
+        </a>
+
+    </div>
+
+
+    {% if lands %}
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        {% for land in lands %}
+
+        <div class="bg-slate-900
+                    border border-slate-800
+                    rounded-2xl p-6">
+
+            <div class="flex justify-between">
+
+                <h2 class="text-xl font-bold">
+                    {{ land.title }}
+                </h2>
+
+                {% if land.status == "available" %}
+
+                <span class="text-green-400 text-sm">
+                    Available
+                </span>
+
+                {% elif land.status == "booked" %}
+
+                <span class="text-yellow-400 text-sm">
+                    Booked
+                </span>
+
+                {% else %}
+
+                <span class="text-red-400 text-sm">
+                    Closed
+                </span>
+
+                {% endif %}
+
+            </div>
+
+            <p class="text-slate-400 mt-4">
+                📍 {{ land.location }}
+            </p>
+
+            <p class="mt-2">
+                📐 {{ land.area }} acres
+            </p>
+
+            <p class="mt-2">
+                🌱 {{ land.soil_type }}
+            </p>
+
+            <p class="mt-2">
+                🌾 {{ land.suitable_crops }}
+            </p>
+
+            <p class="mt-2">
+                🤝 {{ land.get_agreement_type_display }}
+            </p>
+
+            <a
+                href="{% url 'land_marketplace:detail' land.id %}"
+                class="block text-center
+                       mt-6
+                       bg-slate-800
+                       hover:bg-slate-700
+                       px-4 py-3
+                       rounded-xl"
+            >
+                View Details
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="text-center py-20">
+
+        <div class="text-6xl">
+            🌾
+        </div>
+
+        <h2 class="text-2xl font-bold mt-5">
+            No land listed yet
+        </h2>
+
+        <p class="text-slate-400 mt-2">
+            Add your agricultural land to start receiving farmer requests.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+
+</html>

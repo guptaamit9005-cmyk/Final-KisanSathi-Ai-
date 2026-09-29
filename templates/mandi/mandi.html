@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>KisanSathi - Mandi Prices</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f8f1;
+            color: #173b24;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 30px 20px;
+        }
+
+        .header {
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            color: #176b36;
+            font-size: 32px;
+        }
+
+        .header p {
+            color: #68786d;
+            margin-top: 8px;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: 0 5px 25px rgba(0,0,0,.06);
+            margin-bottom: 20px;
+        }
+
+        .crop-form {
+            display: flex;
+            gap: 12px;
+        }
+
+        .crop-form select {
+            flex: 1;
+            padding: 13px;
+            border: 1px solid #d4e1d4;
+            border-radius: 10px;
+            background: white;
+        }
+
+        .crop-form button {
+            padding: 13px 24px;
+            border: none;
+            border-radius: 10px;
+            background: #176b36;
+            color: white;
+            cursor: pointer;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns:
+                repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .summary-box {
+            background: #edf7ed;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .summary-box span {
+            display: block;
+            color: #6b7c70;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .summary-box strong {
+            color: #176b36;
+            font-size: 25px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #176b36;
+            color: white;
+            text-align: left;
+            padding: 14px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5ece5;
+        }
+
+        .price {
+            font-weight: bold;
+            color: #176b36;
+        }
+
+        .positive {
+            color: #218c4a;
+            font-weight: bold;
+        }
+
+        .negative {
+            color: #c34a32;
+            font-weight: bold;
+        }
+
+        .note {
+            background: #fff8df;
+            padding: 15px;
+            border-radius: 12px;
+            color: #6f5b22;
+            line-height: 1.5;
+        }
+
+        @media(max-width: 700px) {
+
+            .crop-form {
+                flex-direction: column;
+            }
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <div class="header">
+
+        <h1>📈 Mandi Market Prices</h1>
+
+        <p>
+            Check crop prices across available markets.
+        </p>
+
+    </div>
+
+
+    <!-- CROP SELECT -->
+
+    <div class="card">
+
+        <form
+            method="GET"
+            class="crop-form"
+        >
+
+            <select name="crop">
+
+                <option
+                    value="rice"
+                    {% if selected_crop == "rice" %}
+                    selected
+                    {% endif %}
+                >
+                    Rice
+                </option>
+
+                <option
+                    value="wheat"
+                    {% if selected_crop == "wheat" %}
+                    selected
+                    {% endif %}
+                >
+                    Wheat
+                </option>
+
+                <option
+                    value="tomato"
+                    {% if selected_crop == "tomato" %}
+                    selected
+                    {% endif %}
+                >
+                    Tomato
+                </option>
+
+                <option
+                    value="potato"
+                    {% if selected_crop == "potato" %}
+                    selected
+                    {% endif %}
+                >
+                    Potato
+                </option>
+
+                <option
+                    value="maize"
+                    {% if selected_crop == "maize" %}
+                    selected
+                    {% endif %}
+                >
+                    Maize
+                </option>
+
+            </select>
+
+
+            <button type="submit">
+                Check Price
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    {% if markets %}
+
+    <div class="card">
+
+        <h2>
+            {{ crop_name }} Market Overview
+        </h2>
+
+        <br>
+
+        <div class="summary">
+
+            <div class="summary-box">
+
+                <span>
+                    Highest Price
+                </span>
+
+                <strong>
+                    ₹{{ markets.0.price }}
+                </strong>
+
+            </div>
+
+
+            <div class="summary-box">
+
+                <span>
+                    Markets Available
+                </span>
+
+                <strong>
+                    {{ markets|length }}
+                </strong>
+
+            </div>
+
+
+            <div class="summary-box">
+
+                <span>
+                    Unit
+                </span>
+
+                <strong>
+                    Quintal
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MARKET TABLE -->
+
+    <div class="card">
+
+        <h2>
+            🏪 Available Markets
+        </h2>
+
+        <br>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Market
+                        </th>
+
+                        <th>
+                            District
+                        </th>
+
+                        <th>
+                            Price
+                        </th>
+
+                        <th>
+                            Change
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for market in markets %}
+
+                    <tr>
+
+                        <td>
+                            {{ market.market }}
+                        </td>
+
+                        <td>
+                            {{ market.district }}
+                        </td>
+
+                        <td class="price">
+                            ₹{{ market.price }}
+                        </td>
+
+                        <td>
+
+                            {% if "+" in market.change %}
+
+                                <span class="positive">
+                                    {{ market.change }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="negative">
+                                    {{ market.change }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    {% else %}
+
+    <div class="card">
+
+        <h2>
+            No market data found
+        </h2>
+
+    </div>
+
+    {% endif %}
+
+
+    <div class="note">
+
+        ⚠️ <strong>Demo Data:</strong>
+        The prices currently displayed are sample application data.
+        Before production use, connect this module to a verified live
+        mandi/market-price data source.
+
+    </div>
+
+
+</div>
+
+</body>
+
+</html>

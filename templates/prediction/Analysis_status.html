@@ -1,0 +1,661 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crop Analysis Result | KisanSathi AI</title>
+
+<style>
+:root {
+    --green: #166534;
+    --green2: #15803d;
+    --ink: #1f2937;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --bg: #f8fafc;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.6 Arial, Helvetica, sans-serif;
+}
+
+.page {
+    width: min(1120px, 94%);
+    margin: 28px auto;
+}
+
+.hero {
+    background: linear-gradient(135deg, #14532d, #16a34a);
+    color: #fff;
+    padding: 26px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+}
+
+.hero h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.hero p {
+    margin: 4px 0 0;
+    opacity: .9;
+}
+
+.card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 5px 18px #0f172a0a;
+    min-width: 0;
+}
+
+.voice {
+    margin-bottom: 20px;
+}
+
+.voice h2,
+.card h2 {
+    margin: 0 0 12px;
+    font-size: 20px;
+}
+
+.voice p {
+    color: var(--muted);
+    margin: 0 0 12px;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+button,
+.link {
+    border: 0;
+    border-radius: 9px;
+    padding: 11px 15px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.green {
+    background: #166534;
+    color: white;
+}
+
+.blue {
+    background: #2563eb;
+    color: white;
+}
+
+.gray,
+.link {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.status {
+    margin-top: 10px;
+    color: #475569;
+    font-size: 13px;
+    min-height: 20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.image {
+    display: block;
+    width: 100%;
+    max-height: 390px;
+    object-fit: contain;
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+.no-image {
+    min-height: 210px;
+    display: grid;
+    place-items: center;
+    background: #f1f5f9;
+    border-radius: 10px;
+    color: var(--muted);
+}
+
+.label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.disease {
+    font-size: 26px;
+    color: #14532d;
+    font-weight: 800;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+    margin: 2px 0 16px;
+}
+
+.metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.metric {
+    padding: 12px;
+    background: #f8fafc;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+}
+
+.metric span {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.metric strong {
+    display: block;
+    overflow-wrap: anywhere;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 21px;
+    margin: 0 0 12px;
+}
+
+.advisories {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.advice {
+    border-radius: 12px;
+    padding: 17px;
+    border: 1px solid var(--line);
+    background: #fff;
+    min-width: 0;
+}
+
+.advice h3 {
+    margin: 0 0 8px;
+    font-size: 17px;
+}
+
+.advice p {
+    margin: 0 0 12px;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.bluebg {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.greenbg {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.orangebg {
+    background: #fff7ed;
+    border-color: #fed7aa;
+}
+
+.purplebg {
+    background: #faf5ff;
+    border-color: #e9d5ff;
+}
+
+.signs {
+    padding-left: 20px;
+    margin: 0;
+}
+
+.signs li {
+    margin-bottom: 6px;
+}
+
+.note {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 12px;
+}
+
+.bottom {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 22px 0 35px;
+}
+
+@media(max-width: 740px) {
+    .grid,
+    .advisories {
+        grid-template-columns: 1fr;
+    }
+
+    .hero h1 {
+        font-size: 24px;
+    }
+
+    .page {
+        margin-top: 14px;
+    }
+
+    .card {
+        padding: 16px;
+    }
+}
+</style>
+</head>
+
+<body>
+<main class="page">
+
+<header class="hero">
+    <h1>🌱 KisanSathi AI — Crop Analysis</h1>
+    <p>Crop health analysis and advisory report</p>
+</header>
+
+<!-- Hindi Voice Assistant -->
+<section class="card voice" aria-labelledby="voiceTitle">
+    <h2 id="voiceTitle">🔊 हिंदी वॉइस असिस्टेंट</h2>
+
+    <p>
+        पूरी रिपोर्ट या किसी एक सलाह को हिंदी वॉइस में सुनने के लिए बटन दबाएं।
+    </p>
+
+    <div class="controls">
+        <button type="button" class="green" id="speakReport">
+            🔊 पूरी रिपोर्ट सुनें
+        </button>
+
+        <button type="button" class="blue" id="pauseSpeech">
+            ⏸ रोकें
+        </button>
+
+        <button type="button" class="blue" id="resumeSpeech">
+            ▶ फिर शुरू करें
+        </button>
+
+        <button type="button" class="gray" id="stopSpeech">
+            ■ बंद करें
+        </button>
+
+        <button type="button" class="gray" id="testSpeech">
+            🗣 हिंदी वॉइस टेस्ट
+        </button>
+    </div>
+
+    <div class="status" id="voiceStatus" role="status" aria-live="polite">
+        वॉइस शुरू करने के लिए बटन दबाएं।
+    </div>
+</section>
+
+<!-- Image and Prediction -->
+<section class="grid">
+
+    <article class="card">
+        <h2>Uploaded Crop Image</h2>
+
+        {% if image_url %}
+            <img class="image" src="{{ image_url }}" alt="Uploaded crop image">
+        {% else %}
+            <div class="no-image">
+                Crop image is not available.
+            </div>
+        {% endif %}
+    </article>
+
+    <article class="card">
+        <div class="label">AI Prediction</div>
+
+        <h2 class="disease" id="diseaseName">
+            {{ disease_name|default:"Not available" }}
+        </h2>
+
+        <div class="metrics">
+
+            <div class="metric">
+                <span>Crop</span>
+                <strong id="cropName">
+                    {{ crop_name|default:"Not identified" }}
+                </strong>
+            </div>
+
+            <div class="metric">
+                <span>Confidence</span>
+                <strong id="confidence">
+                    {{ confidence_display|default:"Not available" }}
+                </strong>
+            </div>
+
+            <div class="metric">
+                <span>Status</span>
+                <strong id="analysisStatus">
+                    {{ status_display|default:"Pending" }}
+                </strong>
+            </div>
+
+            <div class="metric">
+                <span>Analysis ID</span>
+                <strong>
+                    {% if analysis %}
+                        KS-{{ analysis.pk }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </strong>
+            </div>
+
+        </div>
+    </article>
+
+</section>
+
+<!-- Disease Symptoms -->
+<section class="section">
+    <h2 class="section-title">Disease Symptoms and Visual Signs</h2>
+
+    <div class="advisories">
+
+        <article class="advice purplebg">
+            <h3>Visual Signs</h3>
+
+            <ul class="signs" id="visualSigns">
+                {% for sign in visual_signs %}
+                    <li>{{ sign }}</li>
+                {% empty %}
+                    <li>No visual signs available.</li>
+                {% endfor %}
+            </ul>
+        </article>
+
+        <article class="advice purplebg">
+            <h3>Early Symptoms</h3>
+            <p id="earlySymptoms">
+                {{ early_symptoms|default:"Not available" }}
+            </p>
+        </article>
+
+        <article class="advice purplebg">
+            <h3>Severity Indicators</h3>
+            <p id="severityIndicators">
+                {{ severity_indicators|default:"Not available" }}
+            </p>
+        </article>
+
+        <article class="advice">
+            <h3>Reference Note</h3>
+            <p>
+                {{ symptom_source|default:"General reference information." }}
+            </p>
+        </article>
+
+    </div>
+</section>
+
+<!-- Crop Care Recommendations -->
+<section class="section">
+    <h2 class="section-title">Crop Care Recommendations</h2>
+
+    <div class="advisories">
+
+        <article class="advice bluebg">
+            <h3>💧 Suggested Solution</h3>
+
+            <p id="solutionText">
+                {{ solution_display|default:"No solution available." }}
+            </p>
+
+            <button type="button" class="blue speakPart" data-target="solutionText">
+                🔊 हिंदी में सुनें
+            </button>
+        </article>
+
+        <article class="advice greenbg">
+            <h3>🌿 Fertilizer Guidance</h3>
+
+            <p id="fertilizerText">
+                {{ fertilizer_display|default:"No fertilizer guidance available." }}
+            </p>
+
+            <button type="button" class="green speakPart" data-target="fertilizerText">
+                🔊 हिंदी में सुनें
+            </button>
+        </article>
+
+        <article class="advice orangebg">
+            <h3>🛡 Pesticide Guidance</h3>
+
+            <p id="pesticideText">
+                {{ pesticide_display|default:"No pesticide guidance available." }}
+            </p>
+
+            <button type="button" class="blue speakPart" data-target="pesticideText">
+                🔊 हिंदी में सुनें
+            </button>
+        </article>
+
+        <article class="advice greenbg">
+            <h3>🌾 Prevention and Monitoring</h3>
+
+            <p id="preventionText">
+                {{ prevention_display|default:"No prevention guidance available." }}
+            </p>
+
+            <button type="button" class="green speakPart" data-target="preventionText">
+                🔊 हिंदी में सुनें
+            </button>
+        </article>
+
+    </div>
+
+    <p class="note">
+        सलाह सामान्य जानकारी के लिए है। कीटनाशक या उपचार का उपयोग करने से पहले
+        स्थानीय कृषि विशेषज्ञ से पुष्टि करें।
+    </p>
+</section>
+
+<div class="bottom">
+    <a class="link" href="/prediction/">← Back to Crop Analysis</a>
+</div>
+
+</main>
+
+<script>
+(() => {
+    "use strict";
+
+    const synth = window.speechSynthesis;
+    const statusEl = document.getElementById("voiceStatus");
+
+    const buttons = document.querySelectorAll(
+        "#speakReport, #pauseSpeech, #resumeSpeech, #stopSpeech, #testSpeech, .speakPart"
+    );
+
+    if (!synth || !("SpeechSynthesisUtterance" in window)) {
+        statusEl.textContent =
+            "इस browser में speech सुविधा उपलब्ध नहीं है। Updated Chrome या Edge में प्रयास करें।";
+
+        buttons.forEach(button => {
+            button.disabled = true;
+        });
+
+        return;
+    }
+
+    let hindiVoice = null;
+
+    function loadVoices() {
+        const voices = synth.getVoices();
+
+        hindiVoice =
+            voices.find(voice => (voice.lang || "").toLowerCase() === "hi-in") ||
+            voices.find(voice => (voice.lang || "").toLowerCase().startsWith("hi")) ||
+            null;
+
+        if (!hindiVoice) {
+            statusEl.textContent =
+                "Hindi voice device पर उपलब्ध नहीं मिली। फिर भी browser hi-IN voice का प्रयास करेगा।";
+        }
+    }
+
+    loadVoices();
+
+    if ("onvoiceschanged" in synth) {
+        synth.onvoiceschanged = loadVoices;
+    }
+
+    function textOf(id) {
+        const element = document.getElementById(id);
+
+        return element
+            ? (element.innerText || element.textContent || "")
+                .replace(/\s+/g, " ")
+                .trim()
+            : "";
+    }
+
+    function speak(text) {
+        const value = String(text || "").trim();
+
+        if (!value) {
+            statusEl.textContent = "सुनाने के लिए जानकारी उपलब्ध नहीं है।";
+            return;
+        }
+
+        synth.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(value);
+
+        utterance.lang = "hi-IN";
+        utterance.rate = 0.88;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+
+        if (hindiVoice) {
+            utterance.voice = hindiVoice;
+        }
+
+        utterance.onstart = () => {
+            statusEl.textContent = "हिंदी वॉइस रिपोर्ट चल रही है…";
+        };
+
+        utterance.onend = () => {
+            statusEl.textContent = "रिपोर्ट पूरी हो गई।";
+        };
+
+        utterance.onerror = event => {
+            statusEl.textContent =
+                "Voice error: " + (event.error || "Playback failed") +
+                ". Hindi speech voice settings जांचें।";
+        };
+
+        synth.speak(utterance);
+    }
+
+    function reportText() {
+        const signs = Array.from(
+            document.querySelectorAll("#visualSigns li")
+        )
+        .map(li => li.innerText.trim())
+        .filter(Boolean)
+        .join("। ");
+
+        return [
+            "नमस्ते। किसान साथी ए आई की फसल जांच रिपोर्ट सुनिए।",
+            "फसल का नाम: " + textOf("cropName") + "।",
+            "पहचानी गई बीमारी: " + textOf("diseaseName") + "।",
+            "विश्वास स्तर: " + textOf("confidence") + "।",
+            "जांच की स्थिति: " + textOf("analysisStatus") + "।",
+            "दिखाई देने वाले लक्षण: " + signs + "।",
+            "शुरुआती लक्षण: " + textOf("earlySymptoms") + "।",
+            "गंभीरता के संकेत: " + textOf("severityIndicators") + "।",
+            "सुझाया गया समाधान: " + textOf("solutionText") + "।",
+            "खाद संबंधी सलाह: " + textOf("fertilizerText") + "।",
+            "कीटनाशक संबंधी सलाह: " + textOf("pesticideText") + "।",
+            "बचाव और निगरानी: " + textOf("preventionText") + "।",
+            "किसी भी उपचार से पहले कृषि विशेषज्ञ से सलाह लें। धन्यवाद।"
+        ].join(" ");
+    }
+
+    document.getElementById("speakReport").addEventListener("click", () => {
+        speak(reportText());
+    });
+
+    document.getElementById("testSpeech").addEventListener("click", () => {
+        speak(
+            "नमस्ते। किसान साथी ए आई में आपका स्वागत है। यह हिंदी वॉइस टेस्ट है।"
+        );
+    });
+
+    document.getElementById("pauseSpeech").addEventListener("click", () => {
+        if (synth.speaking && !synth.paused) {
+            synth.pause();
+            statusEl.textContent = "वॉइस रोक दी गई है।";
+        }
+    });
+
+    document.getElementById("resumeSpeech").addEventListener("click", () => {
+        if (synth.paused) {
+            synth.resume();
+            statusEl.textContent = "वॉइस फिर से शुरू हो रही है।";
+        }
+    });
+
+    document.getElementById("stopSpeech").addEventListener("click", () => {
+        synth.cancel();
+        statusEl.textContent = "वॉइस बंद कर दी गई है।";
+    });
+
+    document.querySelectorAll(".speakPart").forEach(button => {
+        button.addEventListener("click", () => {
+            speak(textOf(button.dataset.target));
+        });
+    });
+
+})();
+</script>
+
+</body>
+</html>

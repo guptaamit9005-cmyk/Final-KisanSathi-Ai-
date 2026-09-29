@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {{ scheme.title }} | KisanSathi
+    </title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+
+<body class="bg-green-50 text-gray-800">
+
+
+<header class="bg-green-900 text-white">
+
+    <div class="max-w-5xl mx-auto px-6 py-5">
+
+        <div class="flex justify-between items-center">
+
+            <a
+                href="{% url 'government_schemes:home' %}"
+                class="font-semibold"
+            >
+                ← All Schemes
+            </a>
+
+            <a
+                href="{% url 'dashboard:home' %}"
+                class="text-green-200"
+            >
+                Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="max-w-5xl mx-auto px-6 py-10">
+
+
+    <!-- TITLE -->
+
+    <section class="bg-white rounded-3xl shadow-sm p-8">
+
+        <span
+            class="inline-flex px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-semibold"
+        >
+            {{ scheme.get_category_display }}
+        </span>
+
+
+        <h1 class="text-3xl md:text-4xl font-bold text-green-950 mt-5">
+            {{ scheme.title }}
+        </h1>
+
+
+        <p class="text-gray-600 text-lg mt-4 leading-8">
+            {{ scheme.short_description }}
+        </p>
+
+
+        {% if scheme.official_url %}
+
+        <a
+            href="{{ scheme.official_url }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex mt-6 bg-green-700 hover:bg-green-800 text-white px-6 py-3 rounded-xl font-semibold"
+        >
+            Visit Official Website ↗
+        </a>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- DESCRIPTION -->
+
+    <section class="bg-white rounded-3xl shadow-sm p-8 mt-6">
+
+        <h2 class="text-2xl font-bold text-green-900">
+            About the Scheme
+        </h2>
+
+        <p class="mt-4 text-gray-600 leading-8 whitespace-pre-line">
+            {{ scheme.description }}
+        </p>
+
+    </section>
+
+
+    <!-- BENEFITS + ELIGIBILITY -->
+
+    <div class="grid md:grid-cols-2 gap-6 mt-6">
+
+
+        <section class="bg-white rounded-3xl shadow-sm p-7">
+
+            <h2 class="text-xl font-bold text-green-900">
+                🌾 Benefits
+            </h2>
+
+            <ul class="mt-5 space-y-3">
+
+                {% for item in scheme.benefits_list %}
+
+                <li class="flex gap-3 text-gray-700">
+
+                    <span
+                        class="w-6 h-6 flex items-center justify-center rounded-full bg-green-100 text-green-700 flex-shrink-0"
+                    >
+                        ✓
+                    </span>
+
+                    {{ item }}
+
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </section>
+
+
+        <section class="bg-white rounded-3xl shadow-sm p-7">
+
+            <h2 class="text-xl font-bold text-green-900">
+                👨‍🌾 Eligibility
+            </h2>
+
+            <ul class="mt-5 space-y-3">
+
+                {% for item in scheme.eligibility_list %}
+
+                <li class="flex gap-3 text-gray-700">
+
+                    <span
+                        class="w-6 h-6 flex items-center justify-center rounded-full bg-green-100 text-green-700 flex-shrink-0"
+                    >
+                        ✓
+                    </span>
+
+                    {{ item }}
+
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </section>
+
+    </div>
+
+
+    <!-- DOCUMENTS -->
+
+    <section class="bg-white rounded-3xl shadow-sm p-8 mt-6">
+
+        <h2 class="text-xl font-bold text-green-900">
+            📄 Required Documents
+        </h2>
+
+        <ul class="mt-5 grid md:grid-cols-2 gap-3">
+
+            {% for document in scheme.documents_list %}
+
+            <li class="bg-green-50 rounded-xl p-4 text-gray-700">
+                📌 {{ document }}
+            </li>
+
+            {% empty %}
+
+            <li class="text-gray-500">
+                Document information not available.
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+    </section>
+
+
+    <!-- APPLICATION -->
+
+    {% if scheme.application_process %}
+
+    <section class="bg-white rounded-3xl shadow-sm p-8 mt-6">
+
+        <h2 class="text-xl font-bold text-green-900">
+            📝 Application Process
+        </h2>
+
+        <p class="mt-4 text-gray-600 leading-8 whitespace-pre-line">
+            {{ scheme.application_process }}
+        </p>
+
+    </section>
+
+    {% endif %}
+
+
+    {% if scheme.helpline %}
+
+    <section class="bg-green-900 text-white rounded-3xl p-8 mt-6">
+
+        <h2 class="text-xl font-bold">
+            📞 Helpline
+        </h2>
+
+        <p class="mt-3 text-green-100">
+            {{ scheme.helpline }}
+        </p>
+
+    </section>
+
+    {% endif %}
+
+
+    <div class="mt-8 bg-yellow-50 border border-yellow-200 rounded-2xl p-5">
+
+        <p class="text-sm text-yellow-800">
+            <strong>Important:</strong>
+            Scheme eligibility, benefits, application procedures
+            and deadlines can change. Verify the latest information
+            on the official government portal before applying.
+        </p>
+
+    </div>
+
+
+</main>
+
+</body>
+</html>

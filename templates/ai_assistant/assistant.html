@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>KisanSathi AI</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f8f1;
+            color: #173b24;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 30px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo {
+            font-size: 48px;
+        }
+
+        .header h1 {
+            color: #176b36;
+            margin: 8px 0;
+        }
+
+        .header p {
+            color: #6b7c70;
+        }
+
+        .chat-card {
+            background: white;
+            border-radius: 22px;
+            box-shadow: 0 5px 25px rgba(0,0,0,.07);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: #176b36;
+            color: white;
+            padding: 18px 22px;
+        }
+
+        .chat-header strong {
+            font-size: 18px;
+        }
+
+        .status {
+            font-size: 13px;
+            margin-top: 5px;
+            opacity: .85;
+        }
+
+        .messages {
+            height: 480px;
+            overflow-y: auto;
+            padding: 22px;
+        }
+
+        .message {
+            margin-bottom: 18px;
+            display: flex;
+        }
+
+        .message.ai {
+            justify-content: flex-start;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .bubble {
+            max-width: 75%;
+            padding: 13px 16px;
+            border-radius: 16px;
+            line-height: 1.55;
+            white-space: pre-line;
+        }
+
+        .ai .bubble {
+            background: #edf7ed;
+            color: #23452e;
+            border-bottom-left-radius: 5px;
+        }
+
+        .user .bubble {
+            background: #176b36;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .suggestions {
+            padding: 0 22px 18px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .suggestion {
+            border: 1px solid #cfe0d0;
+            background: #f5faf4;
+            color: #176b36;
+            padding: 9px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+            padding: 18px;
+            border-top: 1px solid #e4ebe4;
+        }
+
+        .input-area input {
+            flex: 1;
+            border: 1px solid #ccdccc;
+            border-radius: 12px;
+            padding: 14px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .send-btn {
+            border: none;
+            background: #218c4a;
+            color: white;
+            padding: 0 22px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .send-btn:hover {
+            background: #176b36;
+        }
+
+        @media(max-width:600px) {
+
+            .messages {
+                height: 420px;
+            }
+
+            .bubble {
+                max-width: 88%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <div class="logo">
+            🤖🌱
+        </div>
+
+        <h1>KisanSathi AI</h1>
+
+        <p>
+            Your smart farming companion
+        </p>
+
+    </div>
+
+
+    <div class="chat-card">
+
+        <div class="chat-header">
+
+            <strong>
+                🌾 AI Sathi
+            </strong>
+
+            <div class="status">
+                ● Ready to help
+            </div>
+
+        </div>
+
+
+        <div
+            id="messages"
+            class="messages"
+        >
+
+            <div class="message ai">
+
+                <div class="bubble">
+
+                    Namaste! 👋
+                    
+                    Main KisanSathi AI hoon.
+
+                    Aap crop disease, weather,
+                    irrigation aur farming ke
+                    baare mein mujhse pooch sakte hain.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="suggestions">
+
+            <button
+                class="suggestion"
+                onclick="askSuggestion(this)"
+            >
+                🌱 Crop disease
+            </button>
+
+            <button
+                class="suggestion"
+                onclick="askSuggestion(this)"
+            >
+                🌦️ Weather advice
+            </button>
+
+            <button
+                class="suggestion"
+                onclick="askSuggestion(this)"
+            >
+                💧 Irrigation
+            </button>
+
+            <button
+                class="suggestion"
+                onclick="askSuggestion(this)"
+            >
+                📚 Farming learning
+            </button>
+
+        </div>
+
+
+        <div class="input-area">
+
+            <input
+                type="text"
+                id="question"
+                placeholder="Ask KisanSathi..."
+                onkeydown="handleKey(event)"
+            >
+
+            <button
+                class="send-btn"
+                onclick="sendQuestion()"
+            >
+                Send
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function addMessage(text, type) {
+
+    const messages =
+        document.getElementById("messages");
+
+    const message =
+        document.createElement("div");
+
+    message.className =
+        `message ${type}`;
+
+
+    const bubble =
+        document.createElement("div");
+
+    bubble.className = "bubble";
+
+    bubble.innerText = text;
+
+
+    message.appendChild(bubble);
+
+    messages.appendChild(message);
+
+
+    messages.scrollTop =
+        messages.scrollHeight;
+}
+
+
+function askSuggestion(button) {
+
+    document.getElementById(
+        "question"
+    ).value = button.innerText;
+
+    sendQuestion();
+}
+
+
+function handleKey(event) {
+
+    if (event.key === "Enter") {
+
+        sendQuestion();
+
+    }
+
+}
+
+
+async function sendQuestion() {
+
+    const input =
+        document.getElementById("question");
+
+    const question =
+        input.value.trim();
+
+
+    if (!question) {
+        return;
+    }
+
+
+    addMessage(
+        question,
+        "user"
+    );
+
+
+    input.value = "";
+
+
+    try {
+
+        const formData =
+            new FormData();
+
+        formData.append(
+            "question",
+            question
+        );
+
+
+        const csrfToken =
+            document.querySelector(
+                '[name=csrfmiddlewaretoken]'
+            );
+
+
+        if (csrfToken) {
+
+            formData.append(
+                "csrfmiddlewaretoken",
+                csrfToken.value
+            );
+
+        }
+
+
+        const response =
+            await fetch(
+                "/ai-sathi/api/",
+                {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        "X-CSRFToken":
+                            getCookie("csrftoken")
+                    }
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (data.success) {
+
+            addMessage(
+                data.answer,
+                "ai"
+            );
+
+        } else {
+
+            addMessage(
+                data.message ||
+                "Something went wrong.",
+                "ai"
+            );
+
+        }
+
+    } catch(error) {
+
+        addMessage(
+            "AI Sathi is temporarily unavailable.",
+            "ai"
+        );
+
+    }
+
+}
+
+
+function getCookie(name) {
+
+    const cookies =
+        document.cookie.split(";");
+
+
+    for (let cookie of cookies) {
+
+        cookie = cookie.trim();
+
+
+        if (
+            cookie.startsWith(name + "=")
+        ) {
+
+            return decodeURIComponent(
+                cookie.substring(
+                    name.length + 1
+                )
+            );
+
+        }
+
+    }
+
+
+    return "";
+
+}
+
+</script>
+
+</body>
+
+</html>

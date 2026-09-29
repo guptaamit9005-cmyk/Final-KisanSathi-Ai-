@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Soil Intelligence Dashboard | KisanSathi AI</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root {
+  --green:#176b3a;
+  --dark:#104d2b;
+  --bg:#f4f8f5;
+  --border:#dce7df;
+  --muted:#66756b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:#203027}
+header{background:linear-gradient(120deg,var(--dark),var(--green));color:white;padding:25px 5%}
+header h1{margin:0 0 7px}
+header p{margin:0;opacity:.9}
+main{max-width:1200px;margin:28px auto;padding:0 18px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.actions a{background:white;color:var(--green);border:1px solid var(--border);padding:11px 14px;border-radius:9px;text-decoration:none;font-weight:bold}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.card{background:white;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px}
+.metric{font-size:28px;font-weight:bold;color:var(--green);margin-top:10px}
+.muted{color:var(--muted);font-size:14px;line-height:1.5}
+.chart-wrap{height:330px;position:relative}
+.alert{padding:13px 15px;border-radius:9px;margin:10px 0;line-height:1.5}
+.warning{background:#fff2d8;color:#6b4b08}
+.success{background:#e8f6ed;color:#175b32}
+.info{background:#eaf3ff;color:#204e82}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:12px;border-bottom:1px solid #e5ece7}
+th{color:var(--muted);font-size:13px}
+td a{color:var(--green);font-weight:bold;text-decoration:none}
+@media(max-width:750px){.cards{grid-template-columns:1fr}.chart-wrap{height:270px}}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>🌱 Soil Intelligence Dashboard</h1>
+  <p>Track your recorded soil-test values over time.</p>
+</header>
+
+<main>
+  <div class="actions">
+    <a href="{% url 'soil_prediction:home' %}">+ New Soil Analysis</a>
+    <a href="{% url 'soil_prediction:history' %}">All Reports</a>
+    <a href="{% url 'soil_prediction:export_csv' %}">Export CSV</a>
+  </div>
+
+  <section class="cards">
+    <div class="card">
+      <div class="muted">Saved soil reports</div>
+      <div class="metric">{{ total_reports }}</div>
+    </div>
+
+    <div class="card">
+      <div class="muted">Latest recorded pH</div>
+      <div class="metric">
+        {% if latest %}{{ latest.ph }}{% else %}—{% endif %}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="muted">Latest report date</div>
+      <div class="metric" style="font-size:20px">
+        {% if latest %}{{ latest.created_at|date:"d M Y" }}{% else %}No data{% endif %}
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Soil Parameter Trends</h2>
+    <p class="muted">
+      This chart displays the values you entered. Compare results only when
+      the laboratory units and test methods are consistent.
+    </p>
+    {% if chart_data %}
+      <div class="chart-wrap">
+        <canvas id="soilChart"></canvas>
+      </div>
+    {% else %}
+      <p>No reports available yet. Add your first soil analysis to see trends.</p>
+    {% endif %}
+  </section>
+
+  <section class="card">
+    <h2>Monitoring Notes</h2>
+    {% for alert in alerts %}
+      <div class="alert {{ alert.level }}">
+        <strong>{{ alert.title }}</strong><br>
+        {{ alert.message }}
+      </div>
+    {% empty %}
+      <p class="muted">Add a soil report to see monitoring notes.</p>
+    {% endfor %}
+  </section>
+
+  <section class="card">
+    <h2>Recent Soil Reports</h2>
+    {% if analyses %}
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Farm</th>
+            <th>pH</th>
+            <th>N / P / K</th>
+            <th>Report</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in analyses %}
+          <tr>
+            <td>{{ item.created_at|date:"d M Y" }}</td>
+            <td>{{ item.farm_name|default:"Unnamed farm" }}</td>
+            <td>{{ item.ph }}</td>
+            <td>{{ item.nitrogen }} / {{ item.phosphorus }} / {{ item.potassium }}</td>
+            <td><a href="{% url 'soil_prediction:report' item.id %}">Open</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="muted">No reports found. Start by creating a soil analysis.</p>
+    {% endif %}
+  </section>
+</main>
+
+{{ chart_data|json_script:"soil-chart-data" }}
+
+<script>
+const rows = JSON.parse(
+  document.getElementById("soil-chart-data").textContent
+);
+
+if (rows.length) {
+  const labels = rows.map(row => `${row.created_at} · ${row.farm_name}`);
+
+  new Chart(document.getElementById("soilChart"), {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Nitrogen",
+          data: rows.map(row => row.nitrogen),
+          tension: 0.25
+        },
+        {
+          label: "Phosphorus",
+          data: rows.map(row => row.phosphorus),
+          tension: 0.25
+        },
+        {
+          label: "Potassium",
+          data: rows.map(row => row.potassium),
+          tension: 0.25
+        },
+        {
+          label: "pH",
+          data: rows.map(row => row.ph),
+          tension: 0.25
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      scales: {
+        y: { beginAtZero: false }
+      }
+    }
+  });
+}
+</script>
+</body>
+</html>

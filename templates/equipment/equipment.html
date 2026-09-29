@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Farm Equipment Rental | KisanSathi AI</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f8f4;
+            color: #18372a;
+        }
+
+        .navbar {
+            background: #087443;
+            color: white;
+            padding: 17px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .logo span {
+            color: #9be17e;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            padding: 8px 12px;
+            border-radius: 7px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255,255,255,.12);
+        }
+
+        .hero {
+            padding: 45px 6%;
+            background: linear-gradient(
+                135deg,
+                #dff1df,
+                #f6faf5
+            );
+        }
+
+        .hero h1 {
+            font-size: 35px;
+            margin-bottom: 10px;
+            color: #06472d;
+        }
+
+        .hero p {
+            max-width: 700px;
+            color: #617067;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 88%;
+            max-width: 1250px;
+            margin: 30px auto;
+        }
+
+        .search-box {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid #dce7df;
+            margin-bottom: 25px;
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns:
+                2fr 1fr 1fr 1fr auto;
+            gap: 10px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            height: 42px;
+            border: 1px solid #d8e4db;
+            border-radius: 8px;
+            padding: 0 12px;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #087443;
+        }
+
+        .btn {
+            border: none;
+            background: #087443;
+            color: white;
+            padding: 0 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #075b37;
+        }
+
+        .equipment-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .equipment-card {
+            background: white;
+            border: 1px solid #dce7df;
+            border-radius: 17px;
+            overflow: hidden;
+            transition: .2s;
+        }
+
+        .equipment-card:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 12px 30px
+                rgba(10,70,40,.09);
+        }
+
+        .equipment-image {
+            height: 170px;
+            background: #e9f4e8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 55px;
+            overflow: hidden;
+        }
+
+        .equipment-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .equipment-content {
+            padding: 18px;
+        }
+
+        .type {
+            display: inline-block;
+            background: #e8f4e9;
+            color: #087443;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .equipment-content h2 {
+            font-size: 18px;
+            margin-bottom: 7px;
+        }
+
+        .location {
+            color: #748078;
+            font-size: 12px;
+            margin-bottom: 13px;
+        }
+
+        .equipment-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .rent {
+            color: #087443;
+            font-weight: 800;
+            font-size: 17px;
+        }
+
+        .rent small {
+            font-size: 10px;
+            color: #77847d;
+            font-weight: normal;
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .feature {
+            background: #f2f6f2;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            color: #5e6b63;
+        }
+
+        .view-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background: #087443;
+            color: white;
+            text-decoration: none;
+            padding: 11px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .empty {
+            background: white;
+            padding: 60px;
+            text-align: center;
+            border-radius: 15px;
+            color: #6b786f;
+        }
+
+        @media(max-width: 1000px) {
+
+            .equipment-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .search-grid {
+                grid-template-columns:
+                    1fr 1fr;
+            }
+
+            .btn {
+                height: 42px;
+            }
+
+        }
+
+        @media(max-width: 600px) {
+
+            .equipment-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 27px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<nav class="navbar">
+
+    <div class="logo">
+        🌱 Kisan<span>Sathi</span> AI
+    </div>
+
+    <div class="nav-links">
+
+        <a href="{% url 'dashboard:home' %}">
+            Dashboard
+        </a>
+
+        <a href="{% url 'equipment:my_bookings' %}">
+            My Bookings
+        </a>
+
+        <a href="{% url 'equipment:add' %}">
+            List Equipment
+        </a>
+
+    </div>
+
+</nav>
+
+
+<section class="hero">
+
+    <h1>
+        🚜 Farm Equipment Rental
+    </h1>
+
+    <p>
+        Find tractors, harvesters, sprayers, seed drills and
+        other agricultural equipment available for rent near
+        your farming location.
+    </p>
+
+</section>
+
+
+<div class="container">
+
+
+    <form
+        method="GET"
+        class="search-box"
+    >
+
+        <div class="search-grid">
+
+            {{ form.q }}
+
+            {{ form.equipment_type }}
+
+            {{ form.district }}
+
+            {{ form.rent_type }}
+
+            <button
+                class="btn"
+                type="submit"
+            >
+                Search
+            </button>
+
+        </div>
+
+    </form>
+
+
+    {% if equipment %}
+
+    <div class="equipment-grid">
+
+        {% for item in equipment %}
+
+        <article class="equipment-card">
+
+            <div class="equipment-image">
+
+                {% if item.image %}
+
+                    <img
+                        src="{{ item.image.url }}"
+                        alt="{{ item.name }}"
+                    >
+
+                {% else %}
+
+                    {% if item.equipment_type == "tractor" %}
+                        🚜
+                    {% elif item.equipment_type == "sprayer" %}
+                        💦
+                    {% elif item.equipment_type == "harvester" %}
+                        🌾
+                    {% elif item.equipment_type == "seed_drill" %}
+                        🌱
+                    {% else %}
+                        🛠️
+                    {% endif %}
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="equipment-content">
+
+                <span class="type">
+                    {{ item.get_equipment_type_display }}
+                </span>
+
+                <h2>
+                    {{ item.name }}
+                </h2>
+
+                <div class="location">
+                    📍 {{ item.location }}
+                    {% if item.district %}
+                        , {{ item.district }}
+                    {% endif %}
+                </div>
+
+
+                <div class="equipment-info">
+
+                    <div class="rent">
+
+                        ₹{{ item.rent_amount }}
+
+                        <small>
+                            / {{ item.get_rent_type_display }}
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="features">
+
+                    {% if item.operator_available %}
+                        <span class="feature">
+                            👨‍🌾 Operator available
+                        </span>
+                    {% endif %}
+
+                    {% if item.delivery_available %}
+                        <span class="feature">
+                            🚚 Delivery available
+                        </span>
+                    {% endif %}
+
+                    {% if item.is_verified %}
+                        <span class="feature">
+                            ✓ Verified
+                        </span>
+                    {% endif %}
+
+                </div>
+
+
+                <a
+                    href="{% url 'equipment:detail' item.id %}"
+                    class="view-btn"
+                >
+                    View & Rent
+                </a>
+
+            </div>
+
+        </article>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty">
+
+        <h2>🚜 No equipment found</h2>
+
+        <p>
+            Try searching another equipment or district.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+
+</div>
+
+
+</body>
+</html>

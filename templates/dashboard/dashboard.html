@@ -1,0 +1,2629 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>KisanSathi AI — Home</title>
+    <style>
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        :root {
+
+            --green: #087443;
+            --green-dark: #075b37;
+            --green-deep: #06472d;
+
+            --green-soft: #e7f3eb;
+            --green-light: #f1f7f2;
+
+            --background: #f4f8f4;
+
+            --white: #ffffff;
+
+            --text: #18372a;
+            --muted: #738078;
+
+            --border: #dce7df;
+
+            --yellow: #f4cf68;
+            --yellow-soft: #fff7dc;
+
+            --blue: #6b9fc3;
+            --blue-soft: #edf5fa;
+
+            --orange: #d99b43;
+            --orange-soft: #fff4df;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            background: var(--background);
+
+            color: var(--text);
+
+            min-height: 100vh;
+
+        }
+
+
+        button,
+        a {
+            font-family: inherit;
+        }
+
+
+        /* =====================================================
+           APP
+        ===================================================== */
+
+        .app {
+
+            min-height: 100vh;
+
+            display: flex;
+
+        }
+
+
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+        .sidebar {
+
+            width: 215px;
+
+            min-height: 100vh;
+
+            background: var(--green);
+
+            color: white;
+
+            display: flex;
+
+            flex-direction: column;
+
+            position: fixed;
+
+            left: 0;
+            top: 0;
+            bottom: 0;
+
+            z-index: 100;
+
+            padding: 19px 12px;
+
+        }
+
+
+        /* Brand */
+
+        .sidebar-brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            padding:
+                3px 9px 25px;
+
+        }
+
+
+        .brand-circle {
+
+            width: 31px;
+            height: 31px;
+
+            background: white;
+
+            color: var(--green);
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 15px;
+
+        }
+
+
+        .brand-name {
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+            letter-spacing: -.3px;
+
+        }
+
+
+        /* Navigation */
+
+        .nav {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 3px;
+
+            flex: 1;
+
+        }
+
+
+        .nav-item {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            min-height: 37px;
+
+            padding:
+                0 10px;
+
+            border-radius: 7px;
+
+            color:
+                rgba(255,255,255,.76);
+
+            text-decoration: none;
+
+            font-size: 10px;
+
+            font-weight: 600;
+
+            transition: .18s;
+
+        }
+
+
+        .nav-item:hover {
+
+            color: white;
+
+            background:
+                rgba(255,255,255,.10);
+
+        }
+
+
+        .nav-item.active {
+
+            color: white;
+
+            background:
+                rgba(255,255,255,.15);
+
+        }
+
+
+        .nav-icon {
+
+            width: 17px;
+
+            text-align: center;
+
+            font-size: 12px;
+
+            opacity: .9;
+
+        }
+
+
+        /* Profile */
+
+        .sidebar-profile {
+
+            border-top:
+                1px solid
+                rgba(255,255,255,.15);
+
+            padding:
+                15px 7px 3px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+        }
+
+
+        .profile-avatar {
+
+            width: 31px;
+            height: 31px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(255,255,255,.18);
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .profile-info {
+
+            min-width: 0;
+
+        }
+
+
+        .profile-name {
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+        }
+
+
+        .profile-role {
+
+            font-size: 8px;
+
+            color:
+                rgba(255,255,255,.63);
+
+            margin-top: 2px;
+
+        }
+
+
+        /* =====================================================
+           MAIN AREA
+        ===================================================== */
+
+        .main {
+
+            margin-left: 215px;
+
+            width:
+                calc(100% - 215px);
+
+            min-height: 100vh;
+
+            background: var(--background);
+
+        }
+
+
+        /* =====================================================
+           TOPBAR
+        ===================================================== */
+
+        .topbar {
+
+            height: 62px;
+
+            background: white;
+
+            border-bottom:
+                1px solid
+                var(--border);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding:
+                0 32px;
+
+        }
+
+
+        .page-title {
+
+            font-size: 16px;
+
+            font-weight: 800;
+
+            color:
+                var(--green-deep);
+
+        }
+
+
+        .topbar-right {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+        }
+
+
+        .location {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            background:
+                var(--green-soft);
+
+            color:
+                var(--green);
+
+            padding:
+                7px 10px;
+
+            border-radius: 7px;
+
+            font-size: 9px;
+
+            font-weight: 700;
+
+        }
+
+
+        .notification {
+
+            width: 31px;
+            height: 31px;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 8px;
+
+            background: white;
+
+            cursor: pointer;
+
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+        }
+
+
+        .notification-dot {
+
+            width: 6px;
+            height: 6px;
+
+            background: #d9534f;
+
+            border-radius: 50%;
+
+            position: absolute;
+
+            top: 6px;
+            right: 6px;
+
+            border: 1px solid white;
+
+        }
+
+
+        /* =====================================================
+           CONTENT
+        ===================================================== */
+
+        .content {
+
+            max-width: 1180px;
+
+            margin: 0 auto;
+
+            padding:
+                30px 32px 50px;
+
+        }
+
+
+        /* =====================================================
+           WELCOME
+        ===================================================== */
+
+        .welcome-row {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 22px;
+
+        }
+
+
+        .welcome h1 {
+
+            font-size: 24px;
+
+            color:
+                var(--green-deep);
+
+            letter-spacing: -.7px;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .welcome p {
+
+            font-size: 10px;
+
+            color:
+                var(--muted);
+
+        }
+
+
+        .weather-mini {
+
+            background: white;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 9px;
+
+            padding:
+                10px 14px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            min-width: 145px;
+
+        }
+
+
+        .weather-icon {
+
+            font-size: 22px;
+
+        }
+
+
+        .weather-temp {
+
+            font-size: 14px;
+
+            font-weight: 800;
+
+            color:
+                var(--green-deep);
+
+        }
+
+
+        .weather-text {
+
+            font-size: 8px;
+
+            color:
+                var(--muted);
+
+            margin-top: 2px;
+
+        }
+
+
+        /* =====================================================
+           AI CROP ANALYSIS
+        ===================================================== */
+
+        .analysis-card {
+
+            min-height: 118px;
+
+            border-radius: 12px;
+
+            background:
+                var(--green);
+
+            color: white;
+
+            padding:
+                23px 25px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 25px;
+
+            margin-bottom: 24px;
+
+            position: relative;
+
+            overflow: hidden;
+
+        }
+
+
+        .analysis-card::after {
+
+            content: "";
+
+            width: 190px;
+            height: 190px;
+
+            position: absolute;
+
+            right: -80px;
+            top: -95px;
+
+            border-radius: 50%;
+
+            border:
+                1px solid
+                rgba(255,255,255,.12);
+
+        }
+
+
+        .analysis-content {
+
+            position: relative;
+
+            z-index: 2;
+
+        }
+
+
+        .analysis-label {
+
+            font-size: 8px;
+
+            letter-spacing: .6px;
+
+            font-weight: 800;
+
+            opacity: .72;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .analysis-title {
+
+            font-size: 17px;
+
+            font-weight: 800;
+
+            margin-bottom: 6px;
+
+        }
+
+
+        .analysis-description {
+
+            color:
+                rgba(255,255,255,.73);
+
+            font-size: 9px;
+
+            line-height: 1.5;
+
+        }
+
+
+        .analysis-button {
+
+            position: relative;
+
+            z-index: 2;
+
+            min-width: 120px;
+
+            height: 40px;
+
+            background: white;
+
+            color: var(--green);
+
+            border: none;
+
+            border-radius: 8px;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            text-decoration: none;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            transition: .2s;
+
+        }
+
+
+        .analysis-button:hover {
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 8px 20px
+                rgba(0,0,0,.10);
+
+        }
+
+
+        /* =====================================================
+           SECTION HEADING
+        ===================================================== */
+
+        .section-heading {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 11px;
+
+        }
+
+
+        .section-heading h2 {
+
+            font-size: 11px;
+
+            color:
+                var(--green-deep);
+
+            font-weight: 800;
+
+        }
+
+
+        .section-heading a {
+
+            font-size: 8px;
+
+            color:
+                var(--green);
+
+            text-decoration: none;
+
+            font-weight: 700;
+
+        }
+
+
+        /* =====================================================
+           QUICK ACTIONS
+        ===================================================== */
+
+        .dashboard-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1.65fr)
+                minmax(260px, .85fr);
+
+            gap: 20px;
+
+            align-items: start;
+
+        }
+
+
+        .quick-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 10px;
+
+        }
+
+
+        .quick-card {
+
+            min-height: 78px;
+
+            background: white;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 10px;
+
+            padding:
+                14px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            text-decoration: none;
+
+            color: inherit;
+
+            transition:
+                transform .18s,
+                box-shadow .18s,
+                border-color .18s;
+
+        }
+
+
+        .quick-card:hover {
+
+            transform:
+                translateY(-2px);
+
+            border-color:
+                #bed4c5;
+
+            box-shadow:
+                0 8px 20px
+                rgba(15,65,40,.06);
+
+        }
+
+
+        .quick-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+        }
+
+
+        .quick-icon {
+
+            width: 35px;
+            height: 35px;
+
+            border-radius: 9px;
+
+            background:
+                var(--green-soft);
+
+            color:
+                var(--green);
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 15px;
+
+        }
+
+
+        .quick-name {
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            color:
+                var(--green-deep);
+
+        }
+
+
+        .quick-sub {
+
+            font-size: 8px;
+
+            color:
+                var(--muted);
+
+            margin-top: 4px;
+
+        }
+
+
+        .quick-arrow {
+
+            color:
+                #91a099;
+
+            font-size: 13px;
+
+        }
+
+
+        /* =====================================================
+           ALERTS
+        ===================================================== */
+
+        .alerts-card {
+
+            background: white;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 10px;
+
+            overflow: hidden;
+
+        }
+
+
+        .alerts-header {
+
+            padding:
+                14px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            border-bottom:
+                1px solid
+                #edf1ee;
+
+        }
+
+
+        .alerts-header h3 {
+
+            font-size: 10px;
+
+            color:
+                var(--green-deep);
+
+            font-weight: 800;
+
+        }
+
+
+        .new-badge {
+
+            font-size: 7px;
+
+            color:
+                #9a7119;
+
+            background:
+                var(--yellow-soft);
+
+            padding:
+                5px 7px;
+
+            border-radius: 5px;
+
+            font-weight: 800;
+
+        }
+
+
+        .alert-list {
+
+            padding:
+                5px 14px 9px;
+
+        }
+
+
+        .alert {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 9px;
+
+            padding:
+                11px 0;
+
+            border-bottom:
+                1px solid
+                #f0f3f1;
+
+        }
+
+
+        .alert:last-child {
+
+            border-bottom: none;
+
+        }
+
+
+        .alert-dot {
+
+            width: 6px;
+            height: 6px;
+
+            margin-top: 4px;
+
+            border-radius: 50%;
+
+            flex-shrink: 0;
+
+        }
+
+
+        .alert-green {
+
+            background:
+                var(--green);
+
+        }
+
+
+        .alert-yellow {
+
+            background:
+                var(--yellow);
+
+        }
+
+
+        .alert-orange {
+
+            background:
+                var(--orange);
+
+        }
+
+
+        .alert-text {
+
+            font-size: 8px;
+
+            color:
+                #66736c;
+
+            line-height: 1.45;
+
+        }
+
+
+        /* =====================================================
+           FARM SNAPSHOT
+        ===================================================== */
+
+        .snapshot {
+
+            margin-top: 20px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 10px;
+
+        }
+
+
+        .snapshot-card {
+
+            background: white;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 9px;
+
+            padding: 14px;
+
+        }
+
+
+        .snapshot-label {
+
+            color:
+                var(--muted);
+
+            font-size: 8px;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .snapshot-value {
+
+            color:
+                var(--green-deep);
+
+            font-size: 16px;
+
+            font-weight: 800;
+
+        }
+
+
+        .snapshot-status {
+
+            color:
+                var(--green);
+
+            font-size: 7px;
+
+            margin-top: 4px;
+
+            font-weight: 700;
+
+        }
+
+
+        /* =====================================================
+           AI SATHI FLOATING BUTTON
+        ===================================================== */
+
+        .ai-sathi {
+
+            position: fixed;
+
+            right: 27px;
+
+            bottom: 25px;
+
+            width: 53px;
+            height: 53px;
+
+            border-radius: 50%;
+
+            border: 3px solid white;
+
+            background:
+                var(--green);
+
+            color: white;
+
+            box-shadow:
+                0 8px 24px
+                rgba(8,116,67,.24);
+
+            cursor: pointer;
+
+            z-index: 200;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            transition: .2s;
+
+        }
+
+
+        .ai-sathi:hover {
+
+            transform:
+                scale(1.06);
+
+            background:
+                var(--green-dark);
+
+        }
+
+
+        .ai-icon {
+
+            font-size: 17px;
+
+            line-height: 1;
+
+        }
+
+
+        .ai-label {
+
+            font-size: 6px;
+
+            font-weight: 800;
+
+            margin-top: 3px;
+
+        }
+
+
+        /* =====================================================
+           AI PANEL
+        ===================================================== */
+
+        .ai-panel {
+
+            position: fixed;
+
+            right: 25px;
+
+            bottom: 89px;
+
+            width: 315px;
+
+            background: white;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 20px 50px
+                rgba(15,55,35,.16);
+
+            z-index: 190;
+
+            overflow: hidden;
+
+            opacity: 0;
+
+            visibility: hidden;
+
+            transform:
+                translateY(15px)
+                scale(.98);
+
+            transition: .22s;
+
+        }
+
+
+        .ai-panel.open {
+
+            opacity: 1;
+
+            visibility: visible;
+
+            transform:
+                translateY(0)
+                scale(1);
+
+        }
+
+
+        .ai-panel-header {
+
+            background:
+                var(--green);
+
+            color: white;
+
+            padding:
+                15px 17px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+        }
+
+
+        .ai-panel-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+        }
+
+
+        .ai-panel-title strong {
+
+            font-size: 11px;
+
+        }
+
+
+        .ai-panel-title span {
+
+            font-size: 8px;
+
+            color:
+                rgba(255,255,255,.7);
+
+            display: block;
+
+            margin-top: 3px;
+
+        }
+
+
+        .ai-close {
+
+            border: none;
+
+            background: transparent;
+
+            color: white;
+
+            cursor: pointer;
+
+            font-size: 16px;
+
+        }
+
+
+        .ai-panel-body {
+
+            padding: 16px;
+
+        }
+
+
+        .ai-message {
+
+            background:
+                var(--green-light);
+
+            border-radius: 9px;
+
+            padding: 11px;
+
+            font-size: 9px;
+
+            line-height: 1.5;
+
+            color:
+                #52635a;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .ai-input {
+
+            display: flex;
+
+            gap: 7px;
+
+        }
+
+
+        .ai-input input {
+
+            flex: 1;
+
+            height: 36px;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 8px;
+
+            padding:
+                0 10px;
+
+            outline: none;
+
+            font-size: 9px;
+
+        }
+
+
+        .ai-input input:focus {
+
+            border-color:
+                var(--green);
+
+        }
+
+
+        .ai-send {
+
+            width: 38px;
+            height: 36px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background:
+                var(--green);
+
+            color: white;
+
+            cursor: pointer;
+
+        }
+
+
+        /* =====================================================
+           MOBILE MENU
+        ===================================================== */
+
+        .mobile-menu {
+
+            display: none;
+
+            width: 35px;
+            height: 35px;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 8px;
+
+            background: white;
+
+            cursor: pointer;
+
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 1050px) {
+
+            .dashboard-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .snapshot {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+        }
+
+
+        @media (max-width: 800px) {
+
+            .sidebar {
+
+                transform:
+                    translateX(-100%);
+
+                transition: .25s;
+
+            }
+
+
+            .sidebar.open {
+
+                transform:
+                    translateX(0);
+
+            }
+
+
+            .main {
+
+                margin-left: 0;
+
+                width: 100%;
+
+            }
+
+
+            .mobile-menu {
+
+                display: flex;
+
+                align-items: center;
+                justify-content: center;
+
+            }
+
+
+            .topbar {
+
+                padding:
+                    0 18px;
+
+            }
+
+
+            .content {
+
+                padding:
+                    22px 18px 45px;
+
+            }
+
+
+            .welcome-row {
+
+                align-items: flex-start;
+
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .topbar-right .notification {
+
+                display: none;
+
+            }
+
+
+            .location {
+
+                font-size: 8px;
+
+            }
+
+
+            .welcome-row {
+
+                flex-direction: column;
+
+            }
+
+
+            .weather-mini {
+
+                width: 100%;
+
+            }
+
+
+            .analysis-card {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+            }
+
+
+            .analysis-button {
+
+                width: 100%;
+
+            }
+
+
+            .quick-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .snapshot {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+
+            .ai-panel {
+
+                left: 15px;
+
+                right: 15px;
+
+                width: auto;
+
+            }
+
+
+            .ai-sathi {
+
+                right: 17px;
+
+                bottom: 17px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+    <div class="app">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar" id="sidebar">
+
+
+        <!-- BRAND -->
+
+        <div class="sidebar-brand">
+
+            <div class="brand-circle">
+                🌱
+            </div>
+
+            <div class="brand-name">
+                KisanSathi AI
+            </div>
+
+        </div>
+
+
+        <!-- NAVIGATION -->
+
+        <nav class="nav">
+
+
+            <a
+                href="/dashboard/"
+                class="nav-item active"
+            >
+
+                <span class="nav-icon">⌂</span>
+
+                <span>Home</span>
+
+            </a>
+
+
+            <a
+                href="/prediction/"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">✦</span>
+
+                <span>Crop Analysis</span>
+
+            </a>
+
+
+            <a
+                href="/weather/"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">☁</span>
+
+                <span>Weather</span>
+
+            </a>
+
+
+            <a
+                href="/soil-prediction/"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">◈</span>
+
+                <span>Soil</span>
+
+            </a>
+
+
+            <a
+                href="/mandi/"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">₹</span>
+
+                <span>Market</span>
+
+            </a>
+
+
+            <a
+                href="/land/"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">▦</span>
+
+                <span>Land</span>
+
+            </a>
+
+
+            <a
+                href="{% url 'equipment:home' %}"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">🚜</span>
+
+                <span>Equipment</span>
+
+            </a>
+
+
+            <a
+                href="/government-schemes/"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">▤</span>
+
+                <span>Schemes</span>
+
+            </a>
+
+
+            <a
+                href="{% url 'encyclopedia:home' %}"
+                class="nav-item"
+            >
+
+                <span class="nav-icon">◎</span>
+
+                <span>Learning</span>
+
+            </a>
+
+
+        </nav>
+
+
+        <!-- PROFILE -->
+
+        <div class="sidebar-profile">
+
+            <div class="profile-avatar">
+                {{ request.user.first_name|default:request.user.username|slice:":1" }}{{ request.user.last_name|slice:":1" }}
+            </div>
+
+
+            <div class="profile-info">
+
+                <div class="profile-name">
+                    {{ request.user.get_full_name|default:request.user.username }}
+                </div>
+
+                <div class="profile-role">
+                    Farmer profile
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="main">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+
+            <button
+                class="mobile-menu"
+                id="menuButton"
+                aria-label="Open menu"
+            >
+                ☰
+            </button>
+
+
+            <div class="page-title">
+                Home
+            </div>
+
+
+            <div class="topbar-right">
+
+
+                <div class="location">
+                    📍 Jaipur, Rajasthan
+                </div>
+
+
+                <button
+                    class="notification"
+                    aria-label="Notifications"
+                >
+
+                    🔔
+
+                    <span
+                        class="notification-dot"
+                    ></span>
+
+                </button>
+
+
+            </div>
+
+        </header>
+
+
+
+        <!-- =================================================
+             PAGE CONTENT
+        ================================================== -->
+
+        <section class="content">
+
+
+            <!-- WELCOME -->
+
+            <div class="welcome-row">
+
+
+                <div class="welcome">
+
+                    <h1>
+                        Good morning,
+                        {{ request.user.first_name|default:"Ramesh" }} 👋
+                    </h1>
+
+                    <p>
+                        Your farm is ready for today.
+                    </p>
+
+                </div>
+
+
+                <div class="weather-mini">
+
+                    <div class="weather-icon">
+                        🌤️
+                    </div>
+
+                    <div>
+
+                        <div class="weather-temp">
+                            28°C
+                        </div>
+
+                        <div class="weather-text">
+                            Partly cloudy
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 AI CROP ANALYSIS
+            ================================================== -->
+
+            <div class="analysis-card">
+
+
+                <div class="analysis-content">
+
+                    <div class="analysis-label">
+                        AI CROP ANALYSIS
+                    </div>
+
+
+                    <div class="analysis-title">
+                        Upload a crop photo and get a guided diagnosis
+                    </div>
+
+
+                    <div class="analysis-description">
+                        Scan your crop and get AI-powered health
+                        insights with clear next steps.
+                    </div>
+
+                </div>
+
+
+                <a
+                    href="/prediction/"
+                    class="analysis-button"
+                >
+                    Analyse now →
+                </a>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 QUICK ACTIONS + ALERTS
+            ================================================== -->
+
+            <div class="dashboard-grid">
+
+
+                <!-- QUICK ACTIONS -->
+
+                <div>
+
+
+                    <div class="section-heading">
+
+                        <h2>
+                            Quick actions
+                        </h2>
+
+                    </div>
+
+
+                    <div class="quick-grid">
+
+
+                        <!-- CROP -->
+
+                        <a
+                            href="/prediction/"
+                            class="quick-card"
+                        >
+
+                            <div class="quick-left">
+
+                                <div class="quick-icon">
+                                    C
+                                </div>
+
+                                <div>
+
+                                    <div class="quick-name">
+                                        Crop health
+                                    </div>
+
+                                    <div class="quick-sub">
+                                        Check your crop
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="quick-arrow">
+                                →
+                            </div>
+
+                        </a>
+
+
+
+                        <!-- WEATHER -->
+
+                        <a
+                            href="/weather/"
+                            class="quick-card"
+                        >
+
+                            <div class="quick-left">
+
+                                <div class="quick-icon">
+                                    W
+                                </div>
+
+                                <div>
+
+                                    <div class="quick-name">
+                                        Weather
+                                    </div>
+
+                                    <div class="quick-sub">
+                                        Forecast & alerts
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="quick-arrow">
+                                →
+                            </div>
+
+                        </a>
+
+
+
+                        <!-- SOIL -->
+
+                        <a
+                            href="/soil-prediction/"
+                            class="quick-card"
+                        >
+
+                            <div class="quick-left">
+
+                                <div class="quick-icon">
+                                    S
+                                </div>
+
+                                <div>
+
+                                    <div class="quick-name">
+                                        Soil
+                                    </div>
+
+                                    <div class="quick-sub">
+                                        Soil profile
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="quick-arrow">
+                                →
+                            </div>
+
+                        </a>
+
+
+                        <!-- LEARNING -->
+
+                        <a
+                            href="{% url 'encyclopedia:home' %}"
+                            class="quick-card"
+                        >
+
+                            <div class="quick-left">
+
+                                <div class="quick-icon">
+                                    📚
+                                </div>
+
+                                <div>
+
+                                    <div class="quick-name">
+                                        Farmer Learning
+                                    </div>
+
+                                    <div class="quick-sub">
+                                        Guides & articles
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="quick-arrow">
+                                →
+                            </div>
+
+                        </a>
+
+
+
+                        <!-- EQUIPMENT -->
+
+                        <a
+                            href="{% url 'equipment:home' %}"
+                            class="quick-card"
+                        >
+
+                            <div class="quick-left">
+
+                                <div class="quick-icon">
+                                    🚜
+                                </div>
+
+                                <div>
+
+                                    <div class="quick-name">
+                                        Equipment
+                                    </div>
+
+                                    <div class="quick-sub">
+                                        Rent or list machinery
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="quick-arrow">
+                                →
+                            </div>
+
+                        </a>
+
+
+                        <!-- LAND -->
+
+                        <a
+                            href="/land/"
+                            class="quick-card"
+                        >
+
+                            <div class="quick-left">
+
+                                <div class="quick-icon">
+                                    L
+                                </div>
+
+                                <div>
+
+                                    <div class="quick-name">
+                                        Find land
+                                    </div>
+
+                                    <div class="quick-sub">
+                                        Nearby farmland
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="quick-arrow">
+                                →
+                            </div>
+
+                        </a>
+
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- TODAY'S ALERTS -->
+
+                <div>
+
+
+                    <div class="section-heading">
+
+                        <h2>
+                            Today's alerts
+                        </h2>
+
+                        <span class="new-badge">
+                            2 new
+                        </span>
+
+                    </div>
+
+
+                    <div class="alerts-card">
+
+
+                        <div class="alerts-header">
+
+                            <h3>
+                                Farm updates
+                            </h3>
+
+                            <span class="new-badge">
+                                TODAY
+                            </span>
+
+                        </div>
+
+
+                        <div class="alert-list">
+
+
+                            <div class="alert">
+
+                                <span
+                                    class="alert-dot alert-green"
+                                ></span>
+
+                                <div class="alert-text">
+                                    Spray window closes at 5 PM
+                                </div>
+
+                            </div>
+
+
+                            <div class="alert">
+
+                                <span
+                                    class="alert-dot alert-yellow"
+                                ></span>
+
+                                <div class="alert-text">
+                                    Wheat price up 4.8%
+                                </div>
+
+                            </div>
+
+
+                            <div class="alert">
+
+                                <span
+                                    class="alert-dot alert-orange"
+                                ></span>
+
+                                <div class="alert-text">
+                                    Scheme deadline in 6 days
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 FARM SNAPSHOT
+            ================================================== -->
+
+            <div
+                class="section-heading"
+                style="margin-top: 24px;"
+            >
+
+                <h2>
+                    Farm snapshot
+                </h2>
+
+            </div>
+
+
+            <div class="snapshot">
+
+
+                <div class="snapshot-card">
+
+                    <div class="snapshot-label">
+                        Main crop
+                    </div>
+
+                    <div class="snapshot-value">
+                        Wheat
+                    </div>
+
+                    <div class="snapshot-status">
+                        ● Active season
+                    </div>
+
+                </div>
+
+
+                <div class="snapshot-card">
+
+                    <div class="snapshot-label">
+                        Crop health
+                    </div>
+
+                    <div class="snapshot-value">
+                        Good
+                    </div>
+
+                    <div class="snapshot-status">
+                        ● Last checked today
+                    </div>
+
+                </div>
+
+
+                <div class="snapshot-card">
+
+                    <div class="snapshot-label">
+                        Rain forecast
+                    </div>
+
+                    <div class="snapshot-value">
+                        18 mm
+                    </div>
+
+                    <div class="snapshot-status">
+                        ● Next 7 days
+                    </div>
+
+                </div>
+
+
+                <div class="snapshot-card">
+
+                    <div class="snapshot-label">
+                        Market trend
+                    </div>
+
+                    <div class="snapshot-value">
+                        +4.8%
+                    </div>
+
+                    <div class="snapshot-status">
+                        ● Wheat price
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         AI SATHI FLOATING BUTTON
+    ====================================================== -->
+
+    <button
+        class="ai-sathi"
+        id="aiButton"
+        aria-label="Ask AI Sathi"
+    >
+
+        <span class="ai-icon">
+            ✦
+        </span>
+
+        <span class="ai-label">
+            AI
+        </span>
+
+    </button>
+
+
+
+    <!-- =====================================================
+         AI SATHI PANEL
+    ====================================================== -->
+
+    <div
+        class="ai-panel"
+        id="aiPanel"
+    >
+
+
+        <div class="ai-panel-header">
+
+
+            <div class="ai-panel-title">
+
+                <div>
+                    🤖
+                </div>
+
+                <div>
+
+                    <strong>
+                        AI Sathi
+                    </strong>
+
+                    <span>
+                        Your farming assistant
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="ai-close"
+                id="aiClose"
+            >
+                ×
+            </button>
+
+
+        </div>
+
+
+        <div class="ai-panel-body">
+
+
+            <div class="ai-message">
+
+                Hello! 👋
+
+                Ask me about your crop,
+                weather, disease, market prices
+                or farming decisions.
+
+            </div>
+
+
+            <div class="ai-input">
+
+                <input
+                    type="text"
+                    id="aiInput"
+                    placeholder="Ask AI Sathi..."
+                >
+
+                <button
+                    class="ai-send"
+                    id="aiSend"
+                >
+                    →
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+    /* =====================================================
+       MOBILE SIDEBAR
+    ===================================================== */
+
+    const sidebar =
+        document.getElementById("sidebar");
+
+    const menuButton =
+        document.getElementById("menuButton");
+
+
+    if (menuButton) {
+
+        menuButton.addEventListener(
+            "click",
+            () => {
+
+                sidebar.classList.toggle("open");
+
+            }
+        );
+
+    }
+
+
+
+    /* =====================================================
+       AI SATHI
+    ===================================================== */
+
+    const aiButton =
+        document.getElementById("aiButton");
+
+    const aiPanel =
+        document.getElementById("aiPanel");
+
+    const aiClose =
+        document.getElementById("aiClose");
+
+
+    aiButton.addEventListener(
+        "click",
+        () => {
+
+            aiPanel.classList.toggle("open");
+
+        }
+    );
+
+
+    aiClose.addEventListener(
+        "click",
+        () => {
+
+            aiPanel.classList.remove("open");
+
+        }
+    );
+
+
+
+    /* =====================================================
+       AI INPUT DEMO
+    ===================================================== */
+
+    const aiInput =
+        document.getElementById("aiInput");
+
+    const aiSend =
+        document.getElementById("aiSend");
+
+
+    function sendAIMessage() {
+
+        const message =
+            aiInput.value.trim();
+
+
+        if (!message) {
+            return;
+        }
+
+
+        alert(
+            "AI Sathi will process: " +
+            message
+        );
+
+
+        aiInput.value = "";
+
+    }
+
+
+    aiSend.addEventListener(
+        "click",
+        sendAIMessage
+    );
+
+
+    aiInput.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (event.key === "Enter") {
+
+                sendAIMessage();
+
+            }
+
+        }
+    );
+
+
+
+    /* =====================================================
+       COMING SOON LINKS
+    ===================================================== */
+
+    document
+        .querySelectorAll("[data-coming-soon]")
+        .forEach(item => {
+
+            item.addEventListener(
+                "click",
+                function(event) {
+
+                    event.preventDefault();
+
+                    const name =
+                        this.dataset.comingSoon;
+
+                    alert(
+                        name +
+                        " module is coming soon."
+                    );
+
+                }
+            );
+
+        });
+
+
+</script>
+
+
+</body>
+</html>

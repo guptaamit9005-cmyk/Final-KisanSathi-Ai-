@@ -1,0 +1,988 @@
+{% extends "base.html" %}
+
+{% block title %}Government Scheme Finder | KisanSathi AI{% endblock %}
+
+{% block content %}
+
+<style>
+    :root {
+        --ks-bg: #f4f8f3;
+        --ks-card: #ffffff;
+        --ks-text: #173b2a;
+        --ks-muted: #66776c;
+        --ks-primary: #247a45;
+        --ks-primary-hover: #175c32;
+        --ks-border: #dce9df;
+        --ks-soft: #eaf5ed;
+        --ks-shadow: 0 12px 35px rgba(25, 75, 42, 0.08);
+    }
+
+    body.ks-dark {
+        --ks-bg: #101b15;
+        --ks-card: #1b2a20;
+        --ks-text: #e9f5ec;
+        --ks-muted: #afc2b4;
+        --ks-primary: #66c783;
+        --ks-primary-hover: #3eaa61;
+        --ks-border: #344a3a;
+        --ks-soft: #263c2d;
+        --ks-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .ks-page {
+        min-height: 100vh;
+        padding: 32px 18px 55px;
+        background: var(--ks-bg);
+        color: var(--ks-text);
+        transition: background .2s ease, color .2s ease;
+    }
+
+    .ks-container {
+        width: 100%;
+        max-width: 1180px;
+        margin: 0 auto;
+    }
+
+    .ks-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 26px;
+    }
+
+    .ks-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .ks-brand-icon {
+        width: 48px;
+        height: 48px;
+        display: grid;
+        place-items: center;
+        border-radius: 15px;
+        background: var(--ks-soft);
+        font-size: 25px;
+    }
+
+    .ks-brand h2 {
+        margin: 0;
+        color: var(--ks-text);
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+    .ks-brand p {
+        margin: 4px 0 0;
+        color: var(--ks-muted);
+        font-size: 13px;
+    }
+
+    .ks-theme-button {
+        border: 1px solid var(--ks-border);
+        border-radius: 12px;
+        padding: 10px 15px;
+        background: var(--ks-card);
+        color: var(--ks-text);
+        cursor: pointer;
+        font-weight: 700;
+    }
+
+    .ks-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 38px;
+        margin-bottom: 25px;
+        border-radius: 25px;
+        color: #fff;
+        background: linear-gradient(120deg, #145c32, #27864c);
+        box-shadow: var(--ks-shadow);
+    }
+
+    .ks-hero::after {
+        content: "🌾";
+        position: absolute;
+        right: 38px;
+        bottom: -35px;
+        font-size: 150px;
+        opacity: .13;
+        transform: rotate(-15deg);
+        pointer-events: none;
+    }
+
+    .ks-hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 730px;
+    }
+
+    .ks-eyebrow {
+        display: inline-block;
+        padding: 7px 12px;
+        margin-bottom: 14px;
+        border: 1px solid rgba(255,255,255,.28);
+        border-radius: 30px;
+        background: rgba(255,255,255,.12);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .5px;
+    }
+
+    .ks-hero h1 {
+        margin: 0 0 12px;
+        color: #fff;
+        font-size: clamp(28px, 4vw, 42px);
+        line-height: 1.15;
+        font-weight: 850;
+    }
+
+    .ks-hero p {
+        max-width: 650px;
+        margin: 0;
+        color: rgba(255,255,255,.9);
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .ks-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 310px;
+        gap: 22px;
+        align-items: start;
+    }
+
+    .ks-panel,
+    .ks-side-card,
+    .ks-scheme-card {
+        border: 1px solid var(--ks-border);
+        border-radius: 20px;
+        background: var(--ks-card);
+        box-shadow: var(--ks-shadow);
+    }
+
+    .ks-panel {
+        padding: 27px;
+    }
+
+    .ks-heading {
+        margin-bottom: 22px;
+    }
+
+    .ks-heading h2 {
+        margin: 0 0 7px;
+        color: var(--ks-text);
+        font-size: 23px;
+        font-weight: 800;
+    }
+
+    .ks-heading p {
+        margin: 0;
+        color: var(--ks-muted);
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .ks-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .ks-field {
+        min-width: 0;
+    }
+
+    .ks-field label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--ks-text);
+        font-size: 13px;
+        font-weight: 750;
+    }
+
+    .ks-field input,
+    .ks-field select,
+    .ks-field textarea {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 45px;
+        padding: 10px 12px;
+        border: 1px solid var(--ks-border);
+        border-radius: 10px;
+        outline: none;
+        background: var(--ks-bg);
+        color: var(--ks-text);
+        font: inherit;
+        font-size: 14px;
+    }
+
+    .ks-field textarea {
+        min-height: 90px;
+        resize: vertical;
+    }
+
+    .ks-field input:focus,
+    .ks-field select:focus,
+    .ks-field textarea:focus {
+        border-color: var(--ks-primary);
+        box-shadow: 0 0 0 3px rgba(36,122,69,.12);
+    }
+
+    .ks-help {
+        display: block;
+        margin-top: 5px;
+        color: var(--ks-muted);
+        font-size: 12px;
+    }
+
+    .ks-error {
+        display: block;
+        margin-top: 5px;
+        color: #dc4545;
+        font-size: 12px;
+    }
+
+    .ks-submit {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        width: 100%;
+        min-height: 49px;
+        margin-top: 24px;
+        border: 0;
+        border-radius: 11px;
+        background: var(--ks-primary);
+        color: #fff;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 800;
+    }
+
+    .ks-submit:hover {
+        background: var(--ks-primary-hover);
+    }
+
+    .ks-side-card {
+        padding: 22px;
+        margin-bottom: 17px;
+    }
+
+    .ks-side-card h3 {
+        margin: 0 0 14px;
+        color: var(--ks-text);
+        font-size: 17px;
+        font-weight: 800;
+    }
+
+    .ks-step {
+        display: flex;
+        gap: 12px;
+        margin: 17px 0;
+    }
+
+    .ks-step-number {
+        flex: 0 0 30px;
+        width: 30px;
+        height: 30px;
+        display: grid;
+        place-items: center;
+        border-radius: 10px;
+        background: var(--ks-soft);
+        color: var(--ks-primary);
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    .ks-step strong {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--ks-text);
+        font-size: 13px;
+    }
+
+    .ks-step span {
+        display: block;
+        color: var(--ks-muted);
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .ks-note {
+        padding: 14px;
+        border: 1px solid var(--ks-border);
+        border-radius: 12px;
+        background: var(--ks-soft);
+        color: var(--ks-text);
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .ks-section {
+        margin-top: 36px;
+    }
+
+    .ks-section-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 18px;
+    }
+
+    .ks-section-heading h2 {
+        margin: 0;
+        color: var(--ks-text);
+        font-size: 25px;
+        font-weight: 850;
+    }
+
+    .ks-section-heading p {
+        margin: 7px 0 0;
+        color: var(--ks-muted);
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .ks-count {
+        flex-shrink: 0;
+        padding: 8px 12px;
+        border-radius: 30px;
+        background: var(--ks-soft);
+        color: var(--ks-primary);
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    .ks-scheme-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .ks-scheme-card {
+        display: flex;
+        flex-direction: column;
+        padding: 22px;
+        min-width: 0;
+    }
+
+    .ks-card-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 13px;
+    }
+
+    .ks-tag {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 30px;
+        background: var(--ks-soft);
+        color: var(--ks-primary);
+        font-size: 11px;
+        font-weight: 800;
+    }
+
+    .ks-score {
+        flex-shrink: 0;
+        padding: 6px 10px;
+        border-radius: 9px;
+        background: var(--ks-soft);
+        color: var(--ks-primary);
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .ks-scheme-card h3 {
+        margin: 0 0 9px;
+        color: var(--ks-text);
+        font-size: 19px;
+        line-height: 1.4;
+        font-weight: 800;
+    }
+
+    .ks-scheme-card p {
+        margin: 0 0 13px;
+        color: var(--ks-muted);
+        font-size: 13px;
+        line-height: 1.65;
+        overflow-wrap: anywhere;
+    }
+
+    .ks-benefits {
+        padding: 13px;
+        margin-bottom: 14px;
+        border-radius: 11px;
+        background: var(--ks-bg);
+        color: var(--ks-text);
+        font-size: 13px;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
+    }
+
+    .ks-benefits strong {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .ks-reasons {
+        padding-left: 19px;
+        margin: 0 0 14px;
+        color: var(--ks-muted);
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .ks-warning {
+        padding: 11px 13px;
+        margin-bottom: 13px;
+        border-left: 3px solid #e4a23a;
+        border-radius: 8px;
+        background: rgba(228,162,58,.10);
+        color: var(--ks-text);
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .ks-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        min-height: 43px;
+        margin-top: auto;
+        padding: 10px;
+        box-sizing: border-box;
+        border-radius: 10px;
+        background: var(--ks-primary);
+        color: #fff !important;
+        text-align: center;
+        text-decoration: none !important;
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    .ks-link:hover {
+        background: var(--ks-primary-hover);
+    }
+
+    .ks-empty {
+        padding: 32px 22px;
+        border: 1px dashed var(--ks-border);
+        border-radius: 17px;
+        background: var(--ks-card);
+        text-align: center;
+    }
+
+    .ks-empty-icon {
+        margin-bottom: 10px;
+        font-size: 40px;
+    }
+
+    .ks-empty h3 {
+        margin: 0 0 8px;
+        color: var(--ks-text);
+        font-size: 19px;
+    }
+
+    .ks-empty p {
+        max-width: 560px;
+        margin: 0 auto;
+        color: var(--ks-muted);
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .ks-footer {
+        margin-top: 26px;
+        color: var(--ks-muted);
+        font-size: 11px;
+        line-height: 1.7;
+        text-align: center;
+    }
+
+    @media (max-width: 900px) {
+        .ks-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .ks-side-column {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .ks-side-card {
+            margin-bottom: 0;
+        }
+    }
+
+    @media (max-width: 650px) {
+        .ks-page {
+            padding: 20px 12px 40px;
+        }
+
+        .ks-hero {
+            padding: 27px 21px;
+        }
+
+        .ks-hero::after {
+            right: 5px;
+            font-size: 95px;
+        }
+
+        .ks-panel {
+            padding: 20px 16px;
+        }
+
+        .ks-form-grid,
+        .ks-scheme-grid,
+        .ks-side-column {
+            grid-template-columns: 1fr;
+        }
+
+        .ks-section-heading {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .ks-brand h2 {
+            font-size: 17px;
+        }
+    }
+</style>
+
+<div class="ks-page">
+    <div class="ks-container">
+
+        <header class="ks-topbar">
+            <div class="ks-brand">
+                <div class="ks-brand-icon">🌱</div>
+                <div>
+                    <h2>KisanSathi AI</h2>
+                    <p>Farmer Support & Government Schemes</p>
+                </div>
+            </div>
+
+            <button
+                type="button"
+                class="ks-theme-button"
+                id="ksThemeToggle"
+            >
+                🌙 Dark mode
+            </button>
+        </header>
+
+        <section class="ks-hero">
+            <div class="ks-hero-content">
+                <span class="ks-eyebrow">FARMER SCHEME DISCOVERY</span>
+                <h1>Government Schemes for Every Farmer</h1>
+                <p>
+                    Discover schemes available in the KisanSathi AI catalogue.
+                    Enter your farming details to find potentially relevant
+                    schemes, or browse the complete active catalogue below.
+                </p>
+            </div>
+        </section>
+
+        <div class="ks-layout">
+
+            <section class="ks-panel">
+                <div class="ks-heading">
+                    <h2>👨‍🌾 Find Schemes for Your Profile</h2>
+                    <p>
+                        Complete your details to check which stored schemes
+                        may match your farming profile.
+                    </p>
+                </div>
+
+                <form method="post" action="">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="ks-warning">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="ks-form-grid">
+                        {% for field in form %}
+                            <div class="ks-field">
+                                <label for="{{ field.id_for_label }}">
+                                    {{ field.label }}
+                                    {% if field.field.required %}
+                                        *
+                                    {% else %}
+                                        <span style="font-weight:400;color:var(--ks-muted);">
+                                            (Optional)
+                                        </span>
+                                    {% endif %}
+                                </label>
+
+                                {{ field }}
+
+                                {% if field.help_text %}
+                                    <small class="ks-help">
+                                        {{ field.help_text }}
+                                    </small>
+                                {% endif %}
+
+                                {% for error in field.errors %}
+                                    <small class="ks-error">
+                                        {{ error }}
+                                    </small>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <button type="submit" class="ks-submit">
+                        🔍 Find Matching Schemes
+                    </button>
+                </form>
+            </section>
+
+            <aside class="ks-side-column">
+
+                <div class="ks-side-card">
+                    <h3>How it works</h3>
+
+                    <div class="ks-step">
+                        <div class="ks-step-number">1</div>
+                        <div>
+                            <strong>Enter farmer details</strong>
+                            <span>Provide your state, district, age, land, and crop information.</span>
+                        </div>
+                    </div>
+
+                    <div class="ks-step">
+                        <div class="ks-step-number">2</div>
+                        <div>
+                            <strong>Check matching schemes</strong>
+                            <span>The platform checks your profile against active scheme records.</span>
+                        </div>
+                    </div>
+
+                    <div class="ks-step">
+                        <div class="ks-step-number">3</div>
+                        <div>
+                            <strong>Visit official links</strong>
+                            <span>Review official scheme requirements before applying.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ks-side-card">
+                    <h3>Explore national schemes</h3>
+                    <p style="color:var(--ks-muted);font-size:13px;line-height:1.7;">
+                        For additional Central and State/UT scheme discovery,
+                        visit the Government of India’s myScheme portal.
+                    </p>
+
+                    <a
+                        class="ks-link"
+                        href="https://www.myscheme.gov.in/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Explore myScheme ↗
+                    </a>
+                </div>
+
+                <div class="ks-side-card">
+                    <h3>Eligibility notice</h3>
+                    <div class="ks-note">
+                        Matching results are informational and do not guarantee
+                        approval. Final eligibility, documents, deadlines, and
+                        benefits are determined by the relevant government
+                        department.
+                    </div>
+                </div>
+
+            </aside>
+        </div>
+
+        <!-- Matching results -->
+        <section class="ks-section" id="matching-results">
+            <div class="ks-section-heading">
+                <div>
+                    <h2>Matching Schemes</h2>
+                    <p>
+                        {% if searched %}
+                            Schemes marked as eligible by the current matching logic.
+                        {% else %}
+                            Submit your profile to see potentially matching schemes.
+                        {% endif %}
+                    </p>
+                </div>
+
+                <span class="ks-count">
+                    {{ result_count }} matched
+                </span>
+            </div>
+
+            {% if results %}
+                <div class="ks-scheme-grid">
+                    {% for item in results %}
+                        <article class="ks-scheme-card">
+
+                            <div class="ks-card-top">
+                                <span class="ks-tag">
+                                    {{ item.scheme.category|default:"Government Scheme" }}
+                                </span>
+
+                                {% if item.score != None %}
+                                    <span class="ks-score">
+                                        Match: {{ item.score }}%
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <h3>{{ item.scheme.title }}</h3>
+
+                            {% if item.scheme.short_description %}
+                                <p>{{ item.scheme.short_description }}</p>
+                            {% endif %}
+
+                            {% if item.scheme.benefits %}
+                                <div class="ks-benefits">
+                                    <strong>🎁 Benefits</strong>
+                                    {{ item.scheme.benefits }}
+                                </div>
+                            {% endif %}
+
+                            {% if item.reasons %}
+                                <strong style="font-size:13px;display:block;margin-bottom:7px;">
+                                    Matching details
+                                </strong>
+
+                                <ul class="ks-reasons">
+                                    {% for reason in item.reasons %}
+                                        <li>{{ reason }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+
+                            {% if item.warnings %}
+                                {% for warning in item.warnings %}
+                                    <div class="ks-warning">
+                                        ⚠️ {{ warning }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+
+                            {% if item.scheme.application_deadline %}
+                                <p>
+                                    <strong>Deadline:</strong>
+                                    {{ item.scheme.application_deadline }}
+                                </p>
+                            {% endif %}
+
+                            {% if item.scheme.official_url %}
+                                <a
+                                    class="ks-link"
+                                    href="{{ item.scheme.official_url }}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Official Details / Apply ↗
+                                </a>
+                            {% else %}
+                                <a
+                                    class="ks-link"
+                                    href="https://www.myscheme.gov.in/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Find Official Scheme Details ↗
+                                </a>
+                            {% endif %}
+
+                        </article>
+                    {% endfor %}
+                </div>
+
+            {% elif searched %}
+                <div class="ks-empty">
+                    <div class="ks-empty-icon">🌾</div>
+                    <h3>No matching schemes found</h3>
+                    <p>
+                        No active scheme in the current database matched your
+                        submitted profile. Browse all stored schemes below,
+                        or check the national scheme discovery portal.
+                    </p>
+                </div>
+
+            {% else %}
+                <div class="ks-empty">
+                    <div class="ks-empty-icon">🔎</div>
+                    <h3>Your matching results will appear here</h3>
+                    <p>
+                        Fill in your farmer profile and click
+                        <strong>Find Matching Schemes</strong>.
+                    </p>
+                </div>
+            {% endif %}
+        </section>
+
+        <!-- All active schemes -->
+        <section class="ks-section" id="all-government-schemes">
+
+            <div class="ks-section-heading">
+                <div>
+                    <h2>Explore All Available Schemes</h2>
+                    <p>
+                        Browse every active scheme currently stored in the
+                        KisanSathi AI database, regardless of matching status.
+                    </p>
+                </div>
+
+                <span class="ks-count">
+                    {{ all_scheme_count }} schemes
+                </span>
+            </div>
+
+            <div class="ks-note" style="margin-bottom:18px;">
+                This catalogue contains schemes currently entered in the
+                KisanSathi AI database. It is not a guarantee that every
+                government scheme has been imported or recently verified.
+                Check the official portal for current details.
+            </div>
+
+            {% if all_schemes %}
+                <div class="ks-scheme-grid">
+
+                    {% for scheme in all_schemes %}
+                        <article class="ks-scheme-card">
+
+                            <div class="ks-card-top">
+                                <span class="ks-tag">
+                                    {{ scheme.category|default:"Government Scheme" }}
+                                </span>
+
+                                {% if scheme.state %}
+                                    <span class="ks-score">
+                                        {{ scheme.state }}
+                                    </span>
+                                {% else %}
+                                    <span class="ks-score">
+                                        Central / All India
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <h3>{{ scheme.title }}</h3>
+
+                            {% if scheme.short_description %}
+                                <p>{{ scheme.short_description }}</p>
+                            {% endif %}
+
+                            {% if scheme.benefits %}
+                                <div class="ks-benefits">
+                                    <strong>🎁 Benefits</strong>
+                                    {{ scheme.benefits }}
+                                </div>
+                            {% endif %}
+
+                            {% if scheme.application_deadline %}
+                                <p>
+                                    <strong>Application deadline:</strong>
+                                    {{ scheme.application_deadline }}
+                                </p>
+                            {% endif %}
+
+                            {% if scheme.official_url %}
+                                <a
+                                    class="ks-link"
+                                    href="{{ scheme.official_url }}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Official Scheme Details / Apply ↗
+                                </a>
+                            {% else %}
+                                <a
+                                    class="ks-link"
+                                    href="https://www.myscheme.gov.in/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Find Official Scheme Details ↗
+                                </a>
+                            {% endif %}
+
+                        </article>
+                    {% endfor %}
+
+                </div>
+            {% else %}
+                <div class="ks-empty">
+                    <div class="ks-empty-icon">📋</div>
+                    <h3>No schemes have been added yet</h3>
+                    <p>
+                        Add active scheme records through the Django admin
+                        panel to display them in this catalogue.
+                    </p>
+                </div>
+            {% endif %}
+
+        </section>
+
+        <footer class="ks-footer">
+            KisanSathi AI provides informational scheme discovery.
+            Always verify eligibility, application deadlines, benefits,
+            and required documents with the official government department.
+        </footer>
+
+    </div>
+</div>
+
+<script>
+(function () {
+    const toggle = document.getElementById("ksThemeToggle");
+
+    if (!toggle) {
+        return;
+    }
+
+    function setTheme(theme) {
+        if (theme === "dark") {
+            document.body.classList.add("ks-dark");
+            toggle.textContent = "☀️ Light mode";
+        } else {
+            document.body.classList.remove("ks-dark");
+            toggle.textContent = "🌙 Dark mode";
+        }
+    }
+
+    let savedTheme = "light";
+
+    try {
+        savedTheme = localStorage.getItem("kisansathi-scheme-theme") || "light";
+    } catch (error) {
+        savedTheme = "light";
+    }
+
+    setTheme(savedTheme);
+
+    toggle.addEventListener("click", function () {
+        const darkModeEnabled = document.body.classList.contains("ks-dark");
+        const nextTheme = darkModeEnabled ? "light" : "dark";
+
+        setTheme(nextTheme);
+
+        try {
+            localStorage.setItem("kisansathi-scheme-theme", nextTheme);
+        } catch (error) {
+            // The theme still changes for this page view.
+        }
+    });
+})();
+</script>
+
+{% endblock %}

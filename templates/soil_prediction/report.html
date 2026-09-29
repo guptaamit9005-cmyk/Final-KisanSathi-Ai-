@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soil Report | KisanSathi AI</title>
+<style>
+body{margin:0;background:#f4f8f4;color:#203027;font-family:Arial,sans-serif}
+.wrap{max-width:900px;margin:30px auto;padding:0 16px}
+.card{background:white;border:1px solid #dce7df;border-radius:14px;padding:24px;margin-bottom:18px}
+h1{color:#176b3a;margin-top:0}
+h2{font-size:19px;color:#176b3a}
+.muted{color:#64736a;line-height:1.6}
+.status{padding:14px;border-radius:10px;background:#eaf6ee;margin:15px 0}
+.status.attention{background:#fff4df;color:#694b0c}
+table{width:100%;border-collapse:collapse}
+td{padding:12px;border-bottom:1px solid #e5ece7}
+td:last-child{text-align:right;font-weight:700}
+li{margin:10px 0;line-height:1.5}
+button,a{display:inline-block;padding:11px 15px;border-radius:8px;text-decoration:none;font-weight:700}
+button{border:0;background:#176b3a;color:white;cursor:pointer}
+a{background:#eaf6ee;color:#176b3a}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+@media print{.actions{display:none}body{background:white}.card{box-shadow:none;break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="actions">
+    <a href="{% url 'soil_prediction:home' %}">New Analysis</a>
+    <button onclick="window.print()">Print / Save PDF</button>
+  </div>
+
+  <div class="card">
+    <h1>🌱 Soil Screening Report</h1>
+    <p class="muted">
+      {{ analysis.farm_name|default:"Farm not specified" }}
+      {% if analysis.location %} · {{ analysis.location }}{% endif %}
+      <br>Created: {{ analysis.created_at|date:"d M Y, h:i A" }}
+    </p>
+    {% if analysis.target_crop %}
+      <p><strong>Planned crop:</strong> {{ analysis.target_crop }}</p>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <h2>Soil pH Screening</h2>
+    <div class="status {% if analysis.report.ph_level == 'attention' %}attention{% endif %}">
+      <strong>{{ analysis.report.ph_status }}</strong>
+      <p>{{ analysis.report.ph_message }}</p>
+      <strong>Entered pH: {{ analysis.ph }}</strong>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Recorded Nutrient Values</h2>
+    <table>
+      {% for name, value in analysis.report.nutrients.items %}
+      <tr><td>{{ name }}</td><td>{{ value }}</td></tr>
+      {% endfor %}
+    </table>
+    <p class="muted">
+      These are the values you entered, not classifications of low, medium or high.
+      Their interpretation depends on units, laboratory method, soil type and crop.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Additional Recorded Properties</h2>
+    <table>
+      <tr><td>Temperature</td><td>{{ analysis.temperature }} °C</td></tr>
+      <tr><td>Humidity</td><td>{{ analysis.humidity }} %</td></tr>
+      <tr><td>Rainfall</td><td>{{ analysis.rainfall }} mm</td></tr>
+      <tr><td>Organic carbon</td><td>{{ analysis.organic_carbon|default:"Not provided" }}</td></tr>
+      <tr><td>Electrical conductivity</td><td>{{ analysis.electrical_conductivity|default:"Not provided" }}</td></tr>
+      <tr><td>Soil texture</td><td>{{ analysis.get_soil_texture_display|default:"Not specified" }}</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Suggested Next Steps</h2>
+    <ol>
+      {% for item in analysis.report.recommendations %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>Important Advisory</h2>
+    <p class="muted">{{ analysis.report.disclaimer }}</p>
+  </div>
+</div>
+</body>
+</html>

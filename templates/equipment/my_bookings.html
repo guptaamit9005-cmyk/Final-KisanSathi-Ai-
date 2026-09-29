@@ -1,0 +1,708 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Equipment Bookings | KisanSathi AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f8f2;
+            color: #18351f;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .page {
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            height: 72px;
+            background: #ffffff;
+            border-bottom: 1px solid #e1eadf;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6%;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: #dff3df;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+        }
+
+        .brand-name {
+            font-size: 20px;
+            font-weight: 800;
+            color: #174d27;
+        }
+
+        .brand-sub {
+            font-size: 11px;
+            color: #78907d;
+            margin-top: 2px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            padding: 10px 17px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #286337;
+            background: #edf7ed;
+        }
+
+        .nav-btn:hover {
+            background: #dcefdc;
+        }
+
+        /* CONTAINER */
+
+        .container {
+            width: min(1180px, 92%);
+            margin: 0 auto;
+            padding: 38px 0 60px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: #4b7954;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 22px;
+        }
+
+        .back-link:hover {
+            color: #1d6a32;
+        }
+
+        /* HEADER */
+
+        .hero {
+            background: linear-gradient(135deg, #e9f8e7, #ffffff);
+            border: 1px solid #dcebd9;
+            border-radius: 22px;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 28px;
+        }
+
+        .hero-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .hero-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            background: #cfeccf;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .hero h1 {
+            font-size: 30px;
+            color: #174d27;
+            margin-bottom: 7px;
+        }
+
+        .hero p {
+            color: #66806c;
+            font-size: 14px;
+        }
+
+        .add-btn {
+            background: #247b38;
+            color: white;
+            padding: 13px 20px;
+            border-radius: 11px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .add-btn:hover {
+            background: #1b642d;
+            transform: translateY(-1px);
+        }
+
+        /* STATS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e0e9dd;
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .stat-label {
+            color: #75897a;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #195a2b;
+        }
+
+        /* BOOKING CARD */
+
+        .booking-list {
+            display: grid;
+            gap: 18px;
+        }
+
+        .booking-card {
+            background: white;
+            border: 1px solid #e1e9df;
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 5px 20px rgba(30, 70, 35, 0.04);
+        }
+
+        .booking-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .equipment-info {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .equipment-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 15px;
+            background: #eef8ed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .equipment-name {
+            font-size: 19px;
+            font-weight: 800;
+            color: #194f28;
+            margin-bottom: 5px;
+        }
+
+        .equipment-location {
+            color: #738276;
+            font-size: 13px;
+        }
+
+        /* STATUS */
+
+        .status {
+            padding: 7px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: capitalize;
+            white-space: nowrap;
+        }
+
+        .status-pending {
+            background: #fff5d9;
+            color: #966d08;
+        }
+
+        .status-approved {
+            background: #ddf5e1;
+            color: #237039;
+        }
+
+        .status-rejected {
+            background: #ffe3e1;
+            color: #a23a34;
+        }
+
+        .status-cancelled {
+            background: #eeeeee;
+            color: #666666;
+        }
+
+        .status-completed {
+            background: #e1eefb;
+            color: #28618f;
+        }
+
+        /* DETAILS */
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid #edf1eb;
+        }
+
+        .detail {
+            background: #f7faf6;
+            border-radius: 11px;
+            padding: 13px;
+        }
+
+        .detail-label {
+            font-size: 11px;
+            color: #839087;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #2c4832;
+        }
+
+        .cost {
+            color: #1e7033;
+            font-size: 16px;
+        }
+
+        .message {
+            margin-top: 16px;
+            padding: 13px 15px;
+            background: #f4f8f2;
+            border-radius: 11px;
+            color: #607064;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* EMPTY */
+
+        .empty {
+            background: white;
+            border: 1px solid #e0e9dd;
+            border-radius: 20px;
+            padding: 65px 25px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 55px;
+            margin-bottom: 15px;
+        }
+
+        .empty h2 {
+            color: #285a32;
+            margin-bottom: 8px;
+        }
+
+        .empty p {
+            color: #78877b;
+            font-size: 14px;
+            margin-bottom: 22px;
+        }
+
+        .browse-btn {
+            display: inline-block;
+            background: #247b38;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 800px) {
+
+            .navbar {
+                padding: 0 4%;
+            }
+
+            .nav-btn {
+                display: none;
+            }
+
+            .hero {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .booking-top {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 520px) {
+
+            .container {
+                width: 94%;
+                padding-top: 25px;
+            }
+
+            .hero {
+                padding: 22px;
+            }
+
+            .hero h1 {
+                font-size: 24px;
+            }
+
+            .hero-left {
+                align-items: flex-start;
+            }
+
+            .hero-icon {
+                width: 52px;
+                height: 52px;
+                font-size: 25px;
+            }
+
+            .details {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-card {
+                padding: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <a href="{% url 'dashboard:home' %}" class="brand">
+
+            <div class="brand-icon">🌱</div>
+
+            <div>
+                <div class="brand-name">KisanSathi AI</div>
+                <div class="brand-sub">Smart Farming Assistant</div>
+            </div>
+
+        </a>
+
+        <div class="nav-actions">
+
+            <a href="{% url 'equipment:home' %}" class="nav-btn">
+                🚜 Browse Equipment
+            </a>
+
+            <a href="{% url 'dashboard:home' %}" class="nav-btn">
+                Dashboard
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <main class="container">
+
+        <a href="{% url 'equipment:home' %}" class="back-link">
+            ← Back to Equipment
+        </a>
+
+
+        <!-- HEADER -->
+
+        <section class="hero">
+
+            <div class="hero-left">
+
+                <div class="hero-icon">
+                    🚜
+                </div>
+
+                <div>
+
+                    <h1>My Bookings</h1>
+
+                    <p>
+                        Track your agricultural equipment rental requests
+                        and booking status.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <a href="{% url 'equipment:home' %}" class="add-btn">
+                + Book Equipment
+            </a>
+
+        </section>
+
+
+        <!-- STATS -->
+
+        <section class="stats">
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Total Bookings
+                </div>
+
+                <div class="stat-value">
+                    {{ bookings|length }}
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Pending Requests
+                </div>
+
+                <div class="stat-value">
+                    {{ pending_count|default:"0" }}
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Approved Bookings
+                </div>
+
+                <div class="stat-value">
+                    {{ approved_count|default:"0" }}
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- BOOKINGS -->
+
+        {% if bookings %}
+
+            <div class="booking-list">
+
+                {% for booking in bookings %}
+
+                    <article class="booking-card">
+
+                        <div class="booking-top">
+
+                            <div class="equipment-info">
+
+                                <div class="equipment-icon">
+                                    🚜
+                                </div>
+
+                                <div>
+
+                                    <div class="equipment-name">
+                                        {{ booking.equipment.name }}
+                                    </div>
+
+                                    <div class="equipment-location">
+                                        📍 {{ booking.equipment.location }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="status status-{{ booking.status }}">
+                                {{ booking.get_status_display }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="details">
+
+                            <div class="detail">
+
+                                <div class="detail-label">
+                                    START DATE
+                                </div>
+
+                                <div class="detail-value">
+                                    {{ booking.start_date|date:"d M Y" }}
+                                </div>
+
+                            </div>
+
+
+                            <div class="detail">
+
+                                <div class="detail-label">
+                                    END DATE
+                                </div>
+
+                                <div class="detail-value">
+                                    {{ booking.end_date|date:"d M Y" }}
+                                </div>
+
+                            </div>
+
+
+                            <div class="detail">
+
+                                <div class="detail-label">
+                                    QUANTITY
+                                </div>
+
+                                <div class="detail-value">
+                                    {{ booking.quantity }}
+                                </div>
+
+                            </div>
+
+
+                            <div class="detail">
+
+                                <div class="detail-label">
+                                    ESTIMATED COST
+                                </div>
+
+                                <div class="detail-value cost">
+                                    ₹{{ booking.estimated_cost }}
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        {% if booking.message %}
+
+                            <div class="message">
+
+                                <strong>Your message:</strong>
+                                {{ booking.message }}
+
+                            </div>
+
+                        {% endif %}
+
+
+                        {% if booking.owner_response %}
+
+                            <div class="message">
+
+                                <strong>Owner response:</strong>
+                                {{ booking.owner_response }}
+
+                            </div>
+
+                        {% endif %}
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <!-- EMPTY STATE -->
+
+            <section class="empty">
+
+                <div class="empty-icon">
+                    🚜
+                </div>
+
+                <h2>No bookings yet</h2>
+
+                <p>
+                    You haven't booked any farm equipment yet.
+                    Find tractors, harvesters, sprayers and other
+                    agricultural machines available for rent.
+                </p>
+
+                <a href="{% url 'equipment:home' %}" class="browse-btn">
+                    Browse Equipment →
+                </a>
+
+            </section>
+
+        {% endif %}
+
+    </main>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>KisanSathi AI — Sign In</title>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        :root {
+
+            --green: #087443;
+            --green-dark: #075b37;
+            --green-deep: #06472d;
+
+            --background: #f3f8f2;
+
+            --white: #ffffff;
+
+            --text: #18372a;
+
+            --muted: #758079;
+
+            --border: #dce7df;
+
+            --soft-green: #e7f3eb;
+
+            --error: #b42318;
+            --error-bg: #fff1f0;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            background: var(--background);
+
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            color: var(--text);
+
+        }
+
+
+        .page {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            flex-direction: column;
+
+        }
+
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        .header {
+
+            height: 76px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 6%;
+
+            border-bottom:
+                1px solid
+                rgba(8,116,67,.08);
+
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            color: var(--green);
+
+            text-decoration: none;
+
+            font-weight: 800;
+
+        }
+
+
+        .brand-icon {
+
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            background: var(--green);
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+
+        .brand-name {
+
+            font-size: 18px;
+
+        }
+
+
+        .header-text {
+
+            color: var(--muted);
+
+            font-size: 11px;
+
+        }
+
+
+        /* =========================================
+           MAIN
+        ========================================= */
+
+        .main {
+
+            width: 100%;
+
+            max-width: 980px;
+
+            margin: auto;
+
+            padding: 45px 25px 60px;
+
+        }
+
+
+        .page-number {
+
+            color: var(--green);
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .heading {
+
+            margin-bottom: 23px;
+
+        }
+
+
+        .heading h1 {
+
+            font-size: 27px;
+
+            color: var(--green-deep);
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .heading p {
+
+            color: var(--muted);
+
+            font-size: 11px;
+
+        }
+
+
+        /* =========================================
+           CARD
+        ========================================= */
+
+        .card {
+
+            background: white;
+
+            border: 1px solid var(--border);
+
+            border-radius: 17px;
+
+            padding: 32px;
+
+            box-shadow:
+                0 15px 40px
+                rgba(20,70,45,.05);
+
+        }
+
+
+        .welcome {
+
+            margin-bottom: 24px;
+
+        }
+
+
+        .welcome h2 {
+
+            color: var(--green-deep);
+
+            font-size: 20px;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .welcome p {
+
+            color: var(--muted);
+
+            font-size: 10px;
+
+        }
+
+
+        /* =========================================
+           ROLE SELECT
+        ========================================= */
+
+        .roles {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 12px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .role {
+
+            min-height: 135px;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 12px;
+
+            padding: 17px;
+
+            cursor: pointer;
+
+            position: relative;
+
+            transition: .2s;
+
+        }
+
+
+        .role:hover {
+
+            border-color:
+                rgba(8,116,67,.35);
+
+            transform:
+                translateY(-2px);
+
+        }
+
+
+        .role.active {
+
+            background:
+                #f2faf4;
+
+            border-color:
+                var(--green);
+
+        }
+
+
+        .role-number {
+
+            width: 23px;
+            height: 23px;
+
+            border-radius: 50%;
+
+            background:
+                var(--soft-green);
+
+            color:
+                var(--green);
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .role.active
+        .role-number {
+
+            background:
+                var(--green);
+
+            color: white;
+
+        }
+
+
+        .role h3 {
+
+            font-size: 13px;
+
+            color:
+                var(--green-deep);
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .role p {
+
+            color:
+                var(--muted);
+
+            font-size: 9px;
+
+            line-height: 1.5;
+
+        }
+
+
+        .role-badge {
+
+            display: inline-block;
+
+            color:
+                var(--green);
+
+            background:
+                var(--soft-green);
+
+            font-size: 7px;
+
+            font-weight: 800;
+
+            padding:
+                4px 6px;
+
+            border-radius: 4px;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        /* =========================================
+           LOGIN FORM
+        ========================================= */
+
+        .login-area {
+
+            border-top:
+                1px solid
+                #edf1ee;
+
+            padding-top: 24px;
+
+        }
+
+
+        .login-title {
+
+            font-size: 13px;
+
+            color:
+                var(--green-deep);
+
+            font-weight: 800;
+
+            margin-bottom: 14px;
+
+        }
+
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 13px;
+
+        }
+
+
+        .field {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 6px;
+
+        }
+
+
+        .field label {
+
+            color:
+                var(--text);
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+        }
+
+
+        .field input {
+
+            height: 40px;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 8px;
+
+            padding:
+                0 11px;
+
+            outline: none;
+
+            font-size: 10px;
+
+            color: var(--text);
+
+            background: white;
+
+        }
+
+
+        .field input:focus {
+
+            border-color:
+                var(--green);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(8,116,67,.07);
+
+        }
+
+
+        .full {
+
+            grid-column: 1 / -1;
+
+        }
+
+
+        .errors {
+
+            background:
+                var(--error-bg);
+
+            color:
+                var(--error);
+
+            border:
+                1px solid
+                #f3c2bd;
+
+            border-radius: 8px;
+
+            padding: 10px;
+
+            font-size: 9px;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .actions {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-top: 17px;
+
+        }
+
+
+        .create-link {
+
+            color:
+                var(--green);
+
+            font-size: 9px;
+
+            text-decoration: none;
+
+            font-weight: 700;
+
+        }
+
+
+        .login-button {
+
+            border: none;
+
+            background:
+                var(--green);
+
+            color: white;
+
+            min-height: 40px;
+
+            padding:
+                0 22px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            transition: .2s;
+
+        }
+
+
+        .login-button:hover {
+
+            background:
+                var(--green-dark);
+
+            transform:
+                translateY(-1px);
+
+        }
+
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        .footer {
+
+            height: 45px;
+
+            background:
+                var(--green-deep);
+
+            color:
+                rgba(255,255,255,.75);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 6%;
+
+            font-size: 8px;
+
+        }
+
+
+        @media(max-width:700px) {
+
+            .roles {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .form-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .full {
+
+                grid-column: auto;
+
+            }
+
+
+            .header-text {
+
+                display: none;
+
+            }
+
+
+            .card {
+
+                padding: 22px;
+
+            }
+
+
+            .actions {
+
+                flex-direction: column;
+
+                align-items: stretch;
+
+                gap: 12px;
+
+            }
+
+
+            .login-button {
+
+                width: 100%;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="page">
+
+
+    <!-- HEADER -->
+
+    <header class="header">
+
+        <a href="/" class="brand">
+
+            <div class="brand-icon">
+                🌱
+            </div>
+
+            <div class="brand-name">
+                KisanSathi AI
+            </div>
+
+        </a>
+
+
+        <div class="header-text">
+            Smart Farming • Better Decisions
+        </div>
+
+    </header>
+
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+
+        <div class="heading">
+
+            <div class="page-number">
+                02 LOGIN & ROLE SELECTION
+            </div>
+
+            <h1>
+                Welcome back
+            </h1>
+
+            <p>
+                Choose how you want to use KisanSathi today.
+            </p>
+
+        </div>
+
+
+
+        <section class="card">
+
+
+            <div class="welcome">
+
+                <h2>
+                    How would you like to use KisanSathi?
+                </h2>
+
+                <p>
+                    Select your role and sign in to continue.
+                </p>
+
+            </div>
+
+
+
+            <!-- ROLE -->
+
+            <div class="roles">
+
+
+                <div
+                    class="role active"
+                    data-role="Farmer"
+                >
+
+                    <div class="role-number">
+                        1
+                    </div>
+
+                    <div class="role-badge">
+                        MOST USED
+                    </div>
+
+                    <h3>
+                        Farmer
+                    </h3>
+
+                    <p>
+                        Crop, soil, weather and schemes
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="role"
+                    data-role="Equipment Renter"
+                >
+
+                    <div class="role-number">
+                        2
+                    </div>
+
+                    <div class="role-badge">
+                        RENT TOOLS
+                    </div>
+
+                    <h3>
+                        Equipment Renter
+                    </h3>
+
+                    <p>
+                        Find & rent farm equipment
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="role"
+                    data-role="Land Renter"
+                >
+
+                    <div class="role-number">
+                        3
+                    </div>
+
+                    <div class="role-badge">
+                        RENT LAND
+                    </div>
+
+                    <h3>
+                        Land Renter
+                    </h3>
+
+                    <p>
+                        Find land for seasonal farming
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- LOGIN -->
+
+            <div class="login-area">
+
+
+                <div class="login-title">
+                    Sign in to your account
+                </div>
+
+
+                {% if form.non_field_errors %}
+
+                <div class="errors">
+
+                    {{ form.non_field_errors }}
+
+                </div>
+
+                {% endif %}
+
+
+                <form
+                    method="POST"
+                    action="{% url 'accounts:login' %}"
+                >
+
+                    {% csrf_token %}
+
+
+                    <input
+                        type="hidden"
+                        name="role"
+                        id="selectedRole"
+                        value="Farmer"
+                    >
+
+
+                    <div class="form-grid">
+
+
+                        <div class="field">
+
+                            <label>
+                                Username
+                            </label>
+
+                            <input
+                                type="text"
+                                name="username"
+                                placeholder="Enter username"
+                                autocomplete="username"
+                                required
+                            >
+
+                            {% if form.username.errors %}
+
+                            <div class="errors">
+                                {{ form.username.errors }}
+                            </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label>
+                                Password
+                            </label>
+
+                            <input
+                                type="password"
+                                name="password"
+                                placeholder="Enter password"
+                                autocomplete="current-password"
+                                required
+                            >
+
+                            {% if form.password.errors %}
+
+                            <div class="errors">
+                                {{ form.password.errors }}
+                            </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div class="actions">
+
+
+                        <a
+                            href="{% url 'accounts:register' %}"
+                            class="create-link"
+                        >
+                            Don't have an account?
+                            Create account →
+                        </a>
+
+
+                        <button
+                            type="submit"
+                            class="login-button"
+                        >
+                            Sign in →
+                        </button>
+
+
+                    </div>
+
+
+                </form>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <footer class="footer">
+
+        <span>
+            KisanSathi AI
+        </span>
+
+        <span>
+            Smart Farming • Better Decisions
+        </span>
+
+    </footer>
+
+
+</div>
+
+
+
+<script>
+
+    const roles =
+        document.querySelectorAll(".role");
+
+    const selectedRole =
+        document.getElementById("selectedRole");
+
+
+    roles.forEach(role => {
+
+        role.addEventListener("click", () => {
+
+            roles.forEach(item => {
+
+                item.classList.remove("active");
+
+            });
+
+
+            role.classList.add("active");
+
+
+            selectedRole.value =
+                role.dataset.role;
+
+        });
+
+    });
+
+</script>
+
+
+</body>
+</html>

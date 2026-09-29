@@ -1,0 +1,1175 @@
+Here is the upgraded, modern, and farmer-friendly UI code for your **Crop Analysis Result** page (`result.html`).
+
+### Key UI & Functional Upgrades:
+1. **Interactive Audio Player Experience**:
+   - **Live Soundwave Visualizer** that animates in real-time when the Hindi voice is speaking.
+   - **Active Section Highlighting**: Automatically adds a glowing green outline to the exact treatment card currently being read aloud so farmers can follow along easily.
+2. **Prescription-Grade Layout**:
+   - **Visual Severity & Confidence Gauges**: High-contrast, color-coded badges (Severe / Moderate / Mild) and an animated confidence bar.
+   - **4 Distinct Treatment Cards**: Organic (🌱), Chemical (🧪), Fertilizer/Nutrition (🌾), and Prevention (🛡️) each with distinct color accents, clear icons, and dedicated Hindi audio buttons.
+3. **Shop-Ready & Print Friendly (`@media print`)**:
+   - Added a **"🖨️ पर्ची प्रिंट करें (Print / Save PDF)"** button so farmers can take the report directly to their local fertilizer/agri-dealer shop. Non-printable audio buttons automatically hide on print.
+4. **All Django tags and voice synthesis logic are 100% preserved and enhanced**.
+
+---
+
+```html
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KisanSathi AI - Crop Health Diagnostic Report</title>
+
+    <!-- Google Fonts: Plus Jakarta Sans for English & Noto Sans Devanagari for Hindi -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #15803d;
+            --primary-dark: #14532d;
+            --primary-light: #22c55e;
+            --primary-soft: #f0fdf4;
+            --primary-border: #bbf7d0;
+            --amber: #d97706;
+            --amber-soft: #fffbeb;
+            --amber-border: #fde68a;
+            --rose: #e11d48;
+            --rose-soft: #fff1f2;
+            --sky: #0284c7;
+            --sky-soft: #f0f9ff;
+            --text-title: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --bg-page: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --radius-xl: 22px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 10px 25px -5px rgba(22, 101, 52, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 20px 30px -10px rgba(15, 23, 42, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', system-ui, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-body);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 32px 20px 60px;
+        }
+
+        /* Top Bar */
+        .top-navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            font-size: 1.5rem;
+        }
+
+        .report-id {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            background: #e2e8f0;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+
+        /* Hero Banner */
+        .hero-header {
+            background: linear-gradient(135deg, #0d4622 0%, #15803d 60%, #16a34a 100%);
+            color: white;
+            padding: 30px 28px;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-header::after {
+            content: "🌿";
+            position: absolute;
+            right: 20px;
+            bottom: -15px;
+            font-size: 110px;
+            opacity: 0.12;
+            pointer-events: none;
+        }
+
+        .hero-header h1 {
+            font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+            font-weight: 800;
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-header p {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.92);
+            max-width: 650px;
+        }
+
+        /* ========================================================
+           VOICE ASSISTANT STATION (AUDIO PLAYER STYLE)
+        ======================================================== */
+        .voice-station {
+            background: #ffffff;
+            border: 2px solid var(--primary-border);
+            border-radius: var(--radius-xl);
+            padding: 24px 26px;
+            margin-bottom: 26px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+        }
+
+        .voice-station-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .voice-title-group {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .voice-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #15803d, #22c55e);
+            color: white;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+
+        .voice-title-group h2 {
+            font-size: 1.15rem;
+            color: var(--text-title);
+            font-weight: 800;
+        }
+
+        .voice-title-group p {
+            font-size: 0.84rem;
+            color: var(--text-muted);
+        }
+
+        /* Animated Soundwaves */
+        .soundwave {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 24px;
+            opacity: 0.4;
+            transition: opacity 0.3s;
+        }
+
+        .soundwave.speaking {
+            opacity: 1;
+        }
+
+        .soundwave .bar {
+            width: 4px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 4px;
+            transition: height 0.2s;
+        }
+
+        .soundwave.speaking .bar {
+            animation: wave 1s ease-in-out infinite;
+        }
+
+        .soundwave.speaking .bar:nth-child(1) { animation-delay: 0.0s; }
+        .soundwave.speaking .bar:nth-child(2) { animation-delay: 0.2s; }
+        .soundwave.speaking .bar:nth-child(3) { animation-delay: 0.4s; }
+        .soundwave.speaking .bar:nth-child(4) { animation-delay: 0.1s; }
+        .soundwave.speaking .bar:nth-child(5) { animation-delay: 0.3s; }
+
+        @keyframes wave {
+            0%, 100% { height: 6px; }
+            50% { height: 24px; background: #16a34a; }
+        }
+
+        .voice-controls-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .v-btn {
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .v-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .v-btn:active {
+            transform: translateY(0);
+        }
+
+        .v-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .v-btn-play {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);
+        }
+
+        .v-btn-play:hover {
+            background: var(--primary-dark);
+        }
+
+        .v-btn-secondary {
+            background: #f1f5f9;
+            color: var(--text-body);
+            border: 1px solid var(--border);
+        }
+
+        .v-btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .v-btn-stop {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .v-btn-stop:hover {
+            background: #fee2e2;
+        }
+
+        .voice-status-ticker {
+            margin-top: 14px;
+            padding: 8px 14px;
+            background: var(--primary-soft);
+            border: 1px solid var(--primary-border);
+            border-radius: 8px;
+            font-size: 0.84rem;
+            color: var(--primary-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ========================================================
+           RESULT OVERVIEW GRID (IMAGE + DIAGNOSIS STATS)
+        ======================================================== */
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.15fr;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 26px;
+            box-shadow: var(--shadow-sm);
+            transition: border-color 0.3s;
+        }
+
+        /* Image Box */
+        .image-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            position: relative;
+        }
+
+        .image-wrapper {
+            width: 100%;
+            height: 100%;
+            min-height: 280px;
+            max-height: 400px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            background: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .image-tag {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px);
+            color: white;
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Disease Diagnosis Info Card */
+        .diagnosis-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: #dcfce7;
+            color: var(--primary-dark);
+            font-size: 0.8rem;
+            font-weight: 700;
+            border: 1px solid #86efac;
+            align-self: flex-start;
+            margin-bottom: 14px;
+        }
+
+        .disease-title {
+            font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+            font-weight: 800;
+            color: var(--text-title);
+            line-height: 1.25;
+            margin-bottom: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        /* Severity & Confidence Section */
+        .metrics-card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin: 14px 0 20px;
+        }
+
+        .metric-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.88rem;
+        }
+
+        .metric-label {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-weight: 800;
+            color: var(--text-title);
+        }
+
+        /* Meter Bar */
+        .confidence-meter {
+            width: 100%;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .meter-fill {
+            height: 100%;
+            width: {{ prediction.confidence|default:0 }}%;
+            background: linear-gradient(90deg, #16a34a, #22c55e);
+            border-radius: 20px;
+            transition: width 1s ease-out;
+        }
+
+        /* Severity Pill Badge */
+        .severity-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+
+        /* Other Predictions List */
+        .top-predictions-box {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+        }
+
+        .top-predictions-box h4 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .prediction-chip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 0.84rem;
+        }
+
+        .prediction-chip span {
+            font-weight: 600;
+            color: var(--text-body);
+        }
+
+        .prediction-chip strong {
+            color: var(--primary-dark);
+        }
+
+        /* ========================================================
+           TREATMENT & ACTION PRESCRIPTION CARDS (4 GRIDS)
+        ======================================================== */
+        .recommendations-wrapper {
+            margin-top: 10px;
+        }
+
+        .section-headline {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--text-title);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-subline {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .treatment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .treatment-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 22px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: all 0.25s ease;
+        }
+
+        .treatment-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        /* Active Audio Card Glow */
+        .treatment-card.audio-active {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25), var(--shadow-md);
+            background: #fbfffc;
+        }
+
+        .t-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .t-header-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--text-title);
+        }
+
+        .t-badge-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            font-size: 18px;
+        }
+
+        /* Specific card theme colors */
+        .organic-theme .t-badge-icon { background: var(--primary-soft); color: var(--primary); }
+        .chemical-theme .t-badge-icon { background: var(--rose-soft); color: var(--rose); }
+        .fertilizer-theme .t-badge-icon { background: var(--amber-soft); color: var(--amber); }
+        .prevention-theme .t-badge-icon { background: var(--sky-soft); color: var(--sky); }
+
+        .treatment-body {
+            font-size: 0.92rem;
+            color: var(--text-body);
+            line-height: 1.7;
+            white-space: pre-line;
+            overflow-wrap: anywhere;
+            margin-bottom: 18px;
+            flex-grow: 1;
+        }
+
+        /* Individual Voice Trigger Button */
+        .btn-card-audio {
+            align-self: flex-start;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            color: var(--text-dark);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-card-audio:hover {
+            background: var(--primary-soft);
+            border-color: var(--primary-border);
+            color: var(--primary-dark);
+        }
+
+        .btn-card-audio:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ========================================================
+           BOTTOM ACTION BAR (PRINT, NEW SCAN, HISTORY)
+        ======================================================== */
+        .action-bar-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 20px 24px;
+            margin-top: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .actions-group {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .action-btn {
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .action-btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 14px rgba(22, 163, 74, 0.3);
+        }
+
+        .action-btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .action-btn-secondary {
+            background: #f1f5f9;
+            color: var(--text-title);
+            border: 1px solid var(--border);
+        }
+
+        .action-btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .disclaimer-card {
+            margin-top: 22px;
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            background: #fffbeb;
+            border: 1px solid #fef08a;
+            color: #92400e;
+            font-size: 0.8rem;
+            line-height: 1.55;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* ========================================================
+           PRINT STYLESHEET (CLEAN PRESCRIPTION PRINTOUT)
+        ======================================================== */
+        @media print {
+            body { background: white; font-size: 12pt; }
+            .container { padding: 0; max-width: 100%; }
+            .voice-station, .btn-card-audio, .action-bar-card, .soundwave { display: none !important; }
+            .hero-header { background: #15803d !important; color: white !important; -webkit-print-color-adjust: exact; }
+            .treatment-grid { grid-template-columns: 1fr 1fr; gap: 15px; }
+            .card { box-shadow: none !important; border: 1px solid #cbd5e1 !important; }
+            .image-wrapper { max-height: 250px; }
+        }
+
+        /* ========================================================
+           RESPONSIVE MOBILE BREAKPOINTS
+        ======================================================== */
+        @media (max-width: 860px) {
+            .result-grid { grid-template-columns: 1fr; }
+            .treatment-grid { grid-template-columns: 1fr; }
+            .voice-station-header { flex-direction: column; align-items: flex-start; }
+            .voice-controls-bar { width: 100%; }
+            .v-btn { flex: 1; justify-content: center; }
+            .action-bar-card { flex-direction: column; align-items: stretch; }
+            .actions-group { flex-direction: column; }
+            .action-btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Top Brand & Report Header -->
+    <header class="top-navbar">
+        <a class="brand-badge" href="{% url 'prediction:upload' %}">
+            <span class="brand-icon">🌱</span>
+            <span>KisanSathi AI</span>
+        </a>
+        <div class="report-id">
+            📋 AI Crop Health Prescription
+        </div>
+    </header>
+
+    <!-- Hero Header -->
+    <div class="hero-header">
+        <h1>🌱 फसल जांच रिपोर्ट (Crop Diagnosis)</h1>
+        <p>
+            आपकी फसल की जांच पूरी हो गई है। नीचे दी गई बीमारी और उपचार संबंधी 
+            परामर्श को ध्यानपूर्वक पढ़ें या सीधे हिंदी में सुनें।
+        </p>
+    </div>
+
+    <!-- ========================================================
+         VOICE ASSISTANT STATION (AUDIO CONTROLLER)
+    ======================================================== -->
+    <section class="voice-station">
+        <div class="voice-station-header">
+            <div class="voice-title-group">
+                <div class="voice-avatar">
+                    🎙️
+                </div>
+                <div>
+                    <h2>किसान साथी AI - हिंदी वॉइस असिस्टेंट</h2>
+                    <p>पूरी रिपोर्ट और दवाओं की जानकारी साफ हिंदी में सुनें</p>
+                </div>
+            </div>
+
+            <!-- Animated Soundwave Visualizer -->
+            <div class="soundwave" id="soundWaveBars" aria-hidden="true">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </div>
+
+        <div class="voice-controls-bar">
+            <button type="button" class="v-btn v-btn-play" id="speakReport">
+                🔊 पूरी रिपोर्ट सुनें (Listen All)
+            </button>
+
+            <button type="button" class="v-btn v-btn-secondary" id="pauseVoice">
+                ⏸ रोकें (Pause)
+            </button>
+
+            <button type="button" class="v-btn v-btn-secondary" id="resumeVoice">
+                ▶ दोबारा शुरू (Resume)
+            </button>
+
+            <button type="button" class="v-btn v-btn-stop" id="stopVoice">
+                ⏹ बंद करें (Stop)
+            </button>
+        </div>
+
+        <div class="voice-status-ticker" id="voiceStatus" role="status" aria-live="polite">
+            <span>⚡ हिंदी वॉइस असिस्टेंट तैयार है। रिपोर्ट सुनने के लिए ऊपर दिए गए बटन को दबाएं।</span>
+        </div>
+    </section>
+
+    <!-- ========================================================
+         MAIN DIAGNOSIS RESULT (IMAGE + CORE DETAILS)
+    ======================================================== -->
+    <div class="result-grid">
+        
+        <!-- Left Column: Uploaded/Captured Image -->
+        <div class="card image-card">
+            <div class="image-wrapper">
+                <div class="image-tag">
+                    📸 Analyzed Crop Sample
+                </div>
+                {% if prediction.image %}
+                    <img src="{{ prediction.image.url }}" alt="Analyzed crop sample">
+                {% else %}
+                    <p style="color: #94a3b8; font-size: 0.9rem;">No image sample available</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right Column: Disease Analysis & Confidence -->
+        <div class="card diagnosis-card">
+            <div>
+                <div class="status-pill">
+                    <span>🤖</span> AI Diagnostic Result
+                </div>
+
+                <h2 class="disease-title" id="diseaseName">
+                    {{ prediction.disease_name|default:"Unknown Crop Condition" }}
+                </h2>
+
+                <!-- Key Metrics Card -->
+                <div class="metrics-card">
+                    <div class="metric-row">
+                        <span class="metric-label">AI Model Confidence (सटीकता):</span>
+                        <span class="metric-value" id="confidenceValue">
+                            {{ prediction.confidence|default:"0" }}%
+                        </span>
+                    </div>
+                    <div class="confidence-meter">
+                        <div class="meter-fill"></div>
+                    </div>
+
+                    <div class="metric-row" style="margin-top: 14px; margin-bottom: 0;">
+                        <span class="metric-label">Disease Severity (गंभीरता):</span>
+                        <span class="severity-badge" id="severityText">
+                            {{ prediction.severity|default:"Moderate" }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alternative / Top Predictions (if backend provides) -->
+            {% if ai_result.top_predictions %}
+            <div class="top-predictions-box">
+                <h4>📊 Other Possibilities (अन्य संभावित लक्षण):</h4>
+                {% for item in ai_result.top_predictions %}
+                <div class="prediction-chip">
+                    <span>{{ item.disease }}</span>
+                    <strong>{{ item.confidence }}%</strong>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <!-- ========================================================
+         TREATMENT & ACTION PRESCRIPTIONS (4 SPECIALIZED CARDS)
+    ======================================================== -->
+    <section class="recommendations-wrapper">
+        <h3 class="section-headline">
+            <span>🌿</span> Recommended Treatments (सुझाए गए उपचार)
+        </h3>
+        <p class="section-subline">
+            फसल के स्वास्थ्य को सुरक्षित रखने के लिए निम्नलिखित कदमों का पालन करें:
+        </p>
+
+        <div class="treatment-grid">
+
+            <!-- 1. Organic Care -->
+            <article class="treatment-card organic-theme" id="card-organic">
+                <div class="t-card-header">
+                    <div class="t-header-title">
+                        <div class="t-badge-icon">🌱</div>
+                        <span>Organic & Natural Care</span>
+                    </div>
+                </div>
+
+                <p class="treatment-body" id="organicText">{{ treatment.organic|default:"No organic treatment information available." }}</p>
+
+                <button type="button" class="btn-card-audio" data-voice-section="organicText" data-voice-card="card-organic" data-voice-title="जैविक उपचार">
+                    🔊 जैविक उपचार सुनें
+                </button>
+            </article>
+
+            <!-- 2. Chemical Management -->
+            <article class="treatment-card chemical-theme" id="card-chemical">
+                <div class="t-card-header">
+                    <div class="t-header-title">
+                        <div class="t-badge-icon">🧪</div>
+                        <span>Chemical Spray & Pesticides</span>
+                    </div>
+                </div>
+
+                <p class="treatment-body" id="chemicalText">{{ treatment.chemical|default:"No chemical treatment information available." }}</p>
+
+                <button type="button" class="btn-card-audio" data-voice-section="chemicalText" data-voice-card="card-chemical" data-voice-title="रासायनिक उपचार">
+                    🔊 रासायनिक उपचार सुनें
+                </button>
+            </article>
+
+            <!-- 3. Nutrition & Fertilizer -->
+            <article class="treatment-card fertilizer-theme" id="card-fertilizer">
+                <div class="t-card-header">
+                    <div class="t-header-title">
+                        <div class="t-badge-icon">🌾</div>
+                        <span>Soil Nutrition & Fertilizer</span>
+                    </div>
+                </div>
+
+                <p class="treatment-body" id="fertilizerText">{{ treatment.fertilizer|default:"No fertilizer information available." }}</p>
+
+                <button type="button" class="btn-card-audio" data-voice-section="fertilizerText" data-voice-card="card-fertilizer" data-voice-title="उर्वरक एवं पोषण">
+                    🔊 उर्वरक सलाह सुनें
+                </button>
+            </article>
+
+            <!-- 4. Prevention Measures -->
+            <article class="treatment-card prevention-theme" id="card-prevention">
+                <div class="t-card-header">
+                    <div class="t-header-title">
+                        <div class="t-badge-icon">🛡️</div>
+                        <span>Future Prevention & Safety</span>
+                    </div>
+                </div>
+
+                <p class="treatment-body" id="preventionText">{{ treatment.prevention|default:"No prevention information available." }}</p>
+
+                <button type="button" class="btn-card-audio" data-voice-section="preventionText" data-voice-card="card-prevention" data-voice-title="बीमारी से बचाव">
+                    🔊 बचाव के उपाय सुनें
+                </button>
+            </article>
+
+        </div>
+    </section>
+
+    <!-- Advisory Warning Note -->
+    <div class="disclaimer-card">
+        <span style="font-size: 20px;">⚠️</span>
+        <div>
+            <strong>कृषि सलाह सूचना:</strong> यह निदान AI मॉडल द्वारा दिया गया है। 
+            किसी भी उच्च क्षमता वाले रासायनिक कीटनाशक का छिड़काव करने से पूर्व दवा विक्रेता अथवा स्थानीय कृषि विकास अधिकारी (KVK) से खुराक अवश्य सत्यापित करें।
+        </div>
+    </div>
+
+    <!-- ========================================================
+         BOTTOM ACTIONS / NEXT STEPS
+    ======================================================== -->
+    <footer class="action-bar-card">
+        <div style="font-weight: 700; color: var(--text-title); font-size: 0.95rem;">
+            अगला कदम (What would you like to do next?)
+        </div>
+
+        <div class="actions-group">
+            <button type="button" class="action-btn action-btn-secondary" onclick="window.print();">
+                🖨️ पर्ची प्रिंट करें (Print Report)
+            </button>
+
+            <a href="{% url 'prediction:history' %}" class="action-btn action-btn-secondary">
+                📜 पुराना रिकॉर्ड (History)
+            </a>
+
+            <a href="{% url 'prediction:upload' %}" class="action-btn action-btn-primary">
+                📸 नई फोटो जांचें (Scan Another)
+            </a>
+        </div>
+    </footer>
+
+</div>
+
+<!-- ========================================================
+     ENHANCED HINDI SPEECH SYNTHESIS CONTROLLER
+======================================================== -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const synth = window.speechSynthesis;
+    const statusElement = document.getElementById("voiceStatus");
+    const speakButton = document.getElementById("speakReport");
+    const pauseButton = document.getElementById("pauseVoice");
+    const resumeButton = document.getElementById("resumeVoice");
+    const stopButton = document.getElementById("stopVoice");
+    const soundWave = document.getElementById("soundWaveBars");
+    const sectionButtons = document.querySelectorAll("[data-voice-section]");
+    const allCards = document.querySelectorAll(".treatment-card");
+
+    let hindiVoice = null;
+    const HINDI_LANGUAGE = "hi-IN";
+
+    // 1. Browser Capability Check
+    if (!synth || !("SpeechSynthesisUtterance" in window)) {
+        statusElement.innerHTML = "<span>⚠️ आपका ब्राउज़र वॉइस सुविधा को सपोर्ट नहीं करता।</span>";
+        speakButton.disabled = true;
+        sectionButtons.forEach(btn => btn.disabled = true);
+        return;
+    }
+
+    // 2. Load Hindi Voice
+    function loadHindiVoice() {
+        const voices = synth.getVoices();
+        hindiVoice = voices.find(v => v.lang.toLowerCase() === "hi-in") || 
+                     voices.find(v => v.lang.toLowerCase().startsWith("hi"));
+
+        if (hindiVoice) {
+            statusElement.innerHTML = `<span>✅ स्पष्ट हिंदी आवाज उपलब्ध है (${hindiVoice.name})। रिपोर्ट सुनने के लिए बटन दबाएं।</span>`;
+        } else {
+            statusElement.innerHTML = "<span>ℹ️ डिवाइस डिफॉल्ट आवाज से हिंदी सुनाई जाएगी।</span>";
+        }
+    }
+
+    loadHindiVoice();
+    if ("onvoiceschanged" in synth) {
+        synth.onvoiceschanged = loadHindiVoice;
+    }
+
+    // Helper: Extract Clean Text
+    function getText(id) {
+        const el = document.getElementById(id);
+        return el ? el.innerText.replace(/\s+/g, " ").trim() : "";
+    }
+
+    function cleanForSpeech(text) {
+        return text
+            .replace(/%/g, " प्रतिशत ")
+            .replace(/\//g, " या ")
+            .replace(/\s+/g, " ")
+            .trim();
+    }
+
+    function clearActiveCardHighlight() {
+        allCards.forEach(c => c.classList.remove("audio-active"));
+    }
+
+    function setVisualSpeaking(active, cardId = null) {
+        if (active) {
+            soundWave.classList.add("speaking");
+            if (cardId) {
+                clearActiveCardHighlight();
+                const card = document.getElementById(cardId);
+                if (card) {
+                    card.classList.add("audio-active");
+                    card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                }
+            }
+        } else {
+            soundWave.classList.remove("speaking");
+            clearActiveCardHighlight();
+        }
+    }
+
+    // 3. Build Full Natural Hindi Prescription
+    function buildHindiReport() {
+        const disease = cleanForSpeech(getText("diseaseName"));
+        const confidence = cleanForSpeech(getText("confidenceValue"));
+        const severity = cleanForSpeech(getText("severityText"));
+        const organic = cleanForSpeech(getText("organicText"));
+        const chemical = cleanForSpeech(getText("chemicalText"));
+        const fertilizer = cleanForSpeech(getText("fertilizerText"));
+        const prevention = cleanForSpeech(getText("preventionText"));
+
+        return `
+            नमस्कार किसान भाई। किसान साथी एआई में आपका स्वागत है।
+            आपकी फसल की जांच रिपोर्ट इस प्रकार है:
+            पहचानी गई बीमारी: ${disease}।
+            इसकी गंभीरता: ${severity} है, और विश्वास स्तर: ${confidence} है।
+            
+            अब मुख्य उपचार ध्यान से सुनें:
+            जैविक उपचार: ${organic}।
+            रासायनिक उपचार: ${chemical}।
+            खाद और पोषण सलाह: ${fertilizer}।
+            भविष्य में बचाव के उपाय: ${prevention}।
+            
+            कृपया कीटनाशक का प्रयोग करते समय सुरक्षा नियमों का पालन करें। धन्यवाद!
+        `;
+    }
+
+    // 4. Play Speech Function
+    function speakHindi(text, title, cardId = null) {
+        if (!text || !text.trim()) {
+            statusElement.innerHTML = "<span>⚠️ सुनाने के लिए कोई जानकारी उपलब्ध नहीं है।</span>";
+            return;
+        }
+
+        synth.cancel();
+        loadHindiVoice();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = HINDI_LANGUAGE;
+        utterance.rate = 0.88; // Slightly relaxed pace for easy understanding
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+
+        if (hindiVoice) {
+            utterance.voice = hindiVoice;
+        }
+
+        utterance.onstart = function () {
+            setVisualSpeaking(true, cardId);
+            statusElement.innerHTML = `<span>🔊 सुनाया जा रहा है: <strong>${title}</strong>...</span>`;
+        };
+
+        utterance.onend = function () {
+            setVisualSpeaking(false);
+            statusElement.innerHTML = "<span>✅ रिपोर्ट पूरी सुनाई जा चुकी है।</span>";
+        };
+
+        utterance.onerror = function (e) {
+            if (e.error !== "canceled" && e.error !== "interrupted") {
+                setVisualSpeaking(false);
+                statusElement.innerHTML = "<span>⚠️ आवाज चलाने में समस्या हुई। कृपया पुनः प्रयास करें।</span>";
+            }
+        };
+
+        synth.speak(utterance);
+    }
+
+    // 5. Button Listeners
+    speakButton.addEventListener("click", function () {
+        speakHindi(buildHindiReport(), "पूरी फसल रिपोर्ट", null);
+    });
+
+    pauseButton.addEventListener("click", function () {
+        if (synth.speaking && !synth.paused) {
+            synth.pause();
+            soundWave.classList.remove("speaking");
+            statusElement.innerHTML = "<span>⏸ आवाज रोक दी गई है (Paused)।</span>";
+        }
+    });
+
+    resumeButton.addEventListener("click", function () {
+        if (synth.paused) {
+            synth.resume();
+            soundWave.classList.add("speaking");
+            statusElement.innerHTML = "<span>▶ आवाज पुनः शुरू हो गई है।</span>";
+        }
+    });
+
+    stopButton.addEventListener("click", function () {
+        synth.cancel();
+        setVisualSpeaking(false);
+        statusElement.innerHTML = "<span>⏹ आवाज बंद कर दी गई है।</span>";
+    });
+
+    // Individual Section Buttons
+    sectionButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const sectionId = button.dataset.voiceSection;
+            const cardId = button.dataset.voiceCard;
+            const title = button.dataset.voiceTitle;
+            const text = getText(sectionId);
+
+            speakHindi(text, title, cardId);
+        });
+    });
+
+    // Cleanup when navigating away
+    window.addEventListener("pagehide", function () {
+        synth.cancel();
+    });
+});
+</script>
+
+</body>
+</html>

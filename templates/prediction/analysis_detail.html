@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Crop Analysis Result</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            background: #f4f8f2;
+            font-family: Arial, sans-serif;
+            color: #183b20;
+        }
+
+        .container {
+            width: min(1000px, 92%);
+            margin: 40px auto;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,.05);
+        }
+
+        h1 {
+            color: #17642c;
+        }
+
+        h2 {
+            color: #276536;
+        }
+
+        .image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 15px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 30px;
+            background: #fff1c9;
+            color: #866719;
+            font-weight: bold;
+        }
+
+        .verified {
+            background: #dcf5df;
+            color: #247039;
+        }
+
+        .confidence {
+            font-size: 30px;
+            font-weight: 800;
+            color: #23763a;
+        }
+
+        .section {
+            padding: 18px;
+            background: #f5f9f3;
+            border-radius: 12px;
+            margin-top: 15px;
+            line-height: 1.7;
+        }
+
+        .warning {
+            background: #fff7df;
+            color: #725b17;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>
+            🌿 Crop Analysis Result
+        </h1>
+
+        {% if analysis.status == "verified" %}
+
+            <span class="status verified">
+                ✓ Expert Verified
+            </span>
+
+        {% else %}
+
+            <span class="status">
+                ⏳ Waiting for Expert Verification
+            </span>
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Uploaded Crop</h2>
+
+        <img
+            src="{{ analysis.image.url }}"
+            class="image"
+            alt="Crop image"
+        >
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>
+            {% if analysis.status == "verified" %}
+                Verified Diagnosis
+            {% else %}
+                AI Preliminary Diagnosis
+            {% endif %}
+        </h2>
+
+        <div class="section">
+
+            <strong>
+                Disease:
+            </strong>
+
+            <br>
+
+            {{ analysis.final_disease }}
+
+        </div>
+
+
+        <div class="section">
+
+            <strong>
+                AI Confidence:
+            </strong>
+
+            <div class="confidence">
+                {{ analysis.ai_confidence }}%
+            </div>
+
+        </div>
+
+
+        <div class="section">
+
+            <strong>
+                Solution:
+            </strong>
+
+            <br><br>
+
+            {{ analysis.final_solution }}
+
+        </div>
+
+
+        <div class="section">
+
+            <strong>
+                Crop Protection / Pesticide:
+            </strong>
+
+            <br><br>
+
+            {{ analysis.final_pesticide }}
+
+        </div>
+
+
+        <div class="section">
+
+            <strong>
+                Prevention:
+            </strong>
+
+            <br><br>
+
+            {{ analysis.final_prevention }}
+
+        </div>
+
+
+        {% if analysis.status != "verified" %}
+
+            <div class="warning">
+
+                ⏳ Your AI result has been sent to a
+                KisanSathi agriculture expert for verification.
+                The verified recommendation will appear here
+                after review.
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

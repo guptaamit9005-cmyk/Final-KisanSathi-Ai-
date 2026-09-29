@@ -1,0 +1,529 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}KisanSathi AI{% endblock %}</title>
+
+    <!-- Apply saved theme before page rendering -->
+    <script>
+        (function () {
+            try {
+                const savedTheme = localStorage.getItem("kisansathi-theme");
+                const systemDark = window.matchMedia(
+                    "(prefers-color-scheme: dark)"
+                ).matches;
+
+                const theme =
+                    savedTheme === "dark" || savedTheme === "light"
+                        ? savedTheme
+                        : (systemDark ? "dark" : "light");
+
+                document.documentElement.setAttribute("data-theme", theme);
+            } catch (error) {
+                document.documentElement.setAttribute("data-theme", "light");
+            }
+        })();
+    </script>
+
+    <style>
+        /* =====================================
+           THEME VARIABLES
+        ===================================== */
+
+        :root {
+            color-scheme: light;
+
+            --ks-bg: #f0fdf4;
+            --ks-surface: #ffffff;
+            --ks-surface-secondary: #dcfce7;
+            --ks-text: #172018;
+            --ks-muted: #64748b;
+            --ks-primary: #166534;
+            --ks-primary-hover: #14532d;
+            --ks-border: #d1e7d5;
+            --ks-navbar: #166534;
+            --ks-input-bg: #ffffff;
+            --ks-shadow: 0 8px 24px rgba(22, 101, 52, 0.08);
+        }
+
+        html[data-theme="dark"] {
+            color-scheme: dark;
+
+            --ks-bg: #101713;
+            --ks-surface: #19231c;
+            --ks-surface-secondary: #243329;
+            --ks-text: #edf5ee;
+            --ks-muted: #a5b5a8;
+            --ks-primary: #81c784;
+            --ks-primary-hover: #a5d6a7;
+            --ks-border: #354439;
+            --ks-navbar: #17231b;
+            --ks-input-bg: #202e24;
+            --ks-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        }
+
+        /* =====================================
+           GLOBAL RESET
+        ===================================== */
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+            margin: 0;
+            background: var(--ks-bg) !important;
+            color: var(--ks-text) !important;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        a {
+            color: var(--ks-primary);
+        }
+
+        button,
+        input,
+        textarea,
+        select {
+            font: inherit;
+        }
+
+        /* =====================================
+           NAVBAR
+        ===================================== */
+
+        .navbar {
+            width: 100%;
+            background: var(--ks-navbar) !important;
+            color: #ffffff !important;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--ks-border);
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: 800;
+            white-space: nowrap;
+            color: #ffffff !important;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #ffffff !important;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: opacity 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.75;
+        }
+
+        /* =====================================
+           THEME TOGGLE
+        ===================================== */
+
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 40px;
+            padding: 9px 14px;
+
+            background: #ffffff !important;
+            color: #166534 !important;
+
+            border: 1px solid #ffffff;
+            border-radius: 10px;
+
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+
+            position: relative;
+            z-index: 10;
+
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            background: #dcfce7 !important;
+            transform: translateY(-1px);
+        }
+
+        .theme-toggle:focus-visible {
+            outline: 3px solid #ffffff;
+            outline-offset: 3px;
+        }
+
+        .theme-icon {
+            font-size: 17px;
+            line-height: 1;
+        }
+
+        /* =====================================
+           MAIN CONTENT
+        ===================================== */
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+            flex: 1;
+        }
+
+        /* Shared card styling */
+        .card,
+        .panel,
+        .analysis-card,
+        .content-card,
+        .table-container,
+        .dashboard-card,
+        .stat-card,
+        .form-container,
+        .modal-content,
+        .dropdown-menu {
+            background: var(--ks-surface) !important;
+            color: var(--ks-text) !important;
+            border: 1px solid var(--ks-border);
+            border-radius: 14px;
+            box-shadow: var(--ks-shadow);
+        }
+
+        /* Common text colors */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p,
+        label,
+        span {
+            color: inherit;
+        }
+
+        .muted,
+        .text-muted {
+            color: var(--ks-muted) !important;
+        }
+
+        /* Form controls */
+        input,
+        textarea,
+        select {
+            background: var(--ks-input-bg) !important;
+            color: var(--ks-text) !important;
+            border: 1px solid var(--ks-border);
+            border-radius: 8px;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: var(--ks-muted) !important;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: 2px solid var(--ks-primary);
+            outline-offset: 1px;
+        }
+
+        /* Tables */
+        table {
+            color: var(--ks-text);
+            border-color: var(--ks-border);
+        }
+
+        th,
+        td {
+            border-color: var(--ks-border);
+        }
+
+        /* =====================================
+           DJANGO MESSAGES
+        ===================================== */
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 12px 18px;
+            border-radius: 10px;
+            background: var(--ks-surface-secondary);
+            color: var(--ks-text);
+            border: 1px solid var(--ks-border);
+            margin-bottom: 10px;
+        }
+
+        /* =====================================
+           FOOTER
+        ===================================== */
+
+        .footer {
+            margin-top: 50px;
+            padding: 20px;
+            text-align: center;
+            color: var(--ks-muted);
+            background: var(--ks-surface);
+            border-top: 1px solid var(--ks-border);
+        }
+
+        .footer p {
+            margin: 0;
+            color: var(--ks-muted);
+        }
+
+        /* =====================================
+           RESPONSIVE
+        ===================================== */
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: flex-start;
+                gap: 12px;
+            }
+
+            .container {
+                width: 94%;
+                margin: 20px auto;
+            }
+
+            .brand {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links {
+                gap: 10px;
+                font-size: 13px;
+            }
+
+            .theme-toggle {
+                padding: 8px 10px;
+            }
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+
+        <a class="brand" href="{% url 'dashboard:home' %}">
+            🌱 KisanSathi AI
+        </a>
+
+        <div class="nav-links">
+
+            {% if user.is_authenticated %}
+
+                <a href="{% url 'dashboard:home' %}">
+                    Dashboard
+                </a>
+
+                <!-- Correct route name from prediction/urls.py -->
+                <a href="{% url 'prediction:home' %}">
+                    Analyze Crop
+                </a>
+
+                {% if user.is_staff %}
+                    <a href="{% url 'prediction:expert_dashboard' %}">
+                        Expert Panel
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'accounts:logout' %}">
+                    Logout
+                </a>
+
+            {% else %}
+
+                <a href="{% url 'accounts:login' %}">
+                    Login
+                </a>
+
+                <a href="{% url 'accounts:register' %}">
+                    Register
+                </a>
+
+            {% endif %}
+
+            <button
+                type="button"
+                id="themeToggle"
+                class="theme-toggle"
+                aria-label="Switch to dark mode"
+                aria-pressed="false"
+            >
+                <span class="theme-icon" id="themeIcon" aria-hidden="true">🌙</span>
+                <span id="themeLabel">Dark Mode</span>
+            </button>
+
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="container">
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>
+            🌱 KisanSathi AI — Smart Agriculture Platform
+        </p>
+    </footer>
+
+    <!-- GLOBAL THEME SCRIPT -->
+    <script>
+        (function () {
+            "use strict";
+
+            const STORAGE_KEY = "kisansathi-theme";
+            const root = document.documentElement;
+
+            function getTheme() {
+                try {
+                    const savedTheme = localStorage.getItem(STORAGE_KEY);
+
+                    if (savedTheme === "dark" || savedTheme === "light") {
+                        return savedTheme;
+                    }
+                } catch (error) {
+                    console.warn("Theme preference could not be read.", error);
+                }
+
+                return root.getAttribute("data-theme") || "light";
+            }
+
+            function updateButton(theme) {
+                const button = document.getElementById("themeToggle");
+                const icon = document.getElementById("themeIcon");
+                const label = document.getElementById("themeLabel");
+
+                const isDark = theme === "dark";
+
+                if (icon) {
+                    icon.textContent = isDark ? "☀️" : "🌙";
+                }
+
+                if (label) {
+                    label.textContent = isDark ? "Light Mode" : "Dark Mode";
+                }
+
+                if (button) {
+                    button.setAttribute("aria-pressed", String(isDark));
+                    button.setAttribute(
+                        "aria-label",
+                        isDark ? "Switch to light mode" : "Switch to dark mode"
+                    );
+                }
+            }
+
+            function applyTheme(theme) {
+                const selectedTheme = theme === "dark" ? "dark" : "light";
+
+                root.setAttribute("data-theme", selectedTheme);
+                updateButton(selectedTheme);
+            }
+
+            function saveTheme(theme) {
+                try {
+                    localStorage.setItem(STORAGE_KEY, theme);
+                } catch (error) {
+                    console.warn("Theme preference could not be saved.", error);
+                }
+            }
+
+            // Apply saved preference immediately.
+            applyTheme(getTheme());
+
+            // Attach toggle after DOM is ready.
+            document.addEventListener("DOMContentLoaded", function () {
+                const button = document.getElementById("themeToggle");
+
+                if (!button) {
+                    console.warn(
+                        "KisanSathi theme button was not found. Check the active base.html template."
+                    );
+                    return;
+                }
+
+                button.addEventListener("click", function () {
+                    const currentTheme =
+                        root.getAttribute("data-theme") || "light";
+
+                    const nextTheme =
+                        currentTheme === "dark" ? "light" : "dark";
+
+                    applyTheme(nextTheme);
+                    saveTheme(nextTheme);
+                });
+
+                applyTheme(getTheme());
+            });
+        })();
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Applications | AgriVisionAI</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body class="bg-slate-950 text-white">
+
+<div class="max-w-6xl mx-auto px-6 py-10">
+
+    <h1 class="text-4xl font-bold">
+        My Land Applications
+    </h1>
+
+    <p class="text-slate-400 mt-2 mb-10">
+        Track your requests for agricultural land.
+    </p>
+
+
+    {% if applications %}
+
+    <div class="space-y-5">
+
+        {% for application in applications %}
+
+        <div class="bg-slate-900
+                    border border-slate-800
+                    rounded-2xl p-6">
+
+            <div class="flex justify-between items-start">
+
+                <div>
+
+                    <h2 class="text-xl font-bold">
+                        {{ application.land.title }}
+                    </h2>
+
+                    <p class="text-slate-400 mt-2">
+                        📍 {{ application.land.location }}
+                    </p>
+
+                    <p class="text-slate-400 mt-1">
+                        👤 Owner:
+                        {{ application.land.owner.username }}
+                    </p>
+
+                    <p class="text-slate-400 mt-1">
+                        🌾 Crop:
+                        {{ application.proposed_crop|default:"Not specified" }}
+                    </p>
+
+                </div>
+
+
+                {% if application.status == "pending" %}
+
+                <span class="text-yellow-400">
+                    🟡 Pending
+                </span>
+
+                {% elif application.status == "accepted" %}
+
+                <span class="text-green-400">
+                    🟢 Accepted
+                </span>
+
+                {% else %}
+
+                <span class="text-red-400">
+                    🔴 Rejected
+                </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="text-center py-20">
+
+        <div class="text-6xl">
+            🌱
+        </div>
+
+        <h2 class="text-2xl font-bold mt-5">
+            No applications
+        </h2>
+
+        <p class="text-slate-400 mt-2">
+            Apply for suitable agricultural land from the marketplace.
+        </p>
+
+        <a
+            href="{% url 'land_marketplace:list' %}"
+            class="inline-block mt-6
+                   bg-green-500
+                   text-black
+                   px-6 py-3
+                   rounded-xl
+                   font-bold"
+        >
+            Browse Land
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KisanSathi AI | Advanced Soil Analysis</title>
+
+<style>
+:root {
+  --green: #176b3a;
+  --green-dark: #104d2b;
+  --green-light: #eaf6ee;
+  --text: #1d2b22;
+  --muted: #66756b;
+  --border: #dce7df;
+  --bg: #f5f8f5;
+  --white: #fff;
+  --red: #b42318;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+}
+header {
+  background: linear-gradient(120deg, var(--green-dark), var(--green));
+  color: white;
+  padding: 25px 6%;
+}
+header h1 { margin: 0 0 8px; font-size: 26px; }
+header p { margin: 0; opacity: .9; }
+.container { max-width: 1100px; margin: 30px auto; padding: 0 18px; }
+.top-actions { display:flex; justify-content:flex-end; margin-bottom:16px; }
+.top-actions a {
+  text-decoration:none; color:var(--green); font-weight:700;
+  background:white; border:1px solid var(--border); padding:11px 15px;
+  border-radius:9px;
+}
+.card {
+  background:var(--white); border:1px solid var(--border);
+  border-radius:16px; padding:25px; margin-bottom:20px;
+  box-shadow:0 5px 22px rgba(20,70,40,.04);
+}
+.card h2 { margin:0 0 8px; font-size:20px; }
+.subtitle { color:var(--muted); margin:0 0 22px; line-height:1.5; }
+.grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+.field label { display:block; font-weight:700; font-size:14px; margin-bottom:8px; }
+.field input, .field select {
+  width:100%; padding:12px; border:1px solid #cbd8ce;
+  border-radius:9px; background:white; font-size:15px;
+}
+.field input:focus, .field select:focus {
+  outline:2px solid #a6d6b5; border-color:var(--green);
+}
+.help { font-size:12px; color:var(--muted); margin-top:6px; }
+.errorlist { color:var(--red); font-size:13px; padding-left:18px; }
+.section-title {
+  margin:26px 0 15px; padding-bottom:10px;
+  border-bottom:1px solid var(--border); color:var(--green-dark);
+}
+.notice {
+  background:#fff8e6; border:1px solid #f2dfaa; color:#624b12;
+  padding:14px; border-radius:10px; line-height:1.5; font-size:13px;
+  margin-bottom:20px;
+}
+button {
+  width:100%; margin-top:24px; padding:15px; border:0; border-radius:10px;
+  background:var(--green); color:white; font-size:16px; font-weight:700;
+  cursor:pointer;
+}
+button:hover { background:var(--green-dark); }
+.messages { color:var(--red); }
+@media(max-width:700px) {
+  .grid { grid-template-columns:1fr; }
+  .card { padding:18px; }
+  header h1 { font-size:22px; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>🌱 KisanSathi AI — Soil Intelligence</h1>
+  <p>Record soil-test data and generate a structured screening report.</p>
+</header>
+
+<div class="container">
+  <div class="top-actions">
+    <a href="{% url 'soil_prediction:history' %}">View My Reports →</a>
+  </div>
+
+  <div class="card">
+    <h2>New Soil Analysis</h2>
+    <p class="subtitle">
+      Enter values from your soil test. Use the units shown on your laboratory report.
+    </p>
+
+    {% if messages %}
+      {% for message in messages %}
+        <p class="messages">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+
+    <div class="notice">
+      This tool provides general screening only. It does not calculate fertilizer
+      doses or guarantee crop suitability. Nutrient values must be interpreted
+      using the laboratory's units and test method.
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+
+      <h3 class="section-title">Farm Details</h3>
+      <div class="grid">
+        {% for field in form %}
+          {% if field.name == "farm_name" or field.name == "location" or field.name == "target_crop" %}
+          <div class="field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {{ field.errors }}
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <h3 class="section-title">Primary Soil & Environment Values</h3>
+      <div class="grid">
+        {% for field in form %}
+          {% if field.name == "nitrogen" or field.name == "phosphorus" or field.name == "potassium" or field.name == "ph" or field.name == "temperature" or field.name == "humidity" or field.name == "rainfall" %}
+          <div class="field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {{ field.errors }}
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <h3 class="section-title">Advanced Soil Properties (Optional)</h3>
+      <div class="grid">
+        {% for field in form %}
+          {% if field.name == "organic_carbon" or field.name == "electrical_conductivity" or field.name == "soil_texture" %}
+          <div class="field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {{ field.errors }}
+            {% if field.name == "electrical_conductivity" %}
+              <div class="help">Record the unit used by your lab (for example, dS/m).</div>
+            {% endif %}
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <button type="submit">Generate Soil Report</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>

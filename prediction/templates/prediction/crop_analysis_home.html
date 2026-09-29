@@ -1,0 +1,306 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Crop Analysis | KisanSathi AI</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f8f3;
+            color: #203326;
+        }
+
+        .navbar {
+            background: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,.05);
+        }
+
+        .brand {
+            font-size: 23px;
+            font-weight: bold;
+            color: #247a43;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: #247a43;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #176b3a, #42a866);
+            color: white;
+            padding: 50px 35px;
+            border-radius: 22px;
+            margin-bottom: 28px;
+        }
+
+        .hero h1 {
+            font-size: 35px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            max-width: 650px;
+            line-height: 1.8;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #247a43;
+            color: white;
+            padding: 13px 22px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: #185d32;
+        }
+
+        .hero .btn {
+            background: white;
+            color: #247a43;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card,
+        .section-card {
+            background: white;
+            border: 1px solid #e6eee5;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,.03);
+        }
+
+        .stat-card h3 {
+            color: #68766b;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .stat-card strong {
+            color: #247a43;
+            font-size: 32px;
+        }
+
+        .section-card {
+            margin-bottom: 25px;
+        }
+
+        .section-card h2 {
+            margin-bottom: 12px;
+            color: #203326;
+        }
+
+        .section-card p {
+            color: #68766b;
+            line-height: 1.7;
+        }
+
+        .analysis-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .analysis-table th,
+        .analysis-table td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #edf0ed;
+        }
+
+        .analysis-table th {
+            color: #68766b;
+            font-size: 13px;
+        }
+
+        .analysis-table a {
+            color: #247a43;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .empty {
+            background: #f5f8f3;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px;
+            color: #788579;
+        }
+
+        @media(max-width: 600px) {
+            .hero {
+                padding: 30px 22px;
+            }
+
+            .hero h1 {
+                font-size: 27px;
+            }
+
+            .analysis-table {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="brand">🌱 KisanSathi AI</div>
+    <a href="{% url 'dashboard:home' %}">Dashboard</a>
+</nav>
+
+<main class="container">
+
+    <section class="hero">
+        <h1>AI Crop Health Analysis</h1>
+
+        <p>
+            Identify potential crop diseases using AI-powered
+            image analysis. Receive disease information,
+            farming recommendations, and expert verification
+            through KisanSathi AI.
+        </p>
+
+        <a href="{% url 'prediction:crop_analysis' %}" class="btn">
+            Start Crop Analysis →
+        </a>
+    </section>
+
+    <section class="stats">
+
+        <div class="stat-card">
+            <h3>Total Analyses</h3>
+            <strong>{{ total_analyses|default:0 }}</strong>
+        </div>
+
+        <div class="stat-card">
+            <h3>Awaiting Expert Review</h3>
+            <strong>{{ pending_analyses|default:0 }}</strong>
+        </div>
+
+        <div class="stat-card">
+            <h3>Verified Analyses</h3>
+            <strong>{{ verified_analyses|default:0 }}</strong>
+        </div>
+
+    </section>
+
+    <section class="section-card">
+        <h2>Analyze Your Crop</h2>
+
+        <p>
+            Upload a clear image of an affected crop leaf
+            to begin the AI analysis process.
+        </p>
+
+        <a href="{% url 'prediction:crop_analysis' %}" class="btn">
+            Upload Crop Image
+        </a>
+    </section>
+
+    <section class="section-card">
+
+        <h2>Recent Crop Analyses</h2>
+
+        {% if recent_analyses %}
+
+        <div style="overflow-x:auto;">
+
+            <table class="analysis-table">
+
+                <thead>
+                    <tr>
+                        <th>Disease</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for analysis in recent_analyses %}
+
+                    <tr>
+                        <td>
+                            {{ analysis.ai_disease|default:"Pending" }}
+                        </td>
+
+                        <td>
+                            {{ analysis.get_status_display }}
+                        </td>
+
+                        <td>
+                            {{ analysis.created_at|date:"d M Y" }}
+                        </td>
+
+                        <td>
+                            <a href="{% url 'prediction:analysis_status' analysis.pk %}">
+                                View Details
+                            </a>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty">
+            No crop analyses found. Start your first analysis!
+        </div>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+<footer class="footer">
+    © 2026 KisanSathi AI | Smart Farming Assistant
+</footer>
+
+</body>
+</html>

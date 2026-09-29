@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Land Requests | AgriVisionAI</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body class="bg-slate-950 text-white">
+
+<div class="max-w-6xl mx-auto px-6 py-10">
+
+    <h1 class="text-4xl font-bold">
+        Farmer Requests
+    </h1>
+
+    <p class="text-slate-400 mt-2 mb-10">
+        Review farmers interested in your land.
+    </p>
+
+
+    {% if requests %}
+
+    <div class="space-y-5">
+
+        {% for req in requests %}
+
+        <div class="bg-slate-900
+                    border border-slate-800
+                    rounded-2xl p-6">
+
+            <div class="flex flex-col md:flex-row
+                        md:justify-between gap-5">
+
+                <div>
+
+                    <h2 class="text-xl font-bold">
+
+                        {{ req.land.title }}
+
+                    </h2>
+
+                    <p class="text-slate-400 mt-2">
+
+                        👨‍🌾 Farmer:
+                        {{ req.farmer.get_full_name|default:req.farmer.username }}
+
+                    </p>
+
+                    <p class="text-slate-400 mt-1">
+
+                        🌾 Proposed Crop:
+                        {{ req.proposed_crop|default:"Not specified" }}
+
+                    </p>
+
+                    <p class="text-slate-400 mt-1">
+
+                        💬 {{ req.message|default:"No message" }}
+
+                    </p>
+
+                </div>
+
+
+                <div>
+
+                    {% if req.status == "pending" %}
+
+                    <span
+                        class="inline-block
+                               bg-yellow-500/10
+                               text-yellow-400
+                               px-4 py-2
+                               rounded-full"
+                    >
+                        Pending
+                    </span>
+
+                    {% elif req.status == "accepted" %}
+
+                    <span
+                        class="inline-block
+                               bg-green-500/10
+                               text-green-400
+                               px-4 py-2
+                               rounded-full"
+                    >
+                        Accepted
+                    </span>
+
+                    {% else %}
+
+                    <span
+                        class="inline-block
+                               bg-red-500/10
+                               text-red-400
+                               px-4 py-2
+                               rounded-full"
+                    >
+                        Rejected
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            {% if req.status == "pending" %}
+
+            <div class="flex gap-3 mt-6">
+
+                <form
+                    method="POST"
+                    action="{% url 'land_marketplace:accept_request' req.id %}"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        class="bg-green-500
+                               text-black
+                               px-5 py-2
+                               rounded-lg
+                               font-semibold"
+                    >
+                        Accept
+                    </button>
+
+                </form>
+
+
+                <form
+                    method="POST"
+                    action="{% url 'land_marketplace:reject_request' req.id %}"
+                >
+
+                    {% csrf_token %}
+
+                    <button
+                        class="bg-red-500/10
+                               text-red-400
+                               px-5 py-2
+                               rounded-lg"
+                    >
+                        Reject
+                    </button>
+
+                </form>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="text-center py-20">
+
+        <div class="text-6xl">
+            📭
+        </div>
+
+        <h2 class="text-2xl font-bold mt-5">
+            No requests yet
+        </h2>
+
+        <p class="text-slate-400">
+            Farmer applications will appear here.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+
+</html>

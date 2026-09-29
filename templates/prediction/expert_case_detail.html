@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Case #{{ analysis.id }} | KisanSathi AI</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 28px 16px;
+            font-family: Arial, sans-serif;
+            color: #173321;
+            background: #f4fbf5;
+        }
+        .container { max-width: 850px; margin: auto; }
+        .panel {
+            margin: 18px 0;
+            padding: 24px;
+            border: 1px solid #dcecdf;
+            border-radius: 14px;
+            background: white;
+        }
+        h1, h2 { color: #166534; }
+        .crop-image {
+            display: block;
+            max-width: 100%;
+            max-height: 380px;
+            margin: 15px auto;
+            border-radius: 12px;
+            object-fit: contain;
+        }
+        label {
+            display: block;
+            margin: 15px 0 7px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5ce;
+            border-radius: 8px;
+            font: inherit;
+        }
+        textarea { min-height: 95px; resize: vertical; }
+        .button {
+            margin-top: 16px;
+            padding: 12px 17px;
+            border: 0;
+            border-radius: 8px;
+            color: white;
+            background: #15803d;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .reject { background: #b91c1c; }
+        .message {
+            margin: 12px 0;
+            padding: 12px;
+            border-radius: 8px;
+            background: #ecfdf3;
+            color: #166534;
+        }
+        .back { color: #166534; font-weight: bold; }
+        .field-value { margin: 8px 0; line-height: 1.6; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a class="back" href="{% url 'prediction:expert_dashboard' %}">← Back to Expert Dashboard</a>
+
+    <div class="panel">
+        <h1>Review Crop Case #{{ analysis.id }}</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% if analysis.image %}
+            <img class="crop-image" src="{{ analysis.image.url }}" alt="Farmer crop image">
+        {% endif %}
+
+        <div class="field-value"><strong>Farmer:</strong> {{ analysis.user.get_full_name|default:analysis.user.username }}</div>
+        <div class="field-value"><strong>Crop:</strong> {{ analysis.crop }}</div>
+        <div class="field-value"><strong>AI diagnosis:</strong> {{ analysis.ai_disease }}</div>
+        <div class="field-value"><strong>AI confidence:</strong> {{ analysis.ai_confidence }}%</div>
+        <div class="field-value"><strong>AI solution:</strong> {{ analysis.ai_solution|linebreaksbr }}</div>
+        <div class="field-value"><strong>AI pesticide:</strong> {{ analysis.ai_pesticide|linebreaksbr }}</div>
+        <div class="field-value"><strong>AI prevention:</strong> {{ analysis.ai_prevention|linebreaksbr }}</div>
+        <div class="field-value"><strong>Current status:</strong> {{ analysis.status|title }}</div>
+    </div>
+
+    <div class="panel">
+        <h2>Expert Verification Form</h2>
+
+        <form method="POST" action="{% url 'prediction:expert_reply' analysis.id %}">
+            {% csrf_token %}
+
+            <label for="expert_disease">Verified diagnosis *</label>
+            <input id="expert_disease"
+                   name="expert_disease"
+                   value="{{ analysis.expert_disease }}"
+                   required>
+
+            <label for="expert_solution">Recommended solution</label>
+            <textarea id="expert_solution" name="expert_solution">{{ analysis.expert_solution }}</textarea>
+
+            <label for="expert_pesticide">Pesticide / treatment guidance</label>
+            <textarea id="expert_pesticide" name="expert_pesticide">{{ analysis.expert_pesticide }}</textarea>
+
+            <label for="expert_prevention">Prevention guidance</label>
+            <textarea id="expert_prevention" name="expert_prevention">{{ analysis.expert_prevention }}</textarea>
+
+            <label for="expert_notes">Additional expert notes</label>
+            <textarea id="expert_notes" name="expert_notes">{{ analysis.expert_notes }}</textarea>
+
+            <button class="button" type="submit" name="action" value="verify">
+                Save Verification
+            </button>
+
+            <button class="button reject"
+                    type="submit"
+                    name="action"
+                    value="reject"
+                    formnovalidate
+                    onclick="return confirm('Reject this crop analysis case?');">
+                Reject Case
+            </button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

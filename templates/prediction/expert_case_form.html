@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4" style="max-width:800px;">
+    <h2>Send Crop Issue to an Expert</h2>
+    <p class="text-muted">
+        Share crop symptoms and a clear image. An agricultural expert can
+        review your case and provide guidance.
+    </p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-success">
+            Submit to Expert
+        </button>
+        <a href="{% url 'prediction:my_expert_cases' %}"
+           class="btn btn-outline-secondary">
+            My Cases
+        </a>
+    </form>
+</div>
+{% endblock %}

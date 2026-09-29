@@ -1,0 +1,115 @@
+/* =========================================
+   KISANSATHI AI - GLOBAL THEME
+========================================= */
+
+:root {
+    color-scheme: light;
+
+    --bg-color: #f5f8f3;
+    --surface-color: #ffffff;
+    --text-color: #1f2937;
+    --muted-color: #64748b;
+    --border-color: #e2e8f0;
+
+    --primary-color: #2e7d32;
+    --primary-hover: #256428;
+
+    --navbar-bg: #ffffff;
+    --shadow-color: rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme="dark"] {
+    color-scheme: dark;
+
+    --bg-color: #101a14;
+    --surface-color: #19251d;
+    --text-color: #e5eee7;
+    --muted-color: #a5b5a8;
+    --border-color: #344438;
+
+    --primary-color: #81c784;
+    --primary-hover: #a5d6a7;
+
+    --navbar-bg: #17231b;
+    --shadow-color: rgba(0, 0, 0, 0.25);
+}
+
+/* Global page styling */
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    background: var(--bg-color);
+    color: var(--text-color);
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease;
+}
+
+/* Common surfaces */
+.card,
+.panel,
+.modal-content,
+.dropdown-menu,
+.form-container,
+.dashboard-card {
+    background-color: var(--surface-color);
+    color: var(--text-color);
+    border-color: var(--border-color);
+    box-shadow: 0 4px 18px var(--shadow-color);
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--navbar-bg);
+    color: var(--text-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Text */
+.text-muted,
+small,
+.muted-text {
+    color: var(--muted-color);
+}
+
+/* Inputs */
+input,
+select,
+textarea {
+    background-color: var(--surface-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--muted-color);
+}
+
+/* Links */
+a {
+    color: var(--primary-color);
+}
+
+/* Theme toggle button */
+#themeToggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--surface-color);
+    color: var(--text-color);
+    cursor: pointer;
+    font: inherit;
+}
+
+#themeToggle:hover {
+    border-color: var(--primary-color);
+}

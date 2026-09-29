@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>AgriVision AI | Agricultural Experts</title>
+
+    
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+ --bg:#f4f8f5;
+ --surface:#ffffff;
+ --surface-soft:#f8fbf9;
+ --line:#e1e9e4;
+ --text:#142019;
+ --muted:#6b7971;
+ --muted-2:#8a968f;
+ --green:#16a05a;
+ --green-dark:#08733e;
+ --green-soft:#e9f8ef;
+ --green-line:#cce8d5;
+ --shadow:0 12px 35px rgba(18,54,35,.08);
+ --shadow-lg:0 24px 65px rgba(18,54,35,.11);
+}
+
+body{
+ min-height:100vh;
+ font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+ color:var(--text);
+ padding:28px 20px 55px;
+ background:
+   radial-gradient(circle at 85% 0%,rgba(22,160,90,.10),transparent 25%),
+   radial-gradient(circle at 5% 20%,rgba(76,175,80,.06),transparent 22%),
+   var(--bg);
+}
+
+.container{width:min(1000px,94%);margin:auto}
+
+/* Modern navigation */
+.nav{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:18px;
+ padding:13px 15px 13px 17px;
+ margin-bottom:24px;
+ background:rgba(255,255,255,.88);
+ backdrop-filter:blur(16px);
+ border:1px solid var(--line);
+ border-radius:18px;
+ box-shadow:var(--shadow);
+}
+
+.brand{display:flex;align-items:center;gap:12px}
+
+.logo{
+ width:46px;height:46px;
+ display:grid;place-items:center;
+ border-radius:14px;
+ background:linear-gradient(145deg,#19aa60,#0b7f44);
+ color:#fff;
+ font-size:17px;
+ font-weight:900;
+ box-shadow:0 8px 20px rgba(22,160,90,.20);
+}
+
+.brand h1{font-size:20px;letter-spacing:-.4px;color:var(--green-dark)}
+.brand p{font-size:11px;color:var(--muted);margin-top:3px}
+
+.back{
+ display:inline-flex;
+ align-items:center;
+ gap:7px;
+ padding:10px 14px;
+ border-radius:10px;
+ border:1px solid var(--line);
+ background:#fff;
+ color:#355246;
+ text-decoration:none;
+ font-size:12px;
+ font-weight:800;
+ transition:.2s;
+}
+
+.back:hover{
+ background:var(--green-soft);
+ border-color:var(--green-line);
+ color:var(--green-dark);
+ transform:translateY(-1px);
+}
+
+/* Profile hero */
+.profile-card{
+ background:rgba(255,255,255,.96);
+ border:1px solid var(--line);
+ border-radius:24px;
+ overflow:hidden;
+ box-shadow:var(--shadow-lg);
+}
+
+.profile-hero{
+ position:relative;
+ padding:32px;
+ background:linear-gradient(135deg,#ffffff 0%,#effaf3 100%);
+ border-bottom:1px solid var(--line);
+}
+
+.profile-hero:after{
+ content:"";
+ position:absolute;
+ width:180px;height:180px;
+ right:-55px;top:-80px;
+ border-radius:50%;
+ background:rgba(22,160,90,.07);
+}
+
+.top{
+ position:relative;
+ z-index:1;
+ display:flex;
+ align-items:center;
+ gap:20px;
+}
+
+.avatar{
+ width:106px;height:106px;
+ flex-shrink:0;
+ border-radius:26px;
+ overflow:hidden;
+ display:grid;
+ place-items:center;
+ background:var(--green-soft);
+ border:1px solid var(--green-line);
+ color:var(--green-dark);
+ font-size:42px;
+ box-shadow:0 10px 25px rgba(18,54,35,.08);
+}
+
+.avatar img{
+ width:100%;
+ height:100%;
+ object-fit:cover;
+}
+
+.profile-main{min-width:0}
+
+.eyebrow{
+ display:inline-flex;
+ align-items:center;
+ gap:6px;
+ padding:6px 9px;
+ border-radius:999px;
+ background:var(--green-soft);
+ border:1px solid var(--green-line);
+ color:var(--green-dark);
+ font-size:9px;
+ font-weight:900;
+ letter-spacing:1.2px;
+ text-transform:uppercase;
+ margin-bottom:9px;
+}
+
+h1{
+ font-size:clamp(28px,5vw,43px);
+ line-height:1.05;
+ letter-spacing:-1.5px;
+}
+
+.designation{
+ color:var(--muted);
+ font-size:14px;
+ margin-top:7px;
+}
+
+.organization{
+ color:#53645b;
+ font-size:13px;
+ margin-top:7px;
+}
+
+.verified{
+ display:inline-flex;
+ align-items:center;
+ gap:5px;
+ margin-top:9px;
+ color:var(--green);
+ font-size:11px;
+ font-weight:900;
+}
+
+/* Sections */
+.section{
+ padding:25px 32px 0;
+}
+
+.section h2{
+ display:flex;
+ align-items:center;
+ gap:9px;
+ color:var(--text);
+ font-size:17px;
+ letter-spacing:-.2px;
+ margin-bottom:10px;
+}
+
+.section h2:first-letter{color:var(--green)}
+
+.section p{
+ color:var(--muted);
+ line-height:1.8;
+ font-size:13px;
+}
+
+/* Info cards */
+.info-grid{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:11px;
+ margin:25px 32px 0;
+}
+
+.info{
+ min-height:112px;
+ padding:16px;
+ border-radius:15px;
+ background:var(--surface-soft);
+ border:1px solid var(--line);
+ transition:.2s;
+}
+
+.info:hover{
+ transform:translateY(-2px);
+ border-color:var(--green-line);
+ box-shadow:0 10px 25px rgba(18,54,35,.06);
+}
+
+.info-icon{
+ width:34px;height:34px;
+ display:grid;place-items:center;
+ border-radius:10px;
+ background:var(--green-soft);
+ margin-bottom:10px;
+ font-size:16px;
+}
+
+.info strong{
+ display:block;
+ color:#304139;
+ font-size:11px;
+ margin-bottom:5px;
+}
+
+.info span{
+ color:var(--muted-2);
+ font-size:11px;
+ line-height:1.5;
+}
+
+/* Links */
+.links{
+ display:flex;
+ flex-wrap:wrap;
+ gap:9px;
+ padding:25px 32px 32px;
+}
+
+.link{
+ display:inline-flex;
+ align-items:center;
+ gap:7px;
+ text-decoration:none;
+ padding:10px 14px;
+ border-radius:10px;
+ border:1px solid var(--green-line);
+ color:var(--green-dark);
+ background:var(--green-soft);
+ font-size:11px;
+ font-weight:850;
+ transition:.2s;
+}
+
+.link:hover{
+ background:var(--green);
+ border-color:var(--green);
+ color:#fff;
+ transform:translateY(-1px);
+}
+
+/* Responsive */
+@media(max-width:850px){
+ .info-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:600px){
+ body{padding:17px 12px 35px}
+ .container{width:100%}
+ .nav{align-items:flex-start;flex-direction:column}
+ .back{width:100%;justify-content:center}
+ .profile-hero{padding:24px 20px}
+ .top{align-items:flex-start;flex-direction:column}
+ .avatar{width:88px;height:88px;border-radius:22px}
+ .section{padding:22px 20px 0}
+ .info-grid{grid-template-columns:1fr;margin:22px 20px 0}
+ .links{padding:22px 20px 25px;flex-direction:column}
+ .link{justify-content:center}
+}
+</style>
+
+
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="brand">
+
+            <div class="logo">
+                AI
+            </div>
+
+            <div>
+
+                <h1>
+                    Agricultural Experts
+                </h1>
+
+                <p class="subtitle">
+                    Connect with agricultural knowledge
+                    and trusted expertise
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <a
+            href="/dashboard/" 
+            class="back"
+        >
+            ← Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- HERO -->
+
+    <div class="hero">
+
+        <span class="hero-label">
+            AgriVision Knowledge Network
+        </span>
+
+        <h2>
+            Find the Right Agricultural Expert 🌾
+        </h2>
+
+        <p>
+            Explore scientists, researchers, experienced
+            farmers and agricultural organizations who can
+            provide knowledge and guidance for better farming.
+        </p>
+
+    </div>
+
+
+    <!-- FILTERS -->
+
+    <div class="filters">
+
+        <form
+            method="GET"
+            class="filter-form"
+        >
+
+            <input
+                type="text"
+                name="search"
+                placeholder="Search expert, crop or organization..."
+                value="{{ search }}"
+            >
+
+
+            <select name="type">
+
+                <option value="">
+                    All Experts
+                </option>
+
+                {% for value, label in expert_types %}
+
+                    <option
+                        value="{{ value }}"
+                        {% if expert_type == value %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ label }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <input
+                type="text"
+                name="location"
+                placeholder="State / Location"
+                value="{{ location }}"
+            >
+
+
+            <input
+                type="text"
+                name="crop"
+                placeholder="Crop"
+                value="{{ crop }}"
+            >
+
+
+            <button
+                type="submit"
+                class="filter-btn"
+            >
+                Search
+            </button>
+
+            <label class="verified-filter">
+
+                <input
+                    type="checkbox"
+                    name="verified"
+                    value="true"
+                    {% if verified == "true" %}
+                        checked
+                    {% endif %}
+                >
+
+                Show verified experts only
+
+            </label>
+
+        </form>
+
+    </div>
+
+
+    <!-- RESULTS -->
+
+    <div class="section-title">
+
+        <h2>
+            Expert Network
+        </h2>
+
+        <span>
+            {{ experts|length }} experts found
+        </span>
+
+    </div>
+
+
+    <div class="expert-grid">
+
+
+        {% for expert in experts %}
+
+
+        <div class="expert-card">
+
+
+            <div class="profile">
+
+
+                <div class="avatar">
+
+                    {% if expert.profile_image %}
+
+                        <img
+                            src="{{ expert.profile_image.url }}"
+                            alt="{{ expert.name }}"
+                        >
+
+                    {% else %}
+
+                        👨‍🌾
+
+                    {% endif %}
+
+                </div>
+
+
+                <div>
+
+                    <div class="name">
+                        {{ expert.name }}
+                    </div>
+
+
+                    <div class="designation">
+
+                        {{ expert.designation|default:"Agricultural Expert" }}
+
+                    </div>
+
+
+                    {% if expert.verification_status == "verified" %}
+
+                        <div class="verified">
+                            ✓ Verified Profile
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            {% if expert.organization %}
+
+                <div class="organization">
+
+                    🏢
+                    {{ expert.organization }}
+
+                </div>
+
+            {% endif %}
+
+
+            <div class="specialization">
+
+                🔬
+                {{ expert.specialization }}
+
+            </div>
+
+
+            {% if expert.crops %}
+
+                <div class="tags">
+
+                    {% for crop_name in expert.crops|cut:","|slice:":5" %}
+
+                        <span class="tag">
+                            🌱 {{ crop_name }}
+                        </span>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+
+            <div class="meta">
+
+                <span>
+                    📍 {{ expert.location|default:"India" }}
+                </span>
+
+                <span>
+                    🕒 {{ expert.experience_years }} years
+                </span>
+
+            </div>
+
+
+            <a
+                href="{% url 'experts:detail' expert.id %}"
+                class="view"
+            >
+                View Expert Profile →
+            </a>
+
+
+        </div>
+
+
+        {% empty %}
+
+
+        <div class="empty">
+
+            <div class="empty-icon">
+                🌱
+            </div>
+
+            <h3>
+                No experts found
+            </h3>
+
+            <p>
+                Try changing your search or filters.
+            </p>
+
+        </div>
+
+
+        {% endfor %}
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

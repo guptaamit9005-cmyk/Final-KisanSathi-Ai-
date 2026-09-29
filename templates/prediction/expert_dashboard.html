@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}Expert Review Queue | KisanSathi AI{% endblock %}
+
+{% block extra_head %}
+<style>
+    .expert-page {
+        --crop-green: #198754;
+        --crop-green-dark: #146c43;
+        --crop-soft: #eaf7ee;
+        --crop-border: var(--ks-border);
+        color: var(--ks-text);
+    }
+
+    .expert-heading {
+        margin-bottom: 24px;
+    }
+
+    .expert-heading h1 {
+        margin: 0 0 6px;
+        font-size: clamp(24px, 4vw, 32px);
+        font-weight: 800;
+        letter-spacing: -.4px;
+    }
+
+    .expert-heading p {
+        margin: 0;
+        color: var(--ks-muted);
+        font-size: 14px;
+    }
+
+    .expert-section {
+        background: var(--ks-surface);
+        border: 1px solid var(--crop-border);
+        border-radius: 18px;
+        padding: 22px;
+        box-shadow: var(--ks-shadow);
+        margin-bottom: 20px;
+    }
+
+    .expert-section h2 {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 17px;
+        font-weight: 750;
+        margin: 0 0 16px;
+    }
+
+    .count-pill {
+        background: var(--crop-soft);
+        color: var(--crop-green-dark);
+        font-size: 12px;
+        font-weight: 800;
+        padding: 3px 10px;
+        border-radius: 999px;
+    }
+
+    .queue-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 14px;
+    }
+
+    .queue-card {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--crop-border);
+        border-radius: 14px;
+        overflow: hidden;
+        text-decoration: none;
+        color: var(--ks-text);
+        background: var(--ks-surface-secondary);
+        transition: transform .15s ease, border-color .2s ease;
+    }
+
+    .queue-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--crop-green);
+    }
+
+    .queue-card-image {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        background: var(--ks-surface);
+    }
+
+    .queue-card-body {
+        padding: 12px 14px;
+    }
+
+    .queue-card-title {
+        font-weight: 700;
+        font-size: 13.5px;
+        margin-bottom: 4px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .queue-card-meta {
+        font-size: 11.5px;
+        color: var(--ks-muted);
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 10.5px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+    }
+
+    .status-pill::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+    }
+
+    .status-pill.pending { background: #fff3d6; color: #8a6100; }
+    .status-pill.verified { background: var(--crop-soft); color: var(--crop-green-dark); }
+    .status-pill.rejected { background: #f8d7da; color: #842029; }
+
+    .empty-state {
+        text-align: center;
+        padding: 30px 16px;
+        color: var(--ks-muted);
+        font-size: 13.5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="expert-page">
+
+    <div class="expert-heading">
+        <h1>Expert Review Queue</h1>
+        <p>Farmer submissions the AI has already scored — confirm or correct each one before it's sent back.</p>
+    </div>
+
+    <section class="expert-section">
+        <h2>Awaiting your review <span class="count-pill">{{ pending|length }}</span></h2>
+
+        {% if pending %}
+            <div class="queue-grid">
+                {% for item in pending %}
+                    <a class="queue-card" href="{% url 'expert_review' item.pk %}">
+                        {% if item.image %}
+                            <img class="queue-card-image" src="{{ item.image.url }}" alt="Crop photo from {{ item.farmer }}">
+                        {% endif %}
+                        <div class="queue-card-body">
+                            <div class="queue-card-title">{{ item.ai_disease|default:"Unclassified" }}</div>
+                            <div class="queue-card-meta">
+                                <span>{{ item.farmer }}</span>
+                                <span class="status-pill pending">Pending</span>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">Nothing waiting right now — new submissions will show up here.</div>
+        {% endif %}
+    </section>
+
+    <section class="expert-section">
+        <h2>Recently reviewed</h2>
+
+        {% if reviewed %}
+            <div class="queue-grid">
+                {% for item in reviewed %}
+                    <a class="queue-card" href="{% url 'expert_review' item.pk %}">
+                        {% if item.image %}
+                            <img class="queue-card-image" src="{{ item.image.url }}" alt="Crop photo from {{ item.farmer }}">
+                        {% endif %}
+                        <div class="queue-card-body">
+                            <div class="queue-card-title">{{ item.final_disease|default:"Unclassified" }}</div>
+                            <div class="queue-card-meta">
+                                <span>{{ item.farmer }}</span>
+                                {% if item.status == "verified" %}
+                                    <span class="status-pill verified">Verified</span>
+                                {% else %}
+                                    <span class="status-pill rejected">Rejected</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">No reviews yet.</div>
+        {% endif %}
+    </section>
+
+</div>
+{% endblock %}

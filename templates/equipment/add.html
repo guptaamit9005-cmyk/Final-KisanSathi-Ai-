@@ -1,0 +1,446 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Add Equipment | KisanSathi AI</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f3f8f1;
+            color: #193b21;
+        }
+
+        .navbar {
+            height: 70px;
+            background: #ffffff;
+            border-bottom: 1px solid #dfe9dc;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6%;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #174f27;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #def1dc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .brand-name {
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .brand-sub {
+            font-size: 11px;
+            color: #78907d;
+            margin-top: 2px;
+        }
+
+        .back {
+            text-decoration: none;
+            color: #327043;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .container {
+            width: min(900px, 92%);
+            margin: 40px auto 70px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 15px;
+            border-radius: 20px;
+            background: #dff3dc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+        }
+
+        .header h1 {
+            margin: 0 0 8px;
+            color: #185c2b;
+            font-size: 32px;
+        }
+
+        .header p {
+            color: #718074;
+            font-size: 14px;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #dfe9dc;
+            border-radius: 22px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(25, 70, 30, .06);
+        }
+
+        .form-group {
+            margin-bottom: 21px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #294d31;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid #d5e1d2;
+            border-radius: 10px;
+            padding: 13px;
+            font-family: inherit;
+            font-size: 14px;
+            background: #ffffff;
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #4c9a5a;
+            box-shadow: 0 0 0 3px rgba(76, 154, 90, .10);
+        }
+
+        .help {
+            margin-top: 6px;
+            font-size: 12px;
+            color: #829087;
+        }
+
+        .errorlist {
+            color: #b13732;
+            margin: 6px 0;
+            padding-left: 18px;
+            font-size: 13px;
+        }
+
+        .image-preview {
+            display: none;
+            width: 100%;
+            max-height: 280px;
+            object-fit: contain;
+            margin-top: 14px;
+            border-radius: 13px;
+            border: 1px solid #e0e9dd;
+            background: #f6f9f5;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            flex: 1;
+            border: none;
+            border-radius: 11px;
+            padding: 14px 20px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: #247b38;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1b642d;
+        }
+
+        .btn-secondary {
+            background: #edf5eb;
+            color: #2c6035;
+        }
+
+        .info {
+            margin-top: 22px;
+            padding: 15px;
+            background: #f4f8ee;
+            border-radius: 11px;
+            color: #667568;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media(max-width:600px) {
+
+            .navbar {
+                padding: 0 4%;
+            }
+
+            .brand-sub {
+                display: none;
+            }
+
+            .container {
+                width: 94%;
+                margin-top: 25px;
+            }
+
+            .card {
+                padding: 22px;
+            }
+
+            .header h1 {
+                font-size: 26px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<nav class="navbar">
+
+    <a
+        href="{% url 'dashboard:home' %}"
+        class="brand"
+    >
+
+        <div class="brand-icon">
+            🌱
+        </div>
+
+        <div>
+
+            <div class="brand-name">
+                KisanSathi AI
+            </div>
+
+            <div class="brand-sub">
+                Smart Farming Assistant
+            </div>
+
+        </div>
+
+    </a>
+
+
+    <a
+        href="{% url 'equipment:home' %}"
+        class="back"
+    >
+        ← Equipment
+    </a>
+
+</nav>
+
+
+<main class="container">
+
+
+    <div class="header">
+
+        <div class="header-icon">
+            🚜
+        </div>
+
+        <h1>
+            Add Farm Equipment
+        </h1>
+
+        <p>
+            List your tractor or agricultural machine
+            and make it available for nearby farmers.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            {% csrf_token %}
+
+
+            {% if form.non_field_errors %}
+
+                {{ form.non_field_errors }}
+
+            {% endif %}
+
+
+            {% for field in form %}
+
+                <div class="form-group">
+
+                    {{ field.label_tag }}
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+
+                        <div class="help">
+                            {{ field.help_text }}
+                        </div>
+
+                    {% endif %}
+
+                    {% if field.errors %}
+
+                        {{ field.errors }}
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+
+            <img
+                id="imagePreview"
+                class="image-preview"
+                alt="Equipment preview"
+            >
+
+
+            <div class="actions">
+
+                <a
+                    href="{% url 'equipment:home' %}"
+                    class="btn btn-secondary"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    🚜 Add Equipment
+                </button>
+
+            </div>
+
+
+            <div class="info">
+
+                <strong>Tip:</strong>
+                Add a clear equipment photo and accurate
+                location, rent amount and availability details.
+                This helps nearby farmers find your equipment.
+
+            </div>
+
+        </form>
+
+    </div>
+
+</main>
+
+
+<script>
+
+const fileInput = document.querySelector(
+    'input[type="file"]'
+);
+
+const preview = document.getElementById(
+    "imagePreview"
+);
+
+if (fileInput) {
+
+    fileInput.addEventListener(
+        "change",
+        function () {
+
+            const file = this.files[0];
+
+            if (!file) {
+
+                preview.style.display = "none";
+
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+
+                preview.src =
+                    event.target.result;
+
+                preview.style.display =
+                    "block";
+            };
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+}
+
+</script>
+
+
+</body>
+
+</html>
