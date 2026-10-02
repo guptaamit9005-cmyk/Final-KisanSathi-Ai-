@@ -1,0 +1,905 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Seed Quality & Viability Test | KisanSathi AI</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --bg-color: #fafafa;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #94a3b8;
+            --border-color: #f1f5f9;
+            --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 40px rgba(16, 185, 129, 0.08);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --green: var(--primary);
+            --green-dark: var(--primary-dark);
+            --green-deep: #06472d;
+            --green-soft: #ecfdf5;
+            --green-light: #f0fdf4;
+            --background: var(--bg-color);
+            --white: #ffffff;
+            --text: var(--text-main);
+            --muted: var(--text-muted);
+            --border: var(--border-color);
+            --yellow: var(--accent);
+            --yellow-soft: #fffbeb;
+            --blue: #3b82f6;
+            --blue-soft: #eff6ff;
+            --orange: #f97316;
+            --orange-soft: #fff7ed;
+            --red: #ef4444;
+            --red-soft: #fef2f2;
+        }
+    
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {\n            letter-spacing: -0.01em;\n            line-height: 1.6;\n
+            font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', system-ui, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-body);
+            line-height: 1.55;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 1px solid var(--border);
+            padding: 12px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--primary-dark);
+            font-weight: 800;
+            font-size: 1.25rem;
+        }
+
+        .brand-icon {
+            font-size: 1.7rem;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-nav-link {
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 0.88rem;
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        .btn-nav-link:hover {
+            background: var(--primary-subtle);
+            border-color: var(--border-hover);
+        }
+
+        /* Main Container */
+        .main-container {
+            width: min(920px, 94%);
+            margin: 28px auto 40px;
+            flex: 1;
+        }
+
+        /* Hero Banner */
+        .hero {
+            background: linear-gradient(135deg, #064e3b 0%, #047857 55%, #10b981 100%);
+            color: white;
+            padding: 32px 28px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: "🌱";
+            position: absolute;
+            right: 20px;
+            bottom: -15px;
+            font-size: 120px;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .hero h1 {
+            font-size: clamp(1.6rem, 3.2vw, 2.3rem);
+            font-weight: 800;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            opacity: 0.95;
+            max-width: 680px;
+            line-height: 1.6;
+        }
+
+        .hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .hero-tag {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Diagnostic Card */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            color: var(--text-dark);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .step-badge {
+            background: var(--primary-subtle);
+            color: var(--primary-dark);
+            font-size: 0.78rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border-hover);
+        }
+
+        /* Mode Switcher */
+        .mode-switcher {
+            display: flex;
+            background: #f1f5f9;
+            padding: 5px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            gap: 6px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px 14px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.92rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-family: inherit;
+        }
+
+        .mode-btn.active {
+            background: white;
+            color: var(--primary-dark);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .mode-btn .sub {
+            font-size: 0.72rem;
+            font-weight: 500;
+        }
+
+        /* Upload Dropzone */
+        .drop-zone {
+            border: 2px dashed #cbd5e1;
+            border-radius: var(--radius-md);
+            padding: 28px 16px;
+            text-align: center;
+            cursor: pointer;
+            background: #f8fafc;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: var(--primary-light);
+            background: var(--primary-subtle);
+        }
+
+        .drop-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .drop-zone h3 {
+            font-size: 1.05rem;
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .drop-zone p {
+            font-size: 0.84rem;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+        }
+
+        .btn-choose {
+            background: var(--primary);
+            color: white;
+            font-size: 0.88rem;
+            font-weight: 700;
+            padding: 8px 18px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .seed-file-input {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* Camera Box */
+        .camera-box {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            background: #0f172a;
+            border-radius: var(--radius-md);
+            padding: 16px;
+            color: white;
+        }
+
+        .camera-video {
+            width: 100%;
+            max-width: 480px;
+            max-height: 320px;
+            border-radius: 10px;
+            background: black;
+            object-fit: cover;
+        }
+
+        .camera-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-snap {
+            background: #22c55e;
+            color: white;
+            font-weight: 800;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .btn-retake {
+            background: #64748b;
+            color: white;
+            font-weight: 700;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        /* Image Preview Box */
+        .preview-box {
+            display: none;
+            margin-top: 16px;
+            padding: 14px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .preview-box img {
+            max-width: 320px;
+            max-height: 220px;
+            border-radius: 8px;
+            object-fit: contain;
+            display: inline-block;
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-top: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-select {
+            padding: 11px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            color: var(--text-body);
+            background: #ffffff;
+            transition: border-color 0.2s;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.15);
+        }
+
+        .checkbox-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafc;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .checkbox-card:hover {
+            border-color: #cbd5e1;
+            background: #f1f5f9;
+        }
+
+        .checkbox-card input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--danger);
+            cursor: pointer;
+        }
+
+        .checkbox-card-text {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .checkbox-card-desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* Submit Button */
+        .btn-submit-test {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+            color: white;
+            font-size: 1.15rem;
+            font-weight: 800;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(22, 163, 74, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 24px;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .btn-submit-test:hover {
+            background: linear-gradient(135deg, #14532d 0%, #15803d 100%);
+            box-shadow: 0 8px 24px rgba(20, 83, 45, 0.45);
+            transform: translateY(-1px);
+        }
+
+        /* Info Guide Cards */
+        .guide-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .guide-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 18px;
+        }
+
+        .guide-card .icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .guide-card h3 {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .guide-card p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* History Table */
+        .history-section {
+            margin-top: 32px;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            margin-top: 12px;
+        }
+
+        .history-table th, .history-table td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .history-table th {
+            background: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+        }
+
+        .badge-good {
+            background: #dcfce7;
+            color: #166534;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-weight: 800;
+            font-size: 0.75rem;
+        }
+
+        .badge-bad {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-weight: 800;
+            font-size: 0.75rem;
+        }
+
+        .badge-moderate {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-weight: 800;
+            font-size: 0.75rem;
+        }
+
+        .btn-view-report {
+            color: var(--primary);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .btn-view-report:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .guide-grid { grid-template-columns: 1fr; }
+            .hero { padding: 22px 18px; }
+            .card { padding: 20px 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation -->
+    <nav class="navbar">
+        <a class="brand" href="{% url 'prediction:home' %}">
+            <span class="brand-icon">🌱</span>
+            <span>KisanSathi AI</span>
+        </a>
+        <div class="nav-links">
+            <a href="{% url 'prediction:home' %}" class="btn-nav-link">🌿 Crop Disease Scanner</a>
+            <a href="{% url 'dashboard:home' %}" class="btn-nav-link">📊 Dashboard</a>
+        </div>
+    </nav>
+
+    <main class="main-container">
+
+        <!-- Hero Header -->
+        <header class="hero">
+            <h1>🌱 AI Seed Quality & Viability Test</h1>
+            <p>
+                बीज की फोटो अपलोड करें अथवा भौतिक लक्षण चुनें — AI बताएगा कि बीज कृषि व बुवाई के लिए 
+                <strong>उत्तम (Good)</strong> है या <strong>खराब (Bad/Unfit)</strong>, अंकुरण क्षमता (Germination %) और आवश्यक बीजोपचार विधि।
+            </p>
+            <div class="hero-tags">
+                <span class="hero-tag">✓ Germination Viability Test</span>
+                <span class="hero-tag">✓ Fungal & Defect Detection</span>
+                <span class="hero-tag">✓ Salt-Water Float Grading</span>
+                <span class="hero-tag">✓ Pre-Sowing Seed Treatment</span>
+            </div>
+        </header>
+
+        <!-- Main Test Form Card -->
+        <section class="card">
+            <div class="card-header">
+                <h2><span>🔍</span> Seed Quality Analysis Form</h2>
+                <span class="step-badge">Instant AI Diagnosis</span>
+            </div>
+
+            <form method="POST" action="{% url 'prediction:seed_analysis' %}" enctype="multipart/form-data" id="seedForm">
+                {% csrf_token %}
+
+                <!-- Image Upload Mode Switcher -->
+                <div class="mode-switcher" role="tablist">
+                    <button type="button" class="mode-btn active" id="btnModeUpload">
+                        <span>📁 Upload Seed Photo</span>
+                        <span class="sub">गैलरी से बीज की फोटो चुनें</span>
+                    </button>
+                    <button type="button" class="mode-btn" id="btnModeCamera">
+                        <span>📷 Live Camera</span>
+                        <span class="sub">कैमरा से तुरंत फोटो लें</span>
+                    </button>
+                </div>
+
+                <!-- Dropzone Section -->
+                <div class="drop-zone" id="dropZone">
+                    <span class="drop-icon">🌾</span>
+                    <h3>Upload Seed Sample Photo (Optional but Recommended)</h3>
+                    <p>Drag and drop a clear photo of seeds, or click to browse</p>
+                    <span class="btn-choose">📸 Select Photo</span>
+                    <input type="file" name="image" id="seedImageInput" class="seed-file-input" accept="image/*">
+                </div>
+
+                <!-- Camera Box Section -->
+                <div class="camera-box" id="cameraBox">
+                    <video id="cameraVideo" class="camera-video" autoplay playsinline></video>
+                    <canvas id="cameraCanvas" style="display: none;"></canvas>
+                    <div class="camera-controls">
+                        <button type="button" class="btn-snap" id="btnSnapPhoto">📸 Capture Seed Photo</button>
+                        <button type="button" class="btn-retake" id="btnRetakePhoto" style="display:none;">🔄 Retake</button>
+                    </div>
+                </div>
+
+                <!-- Preview Area -->
+                <div class="preview-box" id="previewBox">
+                    <img id="previewImg" src="#" alt="Seed preview">
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin-top:6px;">Seed sample image loaded</p>
+                </div>
+
+                <!-- Agronomic Observation Grid -->
+                <div class="form-grid">
+                    
+                    <!-- Crop Type -->
+                    <div class="form-group">
+                        <label class="form-label" for="seedCropType">
+                            🌾 Crop / Seed Type (फसल / बीज का प्रकार)
+                        </label>
+                        {{ form.crop_type }}
+                    </div>
+
+                    <!-- Visual Appearance -->
+                    <div class="form-group">
+                        <label class="form-label" for="seedVisualCondition">
+                            ✨ Visual Appearance (बीज की बाहरी चमक व बनावट)
+                        </label>
+                        {{ form.visual_condition }}
+                    </div>
+
+                    <!-- Broken Seed Coat -->
+                    <div class="form-group">
+                        <label class="form-label" for="seedBrokenLevel">
+                            💔 Broken / Cracked Coat (टूटे या कटे हुए दाने)
+                        </label>
+                        {{ form.broken_coat_level }}
+                    </div>
+
+                    <!-- Moisture / Odor -->
+                    <div class="form-group">
+                        <label class="form-label" for="seedMoistureStatus">
+                            💧 Moisture & Odor (नमी व गंध की स्थिति)
+                        </label>
+                        {{ form.moisture_status }}
+                    </div>
+
+                    <!-- Float Test Result -->
+                    <div class="form-group full-width">
+                        <label class="form-label" for="seedFloatTest">
+                            🌊 Salt-Water Float Test (नमक पानी में तैरने की जांच)
+                        </label>
+                        {{ form.float_test_result }}
+                    </div>
+
+                    <!-- Insect Bore Holes Checkbox -->
+                    <div class="form-group full-width">
+                        <label class="checkbox-card">
+                            {{ form.has_insect_holes }}
+                            <div>
+                                <div class="checkbox-card-text">🪲 Insect / Weevil Bore Holes Present? (घुन या कीट द्वारा खाए हुए छेद?)</div>
+                                <div class="checkbox-card-desc">Check this if seeds have visible round holes, pest tunnels, or hollow powder inside.</div>
+                            </div>
+                        </label>
+                    </div>
+
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit-test" id="btnSubmit">
+                    🌱 Test Seed Quality Now (बीज की गुणवत्ता जांचें) →
+                </button>
+
+            </form>
+        </section>
+
+        <!-- Educational Guide Cards -->
+        <section class="guide-grid">
+            <div class="guide-card">
+                <span class="icon">✅</span>
+                <h3>Good Seed Indicators</h3>
+                <p>Plump, uniform size, lustrous seed coat, heavy weight (sinks in water), and no black embryo points.</p>
+            </div>
+            <div class="guide-card">
+                <span class="icon">❌</span>
+                <h3>Bad Seed Warning Signs</h3>
+                <p>Insect bore holes (घुन), musty damp smell, discolored purple/black fungal spots, hollow floating seeds.</p>
+            </div>
+            <div class="guide-card">
+                <span class="icon">🛡️</span>
+                <h3>Why Seed Treatment?</h3>
+                <p>Treating seeds with Beejamrit, Trichoderma, or Thiram protects seedlings against root rot, wilt, and damping off.</p>
+            </div>
+        </section>
+
+        <!-- Recent Seed Tests History -->
+        {% if recent_seeds %}
+        <section class="card history-section">
+            <div class="card-header">
+                <h2><span>📋</span> Your Recent Seed Quality Tests</h2>
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Crop Seed</th>
+                            <th>Viability %</th>
+                            <th>Verdict</th>
+                            <th>Risk Level</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in recent_seeds %}
+                        <tr>
+                            <td><strong>KSS-{{ s.pk }}</strong></td>
+                            <td>{{ s.crop_type }}</td>
+                            <td><strong>{{ s.viability_score }}%</strong></td>
+                            <td>
+                                {% if s.quality_status == 'good' %}
+                                    <span class="badge-good">✓ Good / Sowing Fit</span>
+                                {% elif s.quality_status == 'moderate' %}
+                                    <span class="badge-moderate">⚠ Moderate / Treat</span>
+                                {% else %}
+                                    <span class="badge-bad">✕ Bad / Unfit</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ s.risk_level }}</td>
+                            <td>{{ s.created_at|date:"d M Y" }}</td>
+                            <td>
+                                <a href="{% url 'prediction:seed_analysis_result' s.pk %}" class="btn-view-report">
+                                    View Report →
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        {% endif %}
+
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const dropZone = document.getElementById("dropZone");
+            const fileInput = document.getElementById("seedImageInput");
+            const previewBox = document.getElementById("previewBox");
+            const previewImg = document.getElementById("previewImg");
+
+            const btnModeUpload = document.getElementById("btnModeUpload");
+            const btnModeCamera = document.getElementById("btnModeCamera");
+            const cameraBox = document.getElementById("cameraBox");
+            const cameraVideo = document.getElementById("cameraVideo");
+            const cameraCanvas = document.getElementById("cameraCanvas");
+            const btnSnapPhoto = document.getElementById("btnSnapPhoto");
+            const btnRetakePhoto = document.getElementById("btnRetakePhoto");
+
+            let cameraStream = null;
+
+            // Handle file input changes
+            if (fileInput) {
+                fileInput.addEventListener("change", (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (evt) => {
+                            previewImg.src = evt.target.result;
+                            previewBox.style.display = "block";
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            // Mode switcher: Upload vs Camera
+            btnModeUpload.addEventListener("click", () => {
+                btnModeUpload.classList.add("active");
+                btnModeCamera.classList.remove("active");
+                dropZone.style.display = "block";
+                cameraBox.style.display = "none";
+                stopCamera();
+            });
+
+            btnModeCamera.addEventListener("click", async () => {
+                btnModeCamera.classList.add("active");
+                btnModeUpload.classList.remove("active");
+                dropZone.style.display = "none";
+                cameraBox.style.display = "flex";
+                await startCamera();
+            });
+
+            async function startCamera() {
+                try {
+                    cameraStream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: "environment" },
+                        audio: false
+                    });
+                    cameraVideo.srcObject = cameraStream;
+                    btnSnapPhoto.style.display = "inline-block";
+                    btnRetakePhoto.style.display = "none";
+                } catch (err) {
+                    alert("Camera access denied or unavailable: " + err.message);
+                }
+            }
+
+            function stopCamera() {
+                if (cameraStream) {
+                    cameraStream.getTracks().forEach(track => track.stop());
+                    cameraStream = null;
+                }
+            }
+
+            // Capture photo
+            btnSnapPhoto.addEventListener("click", () => {
+                if (!cameraStream) return;
+                cameraCanvas.width = cameraVideo.videoWidth || 640;
+                cameraCanvas.height = cameraVideo.videoHeight || 480;
+                const ctx = cameraCanvas.getContext("2d");
+                ctx.drawImage(cameraVideo, 0, 0, cameraCanvas.width, cameraCanvas.height);
+
+                cameraCanvas.toBlob((blob) => {
+                    const file = new File([blob], "seed_camera_capture.jpg", { type: "image/jpeg" });
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    fileInput.files = dataTransfer.files;
+
+                    previewImg.src = URL.createObjectURL(blob);
+                    previewBox.style.display = "block";
+                    btnRetakePhoto.style.display = "inline-block";
+                    btnSnapPhoto.style.display = "none";
+                }, "image/jpeg", 0.9);
+            });
+
+            btnRetakePhoto.addEventListener("click", () => {
+                btnRetakePhoto.style.display = "none";
+                btnSnapPhoto.style.display = "inline-block";
+            });
+        });
+    </script>
+</body>
+</html>

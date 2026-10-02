@@ -17,6 +17,11 @@ urlpatterns = [
         views.crop_analysis_view,
         name="analyze",
     ),
+    path(
+        "crop-analysis/",
+        views.crop_analysis_view,
+        name="crop_analysis",
+    ),
 
     # Analysis result/status
     path(
@@ -44,5 +49,22 @@ urlpatterns = [
         "experts/review/<int:pk>/",
         views.expert_review_view,
         name="expert_review",
+    ),
+
+    # Seed Quality & Viability Analysis
+    path(
+        "seed/",
+        views.seed_analysis_view,
+        name="seed_analysis",
+    ),
+    path(
+        "seed/status/<int:pk>/",
+        views.seed_analysis_result_view,
+        name="seed_analysis_result",
+    ),
+    path(
+        "seed/report/<int:pk>/pdf/",
+        views.download_seed_analysis_pdf,
+        name="download_seed_pdf",
     ),
 ]

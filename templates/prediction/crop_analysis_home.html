@@ -9,29 +9,46 @@
     <!-- Google Fonts: Inter & Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     <style>
+        
         :root {
-            --primary: #15803d;
-            --primary-dark: #14532d;
-            --primary-light: #22c55e;
-            --primary-subtle: #f0fdf4;
-            --accent: #eab308;
-            --text-dark: #0f172a;
-            --text-body: #334155;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --border-hover: #86efac;
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --bg-color: #fafafa;
             --card-bg: #ffffff;
-            --bg-page: #f8fafc;
-            --danger: #ef4444;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-            --shadow-md: 0 10px 25px -5px rgba(22, 101, 52, 0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
-            --shadow-lg: 0 20px 30px -10px rgba(20, 83, 45, 0.12);
-            --radius-lg: 20px;
-            --radius-md: 12px;
+            --text-main: #334155;
+            --text-muted: #94a3b8;
+            --border-color: #f1f5f9;
+            --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 40px rgba(16, 185, 129, 0.08);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --green: var(--primary);
+            --green-dark: var(--primary-dark);
+            --green-deep: #06472d;
+            --green-soft: #ecfdf5;
+            --green-light: #f0fdf4;
+            --background: var(--bg-color);
+            --white: #ffffff;
+            --text: var(--text-main);
+            --muted: var(--text-muted);
+            --border: var(--border-color);
+            --yellow: var(--accent);
+            --yellow-soft: #fffbeb;
+            --blue: #3b82f6;
+            --blue-soft: #eff6ff;
+            --orange: #f97316;
+            --orange-soft: #fff7ed;
+            --red: #ef4444;
+            --red-soft: #fef2f2;
         }
+    
 
         * {
             box-sizing: border-box;
@@ -40,14 +57,19 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        body {
-            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        body {\n            letter-spacing: -0.01em;\n            line-height: 1.6;\n
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
             background-color: var(--bg-page);
             color: var(--text-body);
             line-height: 1.5;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4, h5, h6, .brand {
+            font-family: 'Outfit', sans-serif;
         }
 
         /* Navigation */
@@ -117,7 +139,7 @@
 
         /* Hero Banner */
         .hero {
-            background: linear-gradient(135deg, #0d4622 0%, #15803d 60%, #16a34a 100%);
+            background: linear-gradient(135deg, var(--secondary) 0%, #1e293b 50%, var(--primary-dark) 100%);
             color: white;
             padding: 34px 28px;
             border-radius: var(--radius-lg);
@@ -680,6 +702,10 @@
             .mode-btn .sub-text { font-size: 0.68rem; }
         }
     </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="{% static 'js/kisansathi-i18n.js' %}"></script>
 </head>
 <body>
 
@@ -689,11 +715,39 @@
         <span class="brand-icon">🌱</span>
         <span>KisanSathi AI</span>
     </a>
-    <span class="badge-live">Farmer Diagnostic Assistant</span>
+    <div style="display:flex; align-items:center; gap:12px;">
+        <span id="ksLangSelectorPlaceholder"></span>
+        <span class="badge-live">Farmer Diagnostic Assistant</span>
+    </div>
 </nav>
 
-<!-- Main Area -->
+    <!-- Main Area -->
 <main class="main-container">
+
+    <!-- Primary Module Navigation (Leaf Disease vs Seed Quality) -->
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:14px; margin-bottom: 22px;">
+        <a href="{% url 'prediction:home' %}" style="text-decoration:none; display:flex; align-items:center; gap:14px; padding:16px 20px; background:linear-gradient(135deg, #15803d, #16a34a); color:white; border-radius:16px; box-shadow:0 6px 18px rgba(21,128,61,0.22); border:2px solid #16a34a;">
+            <span style="font-size:32px;">🌿</span>
+            <div>
+                <div style="font-weight:800; font-size:1.05rem; display:flex; align-items:center; gap:8px;">
+                    <span>Leaf & Crop Disease Diagnosis</span>
+                    <span style="font-size:0.72rem; background:rgba(255,255,255,0.25); padding:2px 8px; border-radius:999px;">Active</span>
+                </div>
+                <div style="font-size:0.8rem; opacity:0.92; margin-top:2px;">पत्ती रोग पहचान व उपचार परामर्श</div>
+            </div>
+        </a>
+
+        <a href="{% url 'prediction:seed_analysis' %}" style="text-decoration:none; display:flex; align-items:center; gap:14px; padding:16px 20px; background:white; color:var(--text-dark); border:2px solid #86efac; border-radius:16px; box-shadow:0 4px 14px rgba(0,0,0,0.04); transition:all 0.25s;" onmouseover="this.style.borderColor='#16a34a'; this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#86efac'; this.style.transform='translateY(0)'">
+            <span style="font-size:32px;">🌱</span>
+            <div>
+                <div style="font-weight:800; font-size:1.05rem; color:#15803d; display:flex; align-items:center; gap:8px;">
+                    <span>Seed Quality &amp; Viability Test</span>
+                    <span style="font-size:0.72rem; background:#dcfce7; color:#166534; padding:2px 8px; border-radius:999px; font-weight:800;">New Feature</span>
+                </div>
+                <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">बीज जांचें: कृषि के लिए उत्तम (Good) या खराब (Bad)</div>
+            </div>
+        </a>
+    </div>
 
     <!-- Hero Header -->
     <header class="hero">
@@ -868,11 +922,17 @@
     <!-- Value Proposition Section -->
     <section class="features-section">
         <h2>What KisanSathi AI Provides</h2>
-        <div class="feature-cards-grid">
+        <div class="feature-cards-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
             <div class="f-card">
                 <span class="f-icon">🦠</span>
                 <h3>Disease Identification</h3>
                 <p>Identifies fungal, bacterial, viral infections, and nutrient deficiencies from leaf scans.</p>
+            </div>
+            <div class="f-card">
+                <span class="f-icon">🌱</span>
+                <h3>Seed Quality & Viability Test</h3>
+                <p>Analyzes seeds to determine if they are Good or Bad for agriculture, with germination % and seed treatment.</p>
+                <a href="{% url 'prediction:seed_analysis' %}" style="display:inline-block; margin-top:10px; font-size:0.82rem; font-weight:700; color:#15803d; text-decoration:none;">Test Seeds Now →</a>
             </div>
             <div class="f-card">
                 <span class="f-icon">💊</span>
@@ -887,7 +947,157 @@
         </div>
     </section>
 
+    <!-- ============================================================
+         ANALYTICS + HISTORY SECTION
+    ============================================================ -->
+    <section style="margin-top:36px;">
+
+        <!-- KPI Stats Row -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:14px;margin-bottom:24px;">
+            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(21,128,61,.06);">
+                <div style="font-size:2.2rem;font-weight:800;color:#15803d;">{{ total_analyses|default:"0" }}</div>
+                <div style="font-size:.78rem;color:#64748b;margin-top:6px;font-weight:600;">Crop Disease Scans</div>
+            </div>
+            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(21,128,61,.06);">
+                <div style="font-size:2.2rem;font-weight:800;color:#15803d;">{{ total_seeds|default:"0" }}</div>
+                <div style="font-size:.78rem;color:#64748b;margin-top:6px;font-weight:600;">Seed Quality Tests</div>
+            </div>
+            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(21,128,61,.06);">
+                <div style="font-size:2.2rem;font-weight:800;color:#15803d;">{{ good_seeds|default:"0" }}</div>
+                <div style="font-size:.78rem;color:#64748b;margin-top:6px;font-weight:600;">Good Seeds Approved</div>
+            </div>
+            <div style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(21,128,61,.06);">
+                <div style="font-size:2.2rem;font-weight:800;color:#eab308;">{{ accuracy_rate|default:"0" }}%</div>
+                <div style="font-size:.78rem;color:#64748b;margin-top:6px;font-weight:600;">Verification Rate</div>
+            </div>
+        </div>
+
+        <!-- History Table -->
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(21,128,61,.08);">
+
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+                <div>
+                    <div style="font-size:1.08rem;font-weight:800;color:#0f172a;">📋 Analysis History &amp; Reports</div>
+                    <div style="font-size:.8rem;color:#64748b;margin-top:3px;">All your past crop disease analyses — download PDF or view details.</div>
+                </div>
+                <a href="{% url 'prediction:home' %}" style="font-size:.82rem;color:#15803d;font-weight:700;text-decoration:none;border:1px solid #86efac;padding:7px 16px;border-radius:10px;background:#f0fdf4;">
+                    + New Analysis
+                </a>
+            </div>
+
+            {% if all_analyses %}
+
+            <!-- Filter Badges -->
+            <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;" id="historyFilters">
+                <button onclick="filterRows('all')" class="filter-btn active" style="font-size:.75rem;padding:5px 14px;border-radius:999px;border:1px solid #86efac;background:#f0fdf4;color:#15803d;font-weight:700;cursor:pointer;">All</button>
+                <button onclick="filterRows('verified')" class="filter-btn" style="font-size:.75rem;padding:5px 14px;border-radius:999px;border:1px solid #e2e8f0;background:#fff;color:#64748b;font-weight:600;cursor:pointer;">✔ Verified</button>
+                <button onclick="filterRows('sent_to_expert')" class="filter-btn" style="font-size:.75rem;padding:5px 14px;border-radius:999px;border:1px solid #e2e8f0;background:#fff;color:#64748b;font-weight:600;cursor:pointer;">⏳ Pending</button>
+                <button onclick="filterRows('rejected')" class="filter-btn" style="font-size:.75rem;padding:5px 14px;border-radius:999px;border:1px solid #e2e8f0;background:#fff;color:#64748b;font-weight:600;cursor:pointer;">✗ Rejected</button>
+            </div>
+
+            <div style="overflow-x:auto;">
+            <table id="historyTable" style="width:100%;border-collapse:collapse;font-size:.82rem;">
+                <thead>
+                    <tr style="background:#f0fdf4;">
+                        <th style="padding:10px 14px;text-align:left;color:#64748b;font-weight:600;">#ID</th>
+                        <th style="padding:10px 14px;text-align:left;color:#64748b;font-weight:600;">Date</th>
+                        <th style="padding:10px 14px;text-align:left;color:#64748b;font-weight:600;">Crop</th>
+                        <th style="padding:10px 14px;text-align:left;color:#64748b;font-weight:600;">Disease Detected</th>
+                        <th style="padding:10px 14px;text-align:left;color:#64748b;font-weight:600;">Confidence</th>
+                        <th style="padding:10px 14px;text-align:left;color:#64748b;font-weight:600;">Status</th>
+                        <th style="padding:10px 14px;text-align:right;color:#64748b;font-weight:600;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in all_analyses %}
+                    <tr class="history-row" data-status="{{ a.status }}"
+                        style="border-bottom:1px solid #f1f5f9;transition:background .15s;">
+                        <td style="padding:11px 14px;color:#94a3b8;font-weight:600;">#{{ a.pk }}</td>
+                        <td style="padding:11px 14px;color:#0f172a;font-weight:500;">{{ a.created_at|date:"d M Y" }}</td>
+                        <td style="padding:11px 14px;color:#0f172a;">{{ a.ai_crop|default:"—" }}</td>
+                        <td style="padding:11px 14px;color:#0f172a;font-weight:600;">
+                            {% if a.final_disease %}
+                                {{ a.final_disease }}
+                            {% else %}
+                                <span style="color:#94a3b8;">—</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding:11px 14px;">
+                            <span style="color:#15803d;font-weight:700;">{{ a.ai_confidence|default:"—" }}</span>
+                        </td>
+                        <td style="padding:11px 14px;">
+                            {% if a.status == "verified" %}
+                            <span style="background:#dcfce7;color:#15803d;padding:4px 12px;border-radius:999px;font-size:.72rem;font-weight:700;">✔ Verified</span>
+                            {% elif a.status == "sent_to_expert" %}
+                            <span style="background:#fef9c3;color:#854d0e;padding:4px 12px;border-radius:999px;font-size:.72rem;font-weight:700;">⏳ Pending</span>
+                            {% else %}
+                            <span style="background:#fee2e2;color:#b91c1c;padding:4px 12px;border-radius:999px;font-size:.72rem;font-weight:700;">✗ Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding:11px 14px;text-align:right;">
+                            <a href="{% url 'prediction:download_pdf' a.pk %}"
+                               style="display:inline-flex;align-items:center;gap:4px;font-size:.73rem;color:#15803d;font-weight:700;
+                                      border:1px solid #86efac;border-radius:8px;padding:5px 11px;text-decoration:none;
+                                      background:#f0fdf4;margin-right:4px;"
+                               title="Download PDF Report">
+                                📄 PDF
+                            </a>
+                            <a href="{% url 'prediction:analysis_status' a.pk %}"
+                               style="display:inline-flex;align-items:center;gap:4px;font-size:.73rem;color:#2563eb;font-weight:700;
+                                      border:1px solid #bfdbfe;border-radius:8px;padding:5px 11px;text-decoration:none;
+                                      background:#eff6ff;"
+                               title="View Analysis Details">
+                                👁 View
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+
+            {% else %}
+            <div style="text-align:center;padding:48px 0;color:#64748b;">
+                <div style="font-size:3rem;margin-bottom:14px;">🌿</div>
+                <div style="font-size:1rem;font-weight:700;color:#0f172a;margin-bottom:6px;">No analyses yet</div>
+                <div style="font-size:.85rem;">Upload a leaf photo above to start your first crop health diagnosis.</div>
+            </div>
+            {% endif %}
+
+        </div>
+
+    </section>
+
 </main>
+
+<script>
+// Filter table rows by status
+function filterRows(status) {
+    document.querySelectorAll('.history-row').forEach(function(row) {
+        if (status === 'all' || row.dataset.status === status) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    // Update active button styles
+    document.querySelectorAll('.filter-btn').forEach(function(btn) {
+        btn.style.background = '#fff';
+        btn.style.color = '#64748b';
+        btn.style.border = '1px solid #e2e8f0';
+    });
+    event.target.style.background = '#f0fdf4';
+    event.target.style.color = '#15803d';
+    event.target.style.border = '1px solid #86efac';
+}
+
+// Row hover effect
+document.querySelectorAll('.history-row').forEach(function(row) {
+    row.addEventListener('mouseenter', function() { this.style.background = '#f8fafc'; });
+    row.addEventListener('mouseleave', function() { this.style.background = ''; });
+});
+</script>
+
 
 <!-- Footer -->
 <footer class="footer">

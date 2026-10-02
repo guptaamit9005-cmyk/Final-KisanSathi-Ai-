@@ -14,4 +14,10 @@ urlpatterns = [
         name="home"
     ),
 
+    path(
+        "api/<str:crop_id>/",
+        views.mandi_crop_api,
+        name="api_detail"
+    ),
+
 ]

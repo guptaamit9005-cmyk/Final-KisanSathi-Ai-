@@ -1,12 +1,12 @@
-import google.generativeai as genai
+"""
+Chatbot service delegating to the unified Karran AI RAG & LLM Engine.
+"""
+from ai_assistant.rag_engine import ask_karran_ai
 
-genai.configure(api_key="YOUR_GEMINI_API_KEY")
 
-model = genai.GenerativeModel("gemini-1.5-flash")
-
-
-def ask_bot(question):
-
-    response = model.generate_content(question)
-
-    return response.text
+def ask_bot(question, lang="hi"):
+    """
+    Unified entrypoint for chatbot queries using RAG + LLM.
+    """
+    result = ask_karran_ai(question, user_lang=lang)
+    return result.get("reply", "")

@@ -64,13 +64,52 @@ def load_class_names():
     return [str(name) for name in class_names]
 
 
+
+# Known crops embedded as a prefix in class label names.
+# Order matters: longer/more-specific names should come first.
+_KNOWN_CROPS = [
+    "cashew",
+    "tomato",
+    "maize",
+    "rice",
+]
+
+
+def _parse_crop_and_disease(class_label: str) -> tuple[str, str]:
+    """
+    Split a class label that encodes both the crop and the condition.
+
+    Examples
+    --------
+    "Maize leaf blight"      -> ("maize", "leaf blight")
+    "Maize healthy"          -> ("maize", "healthy")
+    "rice_healthy"           -> ("rice", "healthy")
+    "bacterial_leaf_blight"  -> ("",     "bacterial leaf blight")
+    "Healthy"                -> ("",     "healthy")
+    "Fungi"                  -> ("",     "fungi")
+    """
+    normalized = class_label.lower().replace("_", " ").strip()
+
+    for crop in _KNOWN_CROPS:
+        if normalized.startswith(crop):
+            remainder = normalized[len(crop):].strip()
+            # remainder may be empty if the label is just the crop word
+            disease_part = remainder if remainder else "healthy"
+            return crop, disease_part
+
+    # No recognised crop prefix → return the whole label as the disease
+    return "", normalized
+
+
 def predict_disease(image_path):
     """
     Predict crop disease from an uploaded image.
 
     Returns a dictionary compatible with prediction/views.py:
     {
-        "disease_name": "...",
+        "crop_name":  "maize",          # parsed from the class label
+        "disease_name": "leaf blight",  # condition part of the class label
+        "full_label": "Maize leaf blight",
         "confidence": "99.06%",
         "top_predictions": [...]
     }
@@ -117,16 +156,22 @@ def predict_disease(image_path):
         top_predictions = []
 
         for index in top_indices:
+            raw_label = class_names[int(index)]
+            parsed_crop, parsed_disease = _parse_crop_and_disease(raw_label)
             top_predictions.append({
-                "disease_name": class_names[int(index)],
+                "full_label": raw_label,
+                "crop_name": parsed_crop,
+                "disease_name": parsed_disease,
                 "confidence": round(float(predictions[index]) * 100, 2),
             })
 
-        best_prediction = top_predictions[0]
+        best = top_predictions[0]
 
         return {
-            "disease_name": best_prediction["disease_name"],
-            "confidence": f'{best_prediction["confidence"]:.2f}%',
+            "full_label": best["full_label"],
+            "crop_name": best["crop_name"],
+            "disease_name": best["disease_name"],
+            "confidence": f'{best["confidence"]:.2f}%',
             "top_predictions": top_predictions,
         }
 

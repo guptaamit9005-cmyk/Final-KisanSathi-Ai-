@@ -1,0 +1,660 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Seed Quality Diagnostic Report | KisanSathi AI</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700;800&family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --bg-color: #fafafa;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #94a3b8;
+            --border-color: #f1f5f9;
+            --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 40px rgba(16, 185, 129, 0.08);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --green: var(--primary);
+            --green-dark: var(--primary-dark);
+            --green-deep: #06472d;
+            --green-soft: #ecfdf5;
+            --green-light: #f0fdf4;
+            --background: var(--bg-color);
+            --white: #ffffff;
+            --text: var(--text-main);
+            --muted: var(--text-muted);
+            --border: var(--border-color);
+            --yellow: var(--accent);
+            --yellow-soft: #fffbeb;
+            --blue: #3b82f6;
+            --blue-soft: #eff6ff;
+            --orange: #f97316;
+            --orange-soft: #fff7ed;
+            --red: #ef4444;
+            --red-soft: #fef2f2;
+        }
+    
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {\n            letter-spacing: -0.01em;\n            line-height: 1.6;\n
+            font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', system-ui, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-body);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 24px 20px 60px;
+        }
+
+        /* Top Bar */
+        .top-navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--green);
+            text-decoration: none;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-action {
+            text-decoration: none;
+            font-size: 0.86rem;
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: white;
+            color: var(--ink);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-action:hover {
+            background: #f1f5f9;
+        }
+
+        .btn-action.primary {
+            background: var(--green);
+            color: white;
+            border-color: var(--green);
+        }
+
+        .btn-action.primary:hover {
+            background: #14532d;
+        }
+
+        /* Hero Banner for Result */
+        .verdict-banner {
+            border-radius: var(--radius-xl);
+            padding: 30px 24px;
+            color: white;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .verdict-banner.good {
+            background: linear-gradient(135deg, #064e3b 0%, #15803d 60%, #16a34a 100%);
+        }
+
+        .verdict-banner.moderate {
+            background: linear-gradient(135deg, #78350f 0%, #b45309 60%, #d97706 100%);
+        }
+
+        .verdict-banner.bad {
+            background: linear-gradient(135deg, #7f1d1d 0%, #b91c1c 60%, #dc2626 100%);
+        }
+
+        .verdict-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .verdict-badge {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(4px);
+            font-size: 0.82rem;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .verdict-title {
+            font-size: clamp(1.7rem, 3.2vw, 2.3rem);
+            font-weight: 800;
+            line-height: 1.25;
+            margin-bottom: 8px;
+        }
+
+        .verdict-sub {
+            font-size: 1.05rem;
+            opacity: 0.95;
+            max-width: 800px;
+            line-height: 1.6;
+        }
+
+        /* Voice Assistant Bar */
+        .voice-card {
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            padding: 18px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .voice-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .voice-icon {
+            font-size: 28px;
+        }
+
+        .voice-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-voice {
+            border: none;
+            padding: 9px 15px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: inherit;
+        }
+
+        .btn-voice.play {
+            background: var(--green);
+            color: white;
+        }
+
+        .btn-voice.pause {
+            background: var(--blue);
+            color: white;
+        }
+
+        .btn-voice.stop {
+            background: #e2e8f0;
+            color: var(--ink);
+        }
+
+        /* Metric Gauges Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            padding: 18px 16px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .metric-card .label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .metric-card .value {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--ink);
+            line-height: 1.1;
+        }
+
+        .metric-card.good .value { color: var(--green); }
+        .metric-card.bad .value { color: var(--red); }
+        .metric-card.moderate .value { color: var(--amber); }
+
+        .metric-card .desc {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Two-Column Details Grid */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            padding: 22px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--ink);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 10px;
+        }
+
+        .defect-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .defect-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.9rem;
+            background: #f8fafc;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border-left: 3.5px solid var(--amber);
+        }
+
+        .defect-item.bad {
+            border-left-color: var(--red);
+            background: var(--red-subtle);
+        }
+
+        .defect-item.good {
+            border-left-color: var(--green);
+            background: var(--green-subtle);
+        }
+
+        .advisory-box {
+            background: var(--blue-subtle);
+            border: 1px solid var(--blue-border);
+            border-left: 4px solid var(--blue);
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        .sowing-box {
+            background: var(--green-subtle);
+            border: 1px solid var(--green-border);
+            border-left: 4px solid var(--green);
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-line;
+            margin-top: 14px;
+        }
+
+        /* Seed Image Display */
+        .seed-img-container {
+            width: 100%;
+            max-height: 240px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f1f5f9;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .seed-img-container img {
+            max-width: 100%;
+            max-height: 240px;
+            object-fit: contain;
+        }
+
+        /* Bottom Actions */
+        .bottom-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        /* Print Media Styles */
+        @media print {
+            .top-navbar, .voice-card, .bottom-bar, .nav-actions {
+                display: none !important;
+            }
+            body {\n            letter-spacing: -0.01em;\n            line-height: 1.6;\n
+                background: white;
+            }
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+            .verdict-banner {
+                color: black !important;
+                border: 2px solid black !important;
+                background: none !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+            .details-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+    <script src="{% static 'js/kisansathi-i18n.js' %}"></script>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- Top Navigation -->
+        <nav class="top-navbar">
+            <a href="{% url 'prediction:seed_analysis' %}" class="brand-badge">
+                <span>🌱</span>
+                <span>KisanSathi AI — Seed Diagnostic Certificate</span>
+            </a>
+            <div class="nav-actions">
+                <a href="{% url 'prediction:download_seed_pdf' seed.pk %}" class="btn-action primary">
+                    📄 Download PDF Certificate
+                </a>
+                <button type="button" class="btn-action" onclick="window.print()">
+                    🖨️ Print Certificate
+                </button>
+            </div>
+        </nav>
+
+        <!-- Grand Verdict Banner -->
+        <header class="verdict-banner {% if is_good %}good{% elif quality_status == 'moderate' %}moderate{% else %}bad{% endif %}">
+            <div class="verdict-top">
+                <span class="verdict-badge">Certificate #KSS-{{ seed.pk }}</span>
+                <span class="verdict-badge">{{ crop_type }} ({{ crop_info.name_hi }})</span>
+            </div>
+
+            <h1 class="verdict-title" id="verdictHeadline">
+                {% if is_good and quality_status == 'good' %}
+                    ✅ SEED IS GOOD / SUITABLE FOR AGRICULTURE (उत्तम बीज - बुवाई योग्य)
+                {% elif quality_status == 'moderate' %}
+                    ⚠️ SEED IS MODERATE / SEED TREATMENT REQUIRED (मध्यम बीज - बीजोपचार अनिवार्य)
+                {% else %}
+                    ❌ SEED IS BAD / UNFIT FOR AGRICULTURE (खराब बीज - कृषि के लिए अनुपयुक्त)
+                {% endif %}
+            </h1>
+
+            <p class="verdict-sub" id="verdictSummary">
+                {{ suitability_verdict }}
+            </p>
+        </header>
+
+        <!-- Voice Assistant -->
+        <section class="voice-card">
+            <div class="voice-left">
+                <span class="voice-icon">🔊</span>
+                <div>
+                    <h3 style="font-size:0.95rem; font-weight:800; color:var(--ink);">Audio Voice Assistant (आवाज़ में रिपोर्ट सुनें)</h3>
+                    <p style="font-size:0.8rem; color:var(--text-muted);" id="voiceStatus">Ready to read your seed quality assessment.</p>
+                </div>
+            </div>
+            <div class="voice-controls">
+                <select id="voiceLangSelect" style="padding:7px 12px; border-radius:8px; border:1px solid var(--line); font-weight:600; font-family:inherit;">
+                    <option value="hi" selected>Hindi (हिंदी)</option>
+                    <option value="en">English</option>
+                    <option value="bn">Bengali (বাংলা)</option>
+                    <option value="mr">Marathi (मराठी)</option>
+                    <option value="te">Telugu (తెలుగు)</option>
+                    <option value="ta">Tamil (தமிழ்)</option>
+                </select>
+                <button type="button" class="btn-voice play" id="btnSpeak">🔊 Listen</button>
+                <button type="button" class="btn-voice pause" id="btnPause" style="display:none;">⏸ Pause</button>
+                <button type="button" class="btn-voice stop" id="btnStop">■ Stop</button>
+            </div>
+        </section>
+
+        <!-- Metric Gauges -->
+        <section class="metrics-grid">
+            
+            <div class="metric-card {% if is_good %}good{% else %}bad{% endif %}">
+                <div class="label">Predicted Viability</div>
+                <div class="value">{{ viability_score }}%</div>
+                <div class="desc">Germination capacity (Govt std: {{ crop_info.min_germination_std }}%)</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="label">Physical Purity</div>
+                <div class="value">{{ purity_score }}%</div>
+                <div class="desc">Sound & unbroken grains</div>
+            </div>
+
+            <div class="metric-card {% if is_good %}good{% elif quality_status == 'moderate' %}moderate{% else %}bad{% endif %}">
+                <div class="label">Quality Rating</div>
+                <div class="value" style="font-size:1.3rem;">{{ health_rating }}</div>
+                <div class="desc">Agronomic classification</div>
+            </div>
+
+            <div class="metric-card {% if is_good %}good{% else %}bad{% endif %}">
+                <div class="label">Risk Level</div>
+                <div class="value" style="font-size:1.3rem;">{{ risk_level }}</div>
+                <div class="desc">Field planting hazard</div>
+            </div>
+
+        </section>
+
+        <!-- Two-Column Diagnostic & Treatment Cards -->
+        <section class="details-grid">
+            
+            <!-- Left: Inspection & Defects -->
+            <article class="card">
+                <h2 class="card-title">🔍 Seed Sample & Defect Inspection</h2>
+                
+                {% if image_url %}
+                <div class="seed-img-container">
+                    <img src="{{ image_url }}" alt="Tested seed sample">
+                </div>
+                {% endif %}
+
+                <ul class="defect-list">
+                    {% for defect in defects_list %}
+                    <li class="defect-item {% if not is_good %}bad{% else %}good{% endif %}">
+                        <span>{% if is_good %}✓{% else %}⚠️{% endif %}</span>
+                        <span>{{ defect }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+
+                <div class="sowing-box" style="margin-top:16px;">
+                    <strong>🌾 Yield Impact Projection:</strong><br>
+                    {{ yield_impact }}
+                </div>
+            </article>
+
+            <!-- Right: Pre-Sowing Seed Treatment -->
+            <article class="card">
+                <h2 class="card-title">🌿 Pre-Sowing Seed Treatment & Sowing Guide</h2>
+                
+                <div class="advisory-box" id="treatmentText">
+                    <strong>🌱 Recommended Seed Treatment (बीजोपचार विधि):</strong><br>
+                    {{ treatment_advisory }}
+                </div>
+
+                <div class="sowing-box">
+                    <strong>🌾 Sowing & Storage Guidelines:</strong><br>
+                    {{ sowing_guidelines }}
+                </div>
+            </article>
+
+        </section>
+
+        <!-- Bottom Actions -->
+        <div class="bottom-bar">
+            <a href="{% url 'prediction:seed_analysis' %}" class="btn-action primary">
+                🌱 Test Another Seed Sample
+            </a>
+            <a href="{% url 'prediction:home' %}" class="btn-action">
+                🌿 Crop Disease Scanner
+            </a>
+            <a href="{% url 'dashboard:home' %}" class="btn-action">
+                📊 Farmer Dashboard
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Speech Synthesis & Language Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const synth = window.speechSynthesis;
+            const btnSpeak = document.getElementById("btnSpeak");
+            const btnPause = document.getElementById("btnPause");
+            const btnStop = document.getElementById("btnStop");
+            const voiceLangSelect = document.getElementById("voiceLangSelect");
+            const voiceStatus = document.getElementById("voiceStatus");
+
+            if (!synth) {
+                if (voiceStatus) voiceStatus.textContent = "Speech synthesis not supported in this browser.";
+                if (btnSpeak) btnSpeak.disabled = true;
+                return;
+            }
+
+            function getSpeechText() {
+                const verdict = document.getElementById("verdictHeadline")?.innerText || "";
+                const summary = document.getElementById("verdictSummary")?.innerText || "";
+                const treatment = document.getElementById("treatmentText")?.innerText || "";
+                return `${verdict}. ${summary}. ${treatment}`;
+            }
+
+            btnSpeak.addEventListener("click", () => {
+                synth.cancel();
+                const text = getSpeechText();
+                const lang = voiceLangSelect ? voiceLangSelect.value : "hi";
+                
+                const langMap = {
+                    "hi": "hi-IN",
+                    "en": "en-US",
+                    "bn": "bn-IN",
+                    "mr": "mr-IN",
+                    "te": "te-IN",
+                    "ta": "ta-IN"
+                };
+
+                const utter = new SpeechSynthesisUtterance(text);
+                utter.lang = langMap[lang] || "hi-IN";
+                utter.rate = 0.95;
+
+                utter.onstart = () => {
+                    voiceStatus.textContent = "🔊 Reading seed diagnostic report...";
+                    btnSpeak.style.display = "none";
+                    btnPause.style.display = "inline-flex";
+                };
+
+                utter.onend = () => {
+                    voiceStatus.textContent = "Report playback finished.";
+                    btnSpeak.style.display = "inline-flex";
+                    btnPause.style.display = "none";
+                };
+
+                utter.onerror = () => {
+                    voiceStatus.textContent = "Voice playback ended.";
+                    btnSpeak.style.display = "inline-flex";
+                    btnPause.style.display = "none";
+                };
+
+                synth.speak(utter);
+            });
+
+            btnPause.addEventListener("click", () => {
+                if (synth.speaking && !synth.paused) {
+                    synth.pause();
+                    btnPause.textContent = "▶ Resume";
+                } else if (synth.paused) {
+                    synth.resume();
+                    btnPause.textContent = "⏸ Pause";
+                }
+            });
+
+            btnStop.addEventListener("click", () => {
+                synth.cancel();
+                voiceStatus.textContent = "Voice playback stopped.";
+                btnSpeak.style.display = "inline-flex";
+                btnPause.style.display = "none";
+                btnPause.textContent = "⏸ Pause";
+            });
+        });
+    </script>
+
+</body>
+</html>

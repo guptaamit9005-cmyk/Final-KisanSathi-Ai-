@@ -5,17 +5,43 @@
 {% block content %}
 
 <style>
-    :root {
-        --ks-bg: #f4f8f3;
-        --ks-card: #ffffff;
-        --ks-text: #173b2a;
-        --ks-muted: #66776c;
-        --ks-primary: #247a45;
-        --ks-primary-hover: #175c32;
-        --ks-border: #dce9df;
-        --ks-soft: #eaf5ed;
-        --ks-shadow: 0 12px 35px rgba(25, 75, 42, 0.08);
-    }
+    
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --bg-color: #fafafa;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #94a3b8;
+            --border-color: #f1f5f9;
+            --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 40px rgba(16, 185, 129, 0.08);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --green: var(--primary);
+            --green-dark: var(--primary-dark);
+            --green-deep: #06472d;
+            --green-soft: #ecfdf5;
+            --green-light: #f0fdf4;
+            --background: var(--bg-color);
+            --white: #ffffff;
+            --text: var(--text-main);
+            --muted: var(--text-muted);
+            --border: var(--border-color);
+            --yellow: var(--accent);
+            --yellow-soft: #fffbeb;
+            --blue: #3b82f6;
+            --blue-soft: #eff6ff;
+            --orange: #f97316;
+            --orange-soft: #fff7ed;
+            --red: #ef4444;
+            --red-soft: #fef2f2;
+        }
+    
 
     body.ks-dark {
         --ks-bg: #101b15;
@@ -77,7 +103,7 @@
     .ks-brand p {
         margin: 4px 0 0;
         color: var(--ks-muted);
-        font-size: 13px;
+        font-size: 20px;
     }
 
     .ks-theme-button {
@@ -125,7 +151,7 @@
         border: 1px solid rgba(255,255,255,.28);
         border-radius: 30px;
         background: rgba(255,255,255,.12);
-        font-size: 12px;
+        font-size: 18px;
         font-weight: 700;
         letter-spacing: .5px;
     }
@@ -142,7 +168,7 @@
         max-width: 650px;
         margin: 0;
         color: rgba(255,255,255,.9);
-        font-size: 15px;
+        font-size: 24px;
         line-height: 1.7;
     }
 
@@ -180,7 +206,7 @@
     .ks-heading p {
         margin: 0;
         color: var(--ks-muted);
-        font-size: 14px;
+        font-size: 22px;
         line-height: 1.6;
     }
 
@@ -198,7 +224,7 @@
         display: block;
         margin-bottom: 8px;
         color: var(--ks-text);
-        font-size: 13px;
+        font-size: 20px;
         font-weight: 750;
     }
 
@@ -215,7 +241,7 @@
         background: var(--ks-bg);
         color: var(--ks-text);
         font: inherit;
-        font-size: 14px;
+        font-size: 22px;
     }
 
     .ks-field textarea {
@@ -234,14 +260,14 @@
         display: block;
         margin-top: 5px;
         color: var(--ks-muted);
-        font-size: 12px;
+        font-size: 18px;
     }
 
     .ks-error {
         display: block;
         margin-top: 5px;
         color: #dc4545;
-        font-size: 12px;
+        font-size: 18px;
     }
 
     .ks-submit {
@@ -257,7 +283,7 @@
         background: var(--ks-primary);
         color: #fff;
         cursor: pointer;
-        font-size: 15px;
+        font-size: 24px;
         font-weight: 800;
     }
 
@@ -273,7 +299,7 @@
     .ks-side-card h3 {
         margin: 0 0 14px;
         color: var(--ks-text);
-        font-size: 17px;
+        font-size: 28px;
         font-weight: 800;
     }
 
@@ -292,7 +318,7 @@
         border-radius: 10px;
         background: var(--ks-soft);
         color: var(--ks-primary);
-        font-size: 13px;
+        font-size: 20px;
         font-weight: 800;
     }
 
@@ -300,13 +326,13 @@
         display: block;
         margin-bottom: 4px;
         color: var(--ks-text);
-        font-size: 13px;
+        font-size: 20px;
     }
 
     .ks-step span {
         display: block;
         color: var(--ks-muted);
-        font-size: 12px;
+        font-size: 18px;
         line-height: 1.5;
     }
 
@@ -316,7 +342,7 @@
         border-radius: 12px;
         background: var(--ks-soft);
         color: var(--ks-text);
-        font-size: 12px;
+        font-size: 18px;
         line-height: 1.65;
     }
 
@@ -342,7 +368,7 @@
     .ks-section-heading p {
         margin: 7px 0 0;
         color: var(--ks-muted);
-        font-size: 13px;
+        font-size: 20px;
         line-height: 1.6;
     }
 
@@ -352,7 +378,7 @@
         border-radius: 30px;
         background: var(--ks-soft);
         color: var(--ks-primary);
-        font-size: 13px;
+        font-size: 20px;
         font-weight: 800;
     }
 
@@ -383,7 +409,7 @@
         border-radius: 30px;
         background: var(--ks-soft);
         color: var(--ks-primary);
-        font-size: 11px;
+        font-size: 26px;
         font-weight: 800;
     }
 
@@ -393,7 +419,7 @@
         border-radius: 9px;
         background: var(--ks-soft);
         color: var(--ks-primary);
-        font-size: 12px;
+        font-size: 18px;
         font-weight: 800;
     }
 
@@ -408,7 +434,7 @@
     .ks-scheme-card p {
         margin: 0 0 13px;
         color: var(--ks-muted);
-        font-size: 13px;
+        font-size: 20px;
         line-height: 1.65;
         overflow-wrap: anywhere;
     }
@@ -419,7 +445,7 @@
         border-radius: 11px;
         background: var(--ks-bg);
         color: var(--ks-text);
-        font-size: 13px;
+        font-size: 20px;
         line-height: 1.6;
         overflow-wrap: anywhere;
     }
@@ -433,7 +459,7 @@
         padding-left: 19px;
         margin: 0 0 14px;
         color: var(--ks-muted);
-        font-size: 12px;
+        font-size: 18px;
         line-height: 1.7;
     }
 
@@ -444,7 +470,7 @@
         border-radius: 8px;
         background: rgba(228,162,58,.10);
         color: var(--ks-text);
-        font-size: 12px;
+        font-size: 18px;
         line-height: 1.6;
     }
 
@@ -463,7 +489,7 @@
         color: #fff !important;
         text-align: center;
         text-decoration: none !important;
-        font-size: 13px;
+        font-size: 20px;
         font-weight: 800;
     }
 
@@ -494,14 +520,14 @@
         max-width: 560px;
         margin: 0 auto;
         color: var(--ks-muted);
-        font-size: 13px;
+        font-size: 20px;
         line-height: 1.7;
     }
 
     .ks-footer {
         margin-top: 26px;
         color: var(--ks-muted);
-        font-size: 11px;
+        font-size: 26px;
         line-height: 1.7;
         text-align: center;
     }
@@ -552,7 +578,7 @@
         }
 
         .ks-brand h2 {
-            font-size: 17px;
+            font-size: 28px;
         }
     }
 </style>
@@ -679,7 +705,7 @@
 
                 <div class="ks-side-card">
                     <h3>Explore national schemes</h3>
-                    <p style="color:var(--ks-muted);font-size:13px;line-height:1.7;">
+                    <p style="color:var(--ks-muted);font-size: 20px;line-height:1.7;">
                         For additional Central and State/UT scheme discovery,
                         visit the Government of India’s myScheme portal.
                     </p>
@@ -757,7 +783,7 @@
                             {% endif %}
 
                             {% if item.reasons %}
-                                <strong style="font-size:13px;display:block;margin-bottom:7px;">
+                                <strong style="font-size: 20px;display:block;margin-bottom:7px;">
                                     Matching details
                                 </strong>
 

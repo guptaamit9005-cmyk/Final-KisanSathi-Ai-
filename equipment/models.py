@@ -5,14 +5,17 @@ from django.contrib.auth.models import User
 class Equipment(models.Model):
 
     EQUIPMENT_TYPES = [
-        ("tractor", "Tractor"),
-        ("rotavator", "Rotavator"),
-        ("seed_drill", "Seed Drill"),
-        ("sprayer", "Sprayer"),
-        ("harvester", "Harvester"),
-        ("cultivator", "Cultivator"),
-        ("thresher", "Thresher"),
-        ("other", "Other"),
+        ("tractor", "Tractor (ट्रैक्टर)"),
+        ("rotavator", "Rotavator (रोटावेटर)"),
+        ("seed_drill", "Seed Drill / Super Seeder (सुपर सीडर)"),
+        ("sprayer", "Boom Sprayer (स्प्रेयर)"),
+        ("drone", "Agri Drone Sprayer (कृषि ड्रोन)"),
+        ("harvester", "Combine Harvester (कंबाइन हार्वेस्टर)"),
+        ("leveler", "Laser Land Leveler (लेजर लेवलर)"),
+        ("cultivator", "Cultivator / Plough (कल्टीवेटर)"),
+        ("thresher", "Multi-Crop Thresher (थ्रेशर)"),
+        ("pump", "Solar / Diesel Water Pump (पानी का पंप)"),
+        ("other", "Other Implements (अन्य उपकरण)"),
     ]
 
     RENT_TYPES = [
@@ -69,6 +72,24 @@ class Equipment(models.Model):
         default="Uttar Pradesh"
     )
 
+    latitude = models.FloatField(
+        null=True,
+        blank=True,
+        default=26.8467
+    )
+
+    longitude = models.FloatField(
+        null=True,
+        blank=True,
+        default=80.9462
+    )
+
+    chc_hub_name = models.CharField(
+        max_length=150,
+        blank=True,
+        default="Kisan CHC Hub"
+    )
+
     rent_type = models.CharField(
         max_length=20,
         choices=RENT_TYPES,
@@ -78,6 +99,20 @@ class Equipment(models.Model):
     rent_amount = models.DecimalField(
         max_digits=10,
         decimal_places=2
+    )
+
+    hourly_rate = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True
+    )
+
+    acre_rate = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True
     )
 
     security_deposit = models.DecimalField(
@@ -94,9 +129,29 @@ class Equipment(models.Model):
         default=False
     )
 
+    fuel_included = models.BooleanField(
+        default=False
+    )
+
     contact_number = models.CharField(
         max_length=20,
         blank=True
+    )
+
+    rating = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        default=4.8
+    )
+
+    total_trips = models.PositiveIntegerField(
+        default=18
+    )
+
+    availability_note = models.CharField(
+        max_length=150,
+        blank=True,
+        default="🟢 Live: Ready for instant dispatch"
     )
 
     image = models.ImageField(
@@ -135,6 +190,22 @@ class Equipment(models.Model):
             self.rent_type,
             self.rent_type
         )
+
+    @property
+    def display_hourly_rate(self):
+        if self.hourly_rate:
+            return self.hourly_rate
+        if self.rent_type == "hour":
+            return self.rent_amount
+        return round(float(self.rent_amount) / 8, 2)
+
+    @property
+    def display_acre_rate(self):
+        if self.acre_rate:
+            return self.acre_rate
+        if self.rent_type == "acre":
+            return self.rent_amount
+        return round(float(self.display_hourly_rate) * 1.4, 2)
 
 
 class EquipmentBooking(models.Model):

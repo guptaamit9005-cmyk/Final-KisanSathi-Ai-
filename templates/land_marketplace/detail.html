@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ land.title }} | AgriVisionAI Land Marketplace{% endblock %}
+
+{% block content %}
+<div style="max-width: 1200px; margin: 30px auto; padding: 0 20px;">
+    <!-- Breadcrumb & Top Bar -->
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px; margin-bottom: 24px;">
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: #64748b;">
+            <a href="{% url 'land_marketplace:list' %}" style="color: #166534; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                ← Land Marketplace
+            </a>
+            <span>/</span>
+            <span style="color: #0f172a; font-weight: 500;">{{ land.village }}, {{ land.district }}</span>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: #dcfce7; color: #166534; font-weight: 700; font-size: 0.8rem; border-radius: 999px;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e;"></span>
+                {{ land.get_status_display }}
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 4px; padding: 6px 14px; background: #e0f2fe; color: #0284c7; font-weight: 700; font-size: 0.8rem; border-radius: 999px;">
+                🤝 {{ land.get_listing_type_display }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div style="display: grid; grid-template-columns: 1fr 380px; gap: 32px; align-items: start;">
+        
+        <!-- Left: Land Overview & Details -->
+        <div>
+            <!-- Hero Card / Gallery -->
+            <div style="background: white; border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.04); margin-bottom: 24px;">
+                <div style="height: 320px; position: relative; background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 50%, #86efac 100%); display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                    {% if land.image %}
+                    <img src="{{ land.image.url }}" alt="{{ land.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    {% else %}
+                    <div style="text-align: center;">
+                        <span style="font-size: 5rem; display: block;">🌾</span>
+                        <span style="font-weight: 700; color: #166534; font-size: 1.1rem;">Agricultural Land Listing</span>
+                    </div>
+                    {% endif %}
+
+                    <div style="position: absolute; bottom: 16px; left: 16px; display: flex; gap: 8px;">
+                        <span style="background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(4px); color: white; padding: 6px 14px; border-radius: 8px; font-weight: 600; font-size: 0.85rem;">
+                            📍 {{ land.location }}
+                        </span>
+                        {% if land.is_verified %}
+                        <span style="background: #166534; color: white; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 4px;">
+                            ✓ Verified Land
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div style="padding: 28px;">
+                    <h1 style="font-size: 1.85rem; font-weight: 800; color: #0f172a; margin: 0 0 12px; line-height: 1.3;">
+                        {{ land.title }}
+                    </h1>
+                    <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 20px; display: flex; align-items: center; gap: 6px;">
+                        <span>👤 Listed by: <strong>{{ land.owner.get_full_name|default:land.owner.username }}</strong></span>
+                        <span>•</span>
+                        <span>🗓️ Listed on {{ land.created_at|date:"M d, Y" }}</span>
+                    </p>
+
+                    <!-- Core Metrics Grid -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin-bottom: 28px;">
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; text-align: center;">
+                            <span style="font-size: 1.3rem;">📐</span>
+                            <div style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin-top: 4px;">{{ land.available_area }}</div>
+                            <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase;">Available Acres</div>
+                        </div>
+
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; text-align: center;">
+                            <span style="font-size: 1.3rem;">🌱</span>
+                            <div style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin-top: 4px;">{{ land.soil_type|default:"Rich Loam" }}</div>
+                            <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase;">Soil Type</div>
+                        </div>
+
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; text-align: center;">
+                            <span style="font-size: 1.3rem;">💧</span>
+                            <div style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin-top: 4px;">{{ land.get_water_source_display }}</div>
+                            <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase;">Water Source</div>
+                        </div>
+
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; text-align: center;">
+                            <span style="font-size: 1.3rem;">⏳</span>
+                            <div style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin-top: 4px;">{{ land.minimum_duration_months }} - {{ land.maximum_duration_months }} Mo</div>
+                            <div style="font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase;">Lease Window</div>
+                        </div>
+                    </div>
+
+                    <!-- Amenities & Highlights -->
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px;">
+                        {% if land.electricity_available %}
+                        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: #fef9c3; color: #854d0e; border: 1px solid #fef08a; border-radius: 10px; font-weight: 600; font-size: 0.85rem;">
+                            ⚡ Electricity Available
+                        </span>
+                        {% endif %}
+                        {% if land.road_access %}
+                        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; border-radius: 10px; font-weight: 600; font-size: 0.85rem;">
+                            🛣️ Direct Tractor/Road Access
+                        </span>
+                        {% endif %}
+                        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; border-radius: 10px; font-weight: 600; font-size: 0.85rem;">
+                            🚜 Type: {{ land.get_land_type_display }}
+                        </span>
+                    </div>
+
+                    <!-- Suitable Crops -->
+                    {% if land.suitable_crops %}
+                    <div style="margin-bottom: 24px;">
+                        <h4 style="font-size: 0.95rem; font-weight: 700; color: #334155; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
+                            🌾 Recommended Crops for this Plot
+                        </h4>
+                        <div style="background: #f8fafc; border-left: 4px solid #166534; padding: 14px 18px; border-radius: 0 10px 10px 0; color: #1e293b; font-weight: 500;">
+                            {{ land.suitable_crops }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Description -->
+                    {% if land.description %}
+                    <div>
+                        <h4 style="font-size: 0.95rem; font-weight: 700; color: #334155; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
+                            📝 Description & Farm Features
+                        </h4>
+                        <p style="color: #475569; line-height: 1.7; font-size: 0.95rem; margin: 0; white-space: pre-line;">
+                            {{ land.description }}
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Interactive Cost Calculator & Request Application -->
+        <div style="position: sticky; top: 90px;">
+            <div style="background: white; border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 35px rgba(22, 101, 52, 0.08);">
+                <div style="background: #166534; color: white; padding: 20px 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                        <span style="font-size: 0.85rem; opacity: 0.9;">Rent Rate</span>
+                        <span style="font-size: 1.5rem; font-weight: 900;">₹{{ land.rent_per_acre_month }}</span>
+                    </div>
+                    <div style="font-size: 0.8rem; opacity: 0.8; text-align: right;">per acre / month</div>
+                    {% if land.security_deposit > 0 %}
+                    <div style="font-size: 0.8rem; margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: space-between;">
+                        <span>Security Deposit:</span>
+                        <strong>₹{{ land.security_deposit }}</strong>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div style="padding: 24px;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: #0f172a; margin-top: 0; margin-bottom: 14px;">
+                        Interactive Request Form
+                    </h3>
+
+                    <!-- LIVE CALCULATOR PANEL -->
+                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px; margin-bottom: 20px;">
+                        <div style="font-size: 0.8rem; font-weight: 700; color: #166534; text-transform: uppercase; margin-bottom: 8px;">
+                            📊 Live Cost Estimate
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 4px; color: #334155;">
+                            <span>Total Estimated Rent:</span>
+                            <strong id="calcRent">₹0</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 6px; color: #334155;">
+                            <span>Refundable Deposit:</span>
+                            <strong id="calcDeposit">₹{{ land.security_deposit }}</strong>
+                        </div>
+                        <div style="border-top: 1px dashed #86efac; padding-top: 6px; display: flex; justify-content: space-between; font-size: 1rem; color: #166534; font-weight: 800;">
+                            <span>Total Payable:</span>
+                            <span id="calcTotal">₹0</span>
+                        </div>
+                    </div>
+
+                    {% if request.user == land.owner %}
+                    <div style="background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 14px; border-radius: 12px; font-size: 0.9rem; text-align: center;">
+                        ℹ️ <strong>You are the owner</strong> of this listing. You can manage incoming requests from your dashboard.
+                    </div>
+                    {% else %}
+                    <!-- Application Form -->
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                        <div style="background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; padding: 10px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 14px;">
+                            {{ form.non_field_errors }}
+                        </div>
+                        {% endif %}
+
+                        <div style="margin-bottom: 14px;">
+                            <label style="display: block; font-weight: 600; font-size: 0.85rem; color: #334155; margin-bottom: 4px;">
+                                Required Land Area (Acres)
+                            </label>
+                            <input type="number" id="id_requested_area" name="requested_area" step="0.01" min="0.01" max="{{ land.available_area }}" value="{{ form.requested_area.value|default:land.available_area }}" required style="width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem;">
+                            <small style="color: #64748b; font-size: 0.75rem;">Max available: {{ land.available_area }} acres</small>
+                            {% if form.requested_area.errors %}<div style="color: #dc2626; font-size: 0.8rem;">{{ form.requested_area.errors }}</div>{% endif %}
+                        </div>
+
+                        <div style="margin-bottom: 14px;">
+                            <label style="display: block; font-weight: 600; font-size: 0.85rem; color: #334155; margin-bottom: 4px;">
+                                Duration (Months)
+                            </label>
+                            <input type="number" id="id_duration_months" name="duration_months" min="{{ land.minimum_duration_months }}" max="{{ land.maximum_duration_months }}" value="{{ form.duration_months.value|default:land.minimum_duration_months }}" required style="width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem;">
+                            <small style="color: #64748b; font-size: 0.75rem;">Allowed: {{ land.minimum_duration_months }} to {{ land.maximum_duration_months }} months</small>
+                            {% if form.duration_months.errors %}<div style="color: #dc2626; font-size: 0.8rem;">{{ form.duration_months.errors }}</div>{% endif %}
+                        </div>
+
+                        <div style="margin-bottom: 14px;">
+                            <label style="display: block; font-weight: 600; font-size: 0.85rem; color: #334155; margin-bottom: 4px;">
+                                Proposed Start Date
+                            </label>
+                            <input type="date" name="proposed_start_date" required value="{{ form.proposed_start_date.value|default:'' }}" style="width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem;">
+                            {% if form.proposed_start_date.errors %}<div style="color: #dc2626; font-size: 0.8rem;">{{ form.proposed_start_date.errors }}</div>{% endif %}
+                        </div>
+
+                        <div style="margin-bottom: 18px;">
+                            <label style="display: block; font-weight: 600; font-size: 0.85rem; color: #334155; margin-bottom: 4px;">
+                                Message / Proposed Farming Plan
+                            </label>
+                            <textarea name="message" rows="3" placeholder="Tell the owner about what crop you plan to cultivate and your farming background..." style="width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem;">{{ form.message.value|default:'' }}</textarea>
+                            {% if form.message.errors %}<div style="color: #dc2626; font-size: 0.8rem;">{{ form.message.errors }}</div>{% endif %}
+                        </div>
+
+                        <button type="submit" style="width: 100%; padding: 14px; background: #166534; color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 14px rgba(22, 101, 52, 0.35); transition: background 0.2s;" onmouseover="this.style.background='#14532d'" onmouseout="this.style.background='#166534'">
+                            Send Proposal to Landowner →
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Live Cost Recalculation API Integration
+    const rentRate = parseFloat("{{ land.rent_per_acre_month }}") || 0;
+    const depositAmt = parseFloat("{{ land.security_deposit }}") || 0;
+    const areaInput = document.getElementById("id_requested_area");
+    const durInput = document.getElementById("id_duration_months");
+    const calcRentEl = document.getElementById("calcRent");
+    const calcDepositEl = document.getElementById("calcDeposit");
+    const calcTotalEl = document.getElementById("calcTotal");
+
+    function updateLiveEstimate() {
+        if (!areaInput || !durInput) return;
+        const area = parseFloat(areaInput.value) || 0;
+        const dur = parseInt(durInput.value) || 0;
+
+        fetch("{% url 'land_marketplace:calculate_cost' land.id %}?area=" + area + "&duration=" + dur)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    calcRentEl.innerText = "₹" + parseFloat(data.rent).toLocaleString("en-IN");
+                    calcDepositEl.innerText = "₹" + parseFloat(data.deposit).toLocaleString("en-IN");
+                    calcTotalEl.innerText = "₹" + parseFloat(data.total).toLocaleString("en-IN");
+                }
+            })
+            .catch(() => {
+                // Fallback math if network offline
+                const rent = rentRate * area * dur;
+                const total = rent + depositAmt;
+                calcRentEl.innerText = "₹" + rent.toLocaleString("en-IN");
+                calcDepositEl.innerText = "₹" + depositAmt.toLocaleString("en-IN");
+                calcTotalEl.innerText = "₹" + total.toLocaleString("en-IN");
+            });
+    }
+
+    if (areaInput && durInput) {
+        areaInput.addEventListener("input", updateLiveEstimate);
+        durInput.addEventListener("input", updateLiveEstimate);
+        updateLiveEstimate();
+    }
+</script>
+{% endblock %}

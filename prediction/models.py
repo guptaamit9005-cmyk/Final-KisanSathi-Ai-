@@ -116,3 +116,76 @@ class CropAnalysis(models.Model):
     @property
     def final_prevention(self):
         return self.expert_prevention or self.ai_prevention
+
+
+class SeedAnalysis(models.Model):
+    """
+    Seed Quality & Viability Assessment:
+    Determines whether seeds are Good (suitable for sowing) or Bad (unfit for agriculture),
+    predicted germination viability %, detected defects, and pre-sowing treatment instructions.
+    """
+
+    QUALITY_GOOD = "good"
+    QUALITY_MODERATE = "moderate"
+    QUALITY_BAD = "bad"
+
+    QUALITY_CHOICES = [
+        (QUALITY_GOOD, "Good / Fit for Sowing (उत्तम बीज - बुवाई योग्य)"),
+        (QUALITY_MODERATE, "Moderate / Needs Treatment (मध्यम बीज - बीजोपचार आवश्यक)"),
+        (QUALITY_BAD, "Bad / Unfit for Agriculture (खराब बीज - कृषि के लिए अनुपयुक्त)"),
+    ]
+
+    farmer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="seed_analyses",
+        null=True,
+        blank=True,
+    )
+    image = models.ImageField(upload_to="seed_images/%Y/%m/%d/", blank=True, null=True)
+    crop_type = models.CharField(max_length=120, default="Wheat")
+    
+    # Analysis outputs
+    quality_status = models.CharField(
+        max_length=20,
+        choices=QUALITY_CHOICES,
+        default=QUALITY_GOOD,
+    )
+    is_good_for_agriculture = models.BooleanField(default=True)
+    viability_score = models.IntegerField(default=85, help_text="Predicted Germination Rate %")
+    purity_score = models.IntegerField(default=95, help_text="Physical Purity %")
+    health_rating = models.CharField(max_length=50, default="Good") # Excellent, Good, Fair, Poor, Unusable
+    
+    # Observations & Defects
+    defects_detected = models.TextField(blank=True, help_text="List or summary of detected defects")
+    moisture_condition = models.CharField(max_length=100, blank=True)
+    float_test_verdict = models.CharField(max_length=150, blank=True)
+    
+    # Recommendations & Guidance
+    suitability_verdict = models.TextField(blank=True)
+    treatment_advisory = models.TextField(blank=True)
+    sowing_guidelines = models.TextField(blank=True)
+    risk_level = models.CharField(max_length=50, default="Low") # Low, Medium, High
+    yield_impact = models.CharField(max_length=250, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        verdict = "GOOD" if self.is_good_for_agriculture else "BAD"
+        return f"Seed #{self.pk} — {self.crop_type} [{verdict}] ({self.viability_score}% Viability)"
+
+    @property
+    def is_good(self):
+        return self.quality_status == self.QUALITY_GOOD
+
+    @property
+    def is_bad(self):
+        return self.quality_status == self.QUALITY_BAD
+
+    @property
+    def is_moderate(self):
+        return self.quality_status == self.QUALITY_MODERATE

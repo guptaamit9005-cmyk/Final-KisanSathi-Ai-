@@ -1,450 +1,2714 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
+{% load static %}
 
-    <title>Farmer Learning Roadmap | KisanSathi AI</title>
+{% block title %}Farmer Learning & 3D Crop Visualizer | KisanSathi AI{% endblock %}
 
-    <style>
+{% block content %}
+<!-- Three.js and OrbitControls CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<style>
+  /* ============================================================
+     KISANSATHI 3D FARMER LEARNING HUB STYLES
+     ============================================================ */
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f8f1;
-            color: #183b20;
-        }
+  .learning-root {
+    padding-bottom: 70px;
+    font-family: inherit;
+  }
 
-        .navbar {
-            background: #174d2a;
-            color: white;
-            padding: 16px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+  /* HERO BANNER */
+  .learning-hero {
+    position: relative;
+    background: linear-gradient(135deg, #064e3b 0%, #166534 50%, #15803d 100%);
+    color: #ffffff;
+    border-radius: 24px;
+    padding: 40px 34px;
+    margin-bottom: 30px;
+    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(6, 78, 59, 0.25);
+  }
+  .hero-3d-emblem {
+    position: absolute;
+    right: -20px;
+    bottom: -30px;
+    font-size: 160px;
+    opacity: 0.14;
+    user-select: none;
+    pointer-events: none;
+    line-height: 1;
+  }
+  .hero-tag-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    margin-bottom: 14px;
+    backdrop-filter: blur(8px);
+  }
+  .learning-hero-title {
+    font-size: clamp(26px, 3.6vw, 40px);
+    font-weight: 850;
+    line-height: 1.22;
+    margin: 0 0 12px;
+    color: #ffffff;
+  }
+  .learning-hero-subtitle {
+    font-size: 26px;
+    line-height: 1.6;
+    color: #d1fae5;
+    max-width: 820px;
+    margin: 0 0 24px;
+  }
+  .hero-features-strip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .feature-pill {
+    background: rgba(255, 255, 255, 0.95);
+    color: #14532d;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
 
-        .logo {
-            font-size: 23px;
-            font-weight: 800;
-        }
+  /* 3D VISUALIZER CONTAINER */
+  .visualizer-card {
+    background: var(--ks-surface);
+    border: 1px solid var(--ks-border);
+    border-radius: 22px;
+    box-shadow: var(--ks-shadow);
+    padding: 24px;
+    margin-bottom: 35px;
+    position: relative;
+    overflow: hidden;
+  }
+  .visualizer-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .visualizer-title-area h2 {
+    font-size: 21px;
+    font-weight: 850;
+    color: var(--ks-text);
+    margin: 0 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .visualizer-title-area p {
+    font-size: 13.5px;
+    color: var(--ks-muted);
+    margin: 0;
+  }
 
-        .logo span {
-            color: #8bd36d;
-        }
+  /* 3D MODE TABS */
+  .visualizer-mode-tabs {
+    display: flex;
+    align-items: center;
+    background: var(--ks-bg);
+    border: 1px solid var(--ks-border);
+    padding: 4px;
+    border-radius: 12px;
+    gap: 4px;
+  }
+  .mode-tab-btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ks-text);
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .mode-tab-btn.active {
+    background: #166534;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(22, 101, 52, 0.3);
+  }
 
-        .back {
-            color: white;
-            text-decoration: none;
-            font-size: 14px;
-        }
+  /* 3D CANVAS WRAPPER */
+  .canvas-wrapper {
+    position: relative;
+    width: 100%;
+    height: 480px;
+    border-radius: 18px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #dcfce7 0%, #f0fdf4 100%);
+    border: 1px solid var(--ks-border);
+  }
+  html[data-theme="dark"] .canvas-wrapper {
+    background: linear-gradient(180deg, #09130d 0%, #112217 100%);
+  }
+  #webglCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: grab;
+  }
+  #webglCanvas:active {
+    cursor: grabbing;
+  }
 
-        .hero {
-            padding: 55px 7%;
-            background:
-                linear-gradient(
-                    135deg,
-                    #dcefd4,
-                    #f5f9ef
-                );
-        }
+  /* OVERLAY HUD CONTROLS */
+  .canvas-overlay-hud {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 10;
+  }
+  .hud-control-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid var(--ks-border);
+    background: rgba(255, 255, 255, 0.88);
+    color: #166534;
+    font-size: 18px;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(8px);
+    transition: all 0.2s;
+  }
+  html[data-theme="dark"] .hud-control-btn {
+    background: rgba(25, 35, 28, 0.9);
+    color: #86efac;
+    border-color: #354439;
+  }
+  .hud-control-btn:hover {
+    transform: scale(1.08);
+    background: #166534;
+    color: #ffffff;
+  }
+  .hud-control-btn.active {
+    background: #166534;
+    color: #ffffff;
+  }
 
-        .hero-content {
-            max-width: 900px;
-        }
+  .canvas-info-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: rgba(22, 101, 52, 0.9);
+    color: #ffffff;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    pointer-events: none;
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 10;
+  }
 
-        .badge {
-            display: inline-block;
-            background: #d0eac5;
-            color: #216b31;
-            padding: 8px 14px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 18px;
-        }
+  /* HOTSPOT POPUP DRAWER */
+  .hotspot-info-popup {
+    position: absolute;
+    bottom: 84px;
+    left: 14px;
+    right: 14px;
+    max-width: 480px;
+    background: var(--ks-surface);
+    border: 1px solid var(--ks-border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    z-index: 15;
+    display: none;
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hotspot-popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .hotspot-popup-header strong {
+    font-size: 14.5px;
+    color: var(--ks-text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .hotspot-popup-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: var(--ks-muted);
+    cursor: pointer;
+  }
+  .hotspot-info-popup p {
+    font-size: 13.5px;
+    color: var(--ks-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
 
-        h1 {
-            font-size: 42px;
-            margin-bottom: 15px;
-        }
+  /* 3D GROWTH TIMELINE SLIDER BAR */
+  .growth-stage-timeline {
+    background: var(--ks-bg);
+    border: 1px solid var(--ks-border);
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin-top: 18px;
+  }
+  .timeline-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .current-stage-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--ks-text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .timeline-slider-wrap {
+    position: relative;
+    margin-bottom: 14px;
+  }
+  .stage-range-input {
+    width: 100%;
+    height: 8px;
+    border-radius: 6px;
+    background: #cbd5e1;
+    outline: none;
+    cursor: pointer;
+    accent-color: #166534;
+  }
+  .stage-buttons-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .stage-pill-btn {
+    flex: 1;
+    min-width: 110px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--ks-border);
+    background: var(--ks-surface);
+    color: var(--ks-text);
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .stage-pill-btn:hover {
+    background: var(--ks-surface-secondary);
+  }
+  .stage-pill-btn.active {
+    background: #166534;
+    color: #ffffff;
+    border-color: #166534;
+    box-shadow: 0 4px 10px rgba(22, 101, 52, 0.25);
+  }
 
-        .hero p {
-            font-size: 17px;
-            color: #53675a;
-            line-height: 1.7;
-        }
+  /* CROP SELECTION TABS */
+  .crops-nav-scroll {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    scrollbar-width: thin;
+  }
+  .crop-tab-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border-radius: 9999px;
+    background: var(--ks-surface);
+    border: 1.5px solid var(--ks-border);
+    color: var(--ks-text);
+    font-size: 14.5px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    box-shadow: var(--ks-shadow);
+  }
+  .crop-tab-link:hover {
+    background: var(--ks-surface-secondary);
+    border-color: #166534;
+    transform: translateY(-2px);
+  }
+  .crop-tab-link.active {
+    background: #166534;
+    color: #ffffff !important;
+    border-color: #166534;
+    box-shadow: 0 6px 16px rgba(22, 101, 52, 0.3);
+  }
 
-        .container {
-            width: 90%;
-            max-width: 1250px;
-            margin: 35px auto;
-        }
+  /* ROADMAP CARD */
+  .roadmap-card {
+    background: var(--ks-surface);
+    border: 1px solid var(--ks-border);
+    border-radius: 22px;
+    padding: 32px;
+    box-shadow: var(--ks-shadow);
+    margin-bottom: 40px;
+  }
+  .roadmap-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--ks-border);
+  }
+  .roadmap-title-box h3 {
+    font-size: 24px;
+    font-weight: 850;
+    color: var(--ks-text);
+    margin: 0 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .roadmap-title-box p {
+    font-size: 24px;
+    color: var(--ks-muted);
+    margin: 0;
+    max-width: 800px;
+    line-height: 1.55;
+  }
+  .roadmap-quick-metrics {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .roadmap-metric-pill {
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: var(--ks-surface-secondary);
+    color: var(--ks-primary);
+    font-size: 12.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
 
-        .crop-filter {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 35px;
-        }
+  /* TIMELINE STEPS LIST */
+  .steps-stream {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .step-card {
+    background: var(--ks-bg);
+    border: 1px solid var(--ks-border);
+    border-radius: 16px;
+    padding: 22px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+  .step-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+  .step-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .step-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .step-badge-num {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #166534;
+    color: #ffffff;
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .step-title-wrap h4 {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--ks-text);
+    margin: 0;
+  }
+  .step-day-pill {
+    font-size: 18px;
+    font-weight: 700;
+    background: #e0f2fe;
+    color: #0369a1;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  html[data-theme="dark"] .step-day-pill {
+    background: #082f49;
+    color: #7dd3fc;
+  }
+  .step-desc {
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--ks-text);
+    margin: 0 0 16px;
+  }
 
-        .crop-filter a {
-            text-decoration: none;
-            background: white;
-            border: 1px solid #dce7d8;
-            color: #23572d;
-            padding: 11px 18px;
-            border-radius: 30px;
-            font-weight: 600;
-        }
+  /* AUDIO READOUT BUTTON */
+  .btn-audio-listen {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: var(--ks-surface);
+    border: 1px solid var(--ks-border);
+    color: var(--ks-primary);
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-audio-listen:hover {
+    background: var(--ks-surface-secondary);
+  }
 
-        .crop-filter a:hover {
-            background: #216b31;
-            color: white;
-        }
+  /* MODERN PRACTICES BULLETS */
+  .modern-bullets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .modern-bullet-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 22px;
+    color: var(--ks-text);
+    line-height: 1.5;
+  }
+  .bullet-check-icon {
+    color: #16a34a;
+    font-weight: bold;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
 
-        .roadmap {
-            background: white;
-            border-radius: 22px;
-            padding: 30px;
-            margin-bottom: 40px;
-            box-shadow: 0 8px 30px rgba(30, 70, 35, 0.08);
-        }
+  /* DO & DONT CALLOUT */
+  .do-dont-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--ks-border);
+  }
+  .do-box, .dont-box {
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 13.5px;
+    line-height: 1.45;
+  }
+  .do-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+  }
+  html[data-theme="dark"] .do-box {
+    background: #064e3b;
+    border-color: #059669;
+    color: #a7f3d0;
+  }
+  .dont-box {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+  }
+  html[data-theme="dark"] .dont-box {
+    background: #450a0a;
+    border-color: #7f1d1d;
+    color: #fca5a5;
+  }
 
-        .roadmap-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
+  /* MODERN AGRICULTURE MODULES */
+  .modules-section {
+    margin-bottom: 45px;
+  }
+  .section-h2 {
+    font-size: 22px;
+    font-weight: 850;
+    color: var(--ks-text);
+    margin: 0 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-sub {
+    font-size: 14.5px;
+    color: var(--ks-muted);
+    margin: 0 0 22px;
+  }
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .module-card {
+    background: var(--ks-surface);
+    border: 1px solid var(--ks-border);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: var(--ks-shadow);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .module-card:hover {
+    transform: translateY(-3px);
+    border-color: #22c55e;
+  }
+  .module-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .module-icon-sq {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--ks-surface-secondary);
+    display: grid;
+    place-items: center;
+    font-size: 24px;
+  }
+  .module-badge {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    background: #dcfce7;
+    color: #166534;
+  }
+  .module-card h3 {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--ks-text);
+    margin: 0 0 6px;
+    line-height: 1.35;
+  }
+  .module-hindi {
+    font-size: 20px;
+    color: #16a34a;
+    font-weight: 600;
+    margin: 0 0 10px;
+  }
+  .module-summary {
+    font-size: 13.5px;
+    color: var(--ks-muted);
+    line-height: 1.5;
+    margin: 0 0 16px;
+  }
+  .module-points {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--ks-border);
+  }
+  .module-point {
+    font-size: 20px;
+    color: var(--ks-text);
+    line-height: 1.45;
+    display: flex;
+    gap: 8px;
+  }
 
-        .crop-title {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
+  /* QUIZ & BADGE SECTION */
+  .quiz-card {
+    background: linear-gradient(135deg, var(--ks-surface), var(--ks-surface-secondary));
+    border: 1.5px solid var(--ks-border);
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: var(--ks-shadow);
+  }
+  .quiz-title {
+    font-size: 19px;
+    font-weight: 800;
+    margin: 0 0 6px;
+    color: var(--ks-text);
+  }
+  .quiz-box {
+    margin-top: 18px;
+  }
+  .quiz-question {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ks-text);
+    margin-bottom: 12px;
+  }
+  .quiz-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .quiz-opt-btn {
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--ks-border);
+    background: var(--ks-surface);
+    color: var(--ks-text);
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+  }
+  .quiz-opt-btn:hover {
+    background: #166534;
+    color: #ffffff;
+  }
+  .quiz-feedback {
+    margin-top: 14px;
+    font-size: 22px;
+    font-weight: 700;
+    display: none;
+  }
 
-        .crop-icon {
-            width: 58px;
-            height: 58px;
-            border-radius: 16px;
-            background: #edf7e8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-        }
+  /* ============================================================
+     AGRICULTURE VIDEO ACADEMY STYLES
+     ============================================================ */
+  .video-academy-section {
+    margin-bottom: 45px;
+  }
+  .video-cat-tabs-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+    scrollbar-width: thin;
+  }
+  .video-tab-btn {
+    padding: 9px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--ks-border);
+    background: var(--ks-surface);
+    color: var(--ks-text);
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: all 0.2s ease;
+  }
+  .video-tab-btn:hover {
+    border-color: #16a34a;
+    color: #16a34a;
+  }
+  .video-tab-btn.active {
+    background: #166534;
+    color: #ffffff;
+    border-color: #166534;
+    box-shadow: 0 4px 12px rgba(22, 101, 52, 0.25);
+  }
+  .video-tab-badge {
+    background: rgba(0, 0, 0, 0.08);
+    padding: 2px 7px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+  }
+  .video-tab-btn.active .video-tab-badge {
+    background: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+  }
 
-        .crop-title h2 {
-            font-size: 25px;
-            margin-bottom: 6px;
-        }
+  .videos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 22px;
+  }
+  .video-card {
+    background: var(--ks-surface);
+    border: 1px solid var(--ks-border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--ks-shadow);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s;
+  }
+  .video-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
+    border-color: #22c55e;
+  }
 
-        .crop-title p {
-            color: #718073;
-        }
+  .video-thumb-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #0f172a;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .video-thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .video-card:hover .video-thumb-img {
+    transform: scale(1.05);
+  }
+  .video-thumb-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.7) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 12px;
+  }
+  .video-play-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: rgba(22, 101, 52, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    color: #ffffff;
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  }
+  .video-card:hover .video-play-center {
+    transform: translate(-50%, -50%) scale(1.15);
+    background: #16a34a;
+    box-shadow: 0 8px 25px rgba(22, 163, 74, 0.6);
+  }
+  .video-top-badges {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .profit-badge-pill {
+    background: #10b981;
+    color: #ffffff;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    font-weight: 800;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .duration-pill {
+    background: rgba(0, 0, 0, 0.75);
+    color: #ffffff;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    backdrop-filter: blur(4px);
+  }
+  .video-bottom-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11.5px;
+    color: #e2e8f0;
+    font-weight: 600;
+  }
 
-        .duration {
-            background: #eaf6e4;
-            color: #287139;
-            padding: 9px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: bold;
-        }
+  .video-card-body {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+  }
+  .video-card-body h3 {
+    font-size: 16.5px;
+    font-weight: 800;
+    color: var(--ks-text);
+    margin: 0 0 6px;
+    line-height: 1.35;
+  }
+  .video-hindi-title {
+    font-size: 14px;
+    color: #16a34a;
+    font-weight: 700;
+    margin: 0 0 10px;
+    line-height: 1.4;
+  }
+  .video-summary-p {
+    font-size: 13px;
+    color: var(--ks-muted);
+    line-height: 1.5;
+    margin: 0 0 14px;
+  }
+  .video-learnings-box {
+    background: var(--ks-surface-secondary);
+    border: 1px solid var(--ks-border);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+  .video-learnings-header {
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--ks-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .video-step-point {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    font-size: 12px;
+    color: var(--ks-text);
+    line-height: 1.4;
+    margin-bottom: 4px;
+  }
+  .video-step-point:last-child {
+    margin-bottom: 0;
+  }
+  .video-btn-watch {
+    width: 100%;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #166534, #15803d);
+    color: #ffffff;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+  }
+  .video-btn-watch:hover {
+    background: linear-gradient(135deg, #15803d, #16a34a);
+    box-shadow: 0 4px 14px rgba(22, 101, 52, 0.3);
+    transform: translateY(-1px);
+  }
 
-        .timeline {
-            position: relative;
-            padding-left: 35px;
-        }
+  /* VIDEO MODAL PLAYER */
+  .video-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .video-modal-backdrop.active {
+    display: flex;
+  }
+  .video-modal-window {
+    background: var(--ks-surface);
+    border: 1px solid var(--ks-border);
+    border-radius: 20px;
+    width: min(920px, 100%);
+    max-height: 92vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+  }
+  .video-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--ks-border);
+  }
+  .video-modal-header h4 {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--ks-text);
+    margin: 0;
+  }
+  .video-modal-close-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--ks-border);
+    background: var(--ks-surface-secondary);
+    color: var(--ks-text);
+    font-size: 20px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .video-modal-close-btn:hover {
+    background: #ef4444;
+    color: #ffffff;
+    border-color: #ef4444;
+  }
+  .video-player-frame-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+  }
+  .video-player-frame-wrap iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  .video-modal-footer {
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    background: var(--ks-surface-secondary);
+  }
 
-        .timeline::before {
-            content: "";
-            position: absolute;
-            left: 12px;
-            top: 5px;
-            bottom: 5px;
-            width: 3px;
-            background: #cfe3c8;
-        }
+  /* ============================================================
+     AGRIBUSINESS REVENUE & ROI CALCULATOR STYLES
+     ============================================================ */
+  .revenue-calc-card {
+    background: var(--ks-surface);
+    border: 1.5px solid var(--ks-border);
+    border-radius: 24px;
+    padding: 32px;
+    margin-bottom: 40px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06);
+    position: relative;
+    overflow: hidden;
+  }
+  .revenue-calc-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--ks-border);
+    padding-bottom: 18px;
+  }
+  .revenue-calc-title h2 {
+    font-size: 24px;
+    font-weight: 850;
+    color: var(--ks-text);
+    margin: 0 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .revenue-calc-title p {
+    font-size: 14px;
+    color: var(--ks-muted);
+    margin: 0;
+  }
+  .revenue-guarantee-pill {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  html[data-theme="dark"] .revenue-guarantee-pill {
+    background: #064e3b;
+    border-color: #059669;
+    color: #a7f3d0;
+  }
 
-        .step {
-            position: relative;
-            margin-bottom: 28px;
-        }
+  /* ENTERPRISE SELECTOR GRID */
+  .enterprise-select-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 12px;
+    margin-bottom: 26px;
+  }
+  .enterprise-chip-btn {
+    background: var(--ks-surface-secondary);
+    border: 1.5px solid var(--ks-border);
+    border-radius: 14px;
+    padding: 14px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .enterprise-chip-btn:hover {
+    border-color: #16a34a;
+    transform: translateY(-2px);
+  }
+  .enterprise-chip-btn.active {
+    background: linear-gradient(180deg, rgba(22, 163, 74, 0.12) 0%, var(--ks-surface) 100%);
+    border-color: #16a34a;
+    box-shadow: 0 4px 14px rgba(22, 163, 74, 0.2);
+  }
+  .ent-chip-icon {
+    font-size: 28px;
+    line-height: 1;
+  }
+  .ent-chip-name {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--ks-text);
+  }
+  .ent-chip-hindi {
+    font-size: 11.5px;
+    color: var(--ks-muted);
+    font-weight: 600;
+  }
 
-        .step:last-child {
-            margin-bottom: 0;
-        }
+  /* CALCULATOR INTERACTIVE PANEL */
+  .calc-workspace-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+    gap: 26px;
+  }
+  .calc-controls-panel {
+    background: var(--ks-surface-secondary);
+    border: 1px solid var(--ks-border);
+    border-radius: 18px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .calc-control-group label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ks-text);
+    margin-bottom: 8px;
+  }
+  .calc-slider-box input[type="range"] {
+    width: 100%;
+    accent-color: #16a34a;
+    height: 6px;
+    cursor: pointer;
+  }
+  .calc-input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .calc-number-input {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--ks-border);
+    background: var(--ks-surface);
+    color: var(--ks-text);
+    font-size: 15px;
+    font-weight: 700;
+    outline: none;
+  }
+  .calc-number-input:focus {
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+  }
 
-        .step-number {
-            position: absolute;
-            left: -35px;
-            top: 0;
-            width: 27px;
-            height: 27px;
-            border-radius: 50%;
-            background: #287139;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 12px;
-            font-weight: bold;
-            z-index: 2;
-        }
+  /* RESULTS DISPLAY GRID */
+  .calc-results-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .kpi-profit-hero {
+    background: linear-gradient(135deg, #064e3b 0%, #166534 50%, #15803d 100%);
+    color: #ffffff;
+    border-radius: 18px;
+    padding: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    box-shadow: 0 8px 24px rgba(6, 78, 59, 0.25);
+  }
+  .profit-hero-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #bbf7d0;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 4px;
+  }
+  .profit-hero-val {
+    font-size: 34px;
+    font-weight: 900;
+    line-height: 1;
+  }
+  .profit-hero-monthly {
+    font-size: 14px;
+    color: #dcfce7;
+    margin-top: 6px;
+  }
 
-        .step-card {
-            border: 1px solid #e4ece1;
-            border-radius: 16px;
-            padding: 20px;
-            background: #fbfdf9;
-        }
+  .calc-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .calc-metric-box {
+    background: var(--ks-surface);
+    border: 1px solid var(--ks-border);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .metric-box-title {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--ks-muted);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .metric-box-val {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--ks-text);
+  }
+  .metric-box-val.green {
+    color: #16a34a;
+  }
 
-        .step-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
+  .subsidy-callout-card {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 14px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: #166534;
+    line-height: 1.45;
+  }
+  html[data-theme="dark"] .subsidy-callout-card {
+    background: #064e3b;
+    border-color: #059669;
+    color: #a7f3d0;
+  }
 
-        .step-title span {
-            font-size: 22px;
-        }
+  /* MONETIZATION BLUEPRINT 4 PILLARS */
+  .monetization-playbook-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+    margin-top: 24px;
+  }
+  .blueprint-card {
+    background: var(--ks-surface);
+    border: 1px solid var(--ks-border);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform 0.2s;
+  }
+  .blueprint-card:hover {
+    transform: translateY(-2px);
+    border-color: #16a34a;
+  }
+  .blueprint-step-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--ks-surface-secondary);
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+  }
+  .blueprint-card h4 {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--ks-text);
+    margin: 0;
+  }
+  .blueprint-card p {
+    font-size: 13px;
+    color: var(--ks-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
 
-        .step-title h3 {
-            font-size: 18px;
-        }
+  @media (max-width: 820px) {
+    .calc-workspace-grid {
+      grid-template-columns: 1fr;
+    }
+    .videos-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 
-        .step-card p {
-            color: #637267;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
+  @media (max-width: 768px) {
+    .learning-hero {
+      padding: 28px 20px;
+    }
+    .canvas-wrapper {
+      height: 380px;
+    }
+    .do-dont-grid {
+      grid-template-columns: 1fr;
+    }
+    .quiz-options {
+      grid-template-columns: 1fr;
+    }
+    .calc-metrics-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
 
-        .modern-box {
-            background: #eef8e9;
-            border-left: 4px solid #4b9c52;
-            padding: 15px;
-            border-radius: 10px;
-        }
+<div class="learning-root">
 
-        .modern-title {
-            font-weight: 800;
-            color: #246a31;
-            margin-bottom: 8px;
-        }
+  <!-- HERO SECTION -->
+  <section class="learning-hero">
+    <div class="hero-3d-emblem" aria-hidden="true">🌱</div>
+    <div class="hero-tag-pill">
+      <span>🌾</span> KISANSATHI AI • 3D VISUAL LEARNING PLATFORM
+    </div>
+    <h1 class="learning-hero-title">
+      Farmer Learning & 3D Crop Anatomy<br>
+      <span style="font-weight: 600; font-size: 0.75em; opacity: 0.95;">3D दृश्य, फसल विकास चक्र एवं आधुनिक कृषि मास्टरक्लास</span>
+    </h1>
+    <p class="learning-hero-subtitle">
+      Explore interactive 3D simulations of crop lifecycles from seed to harvest, understand root-soil nutrient absorption,
+      and learn step-by-step scientific farming to multiply harvest yields.
+    </p>
 
-        .modern-box ul {
-            padding-left: 20px;
-        }
+    <!-- HIGHLIGHT PILLS -->
+    <div class="hero-features-strip">
+      <a href="#webglCanvas" class="feature-pill" style="text-decoration:none;">
+        <span>🎮</span> 3D Plant Model
+      </a>
+      <a href="#revenueCalculatorSection" class="feature-pill" style="text-decoration:none; background:#ecfdf5; color:#065f46; border: 1.5px solid #34d399;">
+        <span>💰</span> Revenue & ROI Calculator (मुनाफ़ा कैलकुलेटर)
+      </a>
+      <a href="#videoAcademySection" class="feature-pill" style="text-decoration:none; background:#eff6ff; color:#1e40af; border: 1.5px solid #60a5fa;">
+        <span>🎬</span> Video Academy (10+ New Videos)
+      </a>
+      <a href="#cropsNavSection" class="feature-pill" style="text-decoration:none;">
+        <span>🌾</span> Crop Roadmaps
+      </a>
+    </div>
+  </section>
 
-        .modern-box li {
-            margin: 6px 0;
-            color: #506451;
-            line-height: 1.5;
-        }
+  <!-- ============================================================
+       3D INTERACTIVE VISUALIZER STAGE
+       ============================================================ -->
+  <section class="visualizer-card">
+    <div class="visualizer-topbar">
+      <div class="visualizer-title-area">
+        <h2><span>🌿</span> Interactive 3D Farming Visualizer</h2>
+        <p>Rotate with mouse/touch, zoom in/out, and drag the timeline to see growth changes in real-time.</p>
+      </div>
 
-        .empty {
-            text-align: center;
-            padding: 60px;
-            background: white;
-            border-radius: 20px;
-        }
-
-        @media(max-width: 700px) {
-
-            h1 {
-                font-size: 30px;
-            }
-
-            .roadmap {
-                padding: 20px;
-            }
-
-            .roadmap-header {
-                flex-direction: column;
-            }
-
-            .duration {
-                align-self: flex-start;
-            }
-
-        }
-
-    </style>
-</head>
-
-<body>
-
-<nav class="navbar">
-
-    <div class="logo">
-        🌱 Kisan<span>Sathi</span> AI
+      <!-- 3D MODE SELECTOR -->
+      <div class="visualizer-mode-tabs">
+        <button type="button" class="mode-tab-btn active" id="tabModeCrop" data-mode="crop">
+          <span>🌱</span> Crop Lifecycle
+        </button>
+        <button type="button" class="mode-tab-btn" id="tabModeSoil" data-mode="soil">
+          <span>⛰️</span> Soil Layers
+        </button>
+        <button type="button" class="mode-tab-btn" id="tabModeLeaf" data-mode="leaf">
+          <span>🍃</span> Leaf Cell & Blight
+        </button>
+      </div>
     </div>
 
-    <a href="{% url 'dashboard:home' %}" class="back">
-        ← Dashboard
+    <!-- 3D CANVAS VIEWPORT -->
+    <div class="canvas-wrapper">
+      <canvas id="webglCanvas"></canvas>
+
+      <!-- TOP INFO BADGE -->
+      <div class="canvas-info-badge" id="canvasStatusBadge">
+        <span>●</span> <span id="canvasStatusText">3D Crop Anatomy: Stage 3 (Flowering)</span>
+      </div>
+
+      <!-- HUD CONTROLS OVERLAY -->
+      <div class="canvas-overlay-hud">
+        <button type="button" class="hud-control-btn active" id="hudRotateBtn" title="Toggle 360 Auto-Rotation">
+          <span>🔄</span>
+        </button>
+        <button type="button" class="hud-control-btn" id="hudLightBtn" title="Toggle Day / Golden Hour / Night Light">
+          <span>☀️</span>
+        </button>
+        <button type="button" class="hud-control-btn" id="hudResetCamBtn" title="Reset 3D Camera">
+          <span>🎯</span>
+        </button>
+      </div>
+
+      <!-- CLICKABLE HOTSPOT POPUP DRAWER -->
+      <div class="hotspot-info-popup" id="hotspotDrawer">
+        <div class="hotspot-popup-header">
+          <strong id="hotspotTitle"><span>🍃</span> Leaf Stomata & Photosynthesis</strong>
+          <button type="button" class="hotspot-popup-close" id="closeHotspotDrawer">×</button>
+        </div>
+        <p id="hotspotBody">Leaves absorb sunlight and CO2 to feed growing crops. Spray micronutrients during vegetative growth.</p>
+      </div>
+    </div>
+
+    <!-- GROWTH STAGE SLIDER & CONTROLS -->
+    <div class="growth-stage-timeline" id="cropTimelineControls">
+      <div class="timeline-header">
+        <div class="current-stage-title">
+          <span>🌱</span> <strong id="timelineStageLabel">Stage 3: Flowering & Pollination (पुष्पन अवस्था)</strong>
+        </div>
+        <div style="font-size: 20px; color: var(--ks-muted); font-weight: 600;">
+          Drag slider or click any growth phase below:
+        </div>
+      </div>
+
+      <div class="timeline-slider-wrap">
+        <input type="range" min="1" max="5" value="3" step="1" class="stage-range-input" id="growthStageSlider">
+      </div>
+
+      <div class="stage-buttons-row">
+        <button type="button" class="stage-pill-btn" data-stage="1">1. Seed & Sprout<br><small>अंकुरण</small></button>
+        <button type="button" class="stage-pill-btn" data-stage="2">2. Vegetative<br><small>वानस्पतिक</small></button>
+        <button type="button" class="stage-pill-btn active" data-stage="3">3. Flowering<br><small>पुष्पन</small></button>
+        <button type="button" class="stage-pill-btn" data-stage="4">4. Grain Filling<br><small>दाना भराव</small></button>
+        <button type="button" class="stage-pill-btn" data-stage="5">5. Golden Harvest<br><small>पकी फसल</small></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       AGRIBUSINESS REVENUE & ROI CALCULATOR
+       ============================================================ -->
+  <section class="revenue-calc-card" id="revenueCalculatorSection">
+    <div class="revenue-calc-header">
+      <div class="revenue-calc-title">
+        <h2><span>💰</span> Agri-Business Revenue & ROI Calculator</h2>
+        <p>उच्च आय वाले आधुनिक कृषि मॉडल चुनें, निवेश व सरकारी अनुदान (Subsidy) देखें और अपने शुद्ध मुनाफ़े का सटीक अनुमान लगाएं।</p>
+      </div>
+      <div class="revenue-guarantee-pill">
+        <span>🏛️</span> 40% - 50% Govt. Subsidy Eligible
+      </div>
+    </div>
+
+    <!-- ENTERPRISE SELECTION CHIPS -->
+    <div class="enterprise-select-grid" id="enterpriseChipsContainer">
+      {% for model in revenue_models %}
+        <div class="enterprise-chip-btn {% if forloop.first %}active{% endif %}" data-model-id="{{ model.id }}">
+          <span class="ent-chip-icon">{{ model.icon }}</span>
+          <span class="ent-chip-name">{{ model.name }}</span>
+          <span class="ent-chip-hindi">{{ model.hindi_name }}</span>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- CALCULATOR WORKSPACE -->
+    <div class="calc-workspace-grid">
+      <!-- INPUT CONTROLS -->
+      <div class="calc-controls-panel">
+        <div class="calc-control-group">
+          <label>
+            <span id="labelUnitCapacity">Scale / Capacity (इकाई क्षमता):</span>
+            <strong id="valUnitCapacityDisplay" style="color:#16a34a;">1 Room</strong>
+          </label>
+          <div class="calc-slider-box">
+            <input type="range" id="inputUnitCapacity" min="1" max="10" value="1" step="1">
+          </div>
+        </div>
+
+        <div class="calc-control-group">
+          <label>
+            <span>Custom Investment Budget (अनुमानित निवेश ₹):</span>
+            <small style="color:var(--ks-muted);">Adjust based on your capital</small>
+          </label>
+          <div class="calc-input-row">
+            <input type="number" id="inputCustomInvestment" class="calc-number-input" value="120000" step="5000">
+          </div>
+        </div>
+
+        <div class="subsidy-callout-card" id="calcSubsidyNotice">
+          <span style="font-size: 26px;">🏛️</span>
+          <div>
+            <strong id="calcSubsidySchemeTitle">MIDH / National Horticulture Board (40-50% Subsidy)</strong><br>
+            <span id="calcSubsidySchemeText">Eligible for capital subsidy on infrastructure & bio-inputs.</span>
+          </div>
+        </div>
+
+        <div style="font-size: 13px; color: var(--ks-muted); line-height: 1.5; padding-top: 6px;">
+          💡 <strong id="calcEnterpriseTip">Vertical 5-tier rack setup yields high production in small spaces.</strong>
+        </div>
+      </div>
+
+      <!-- RESULTS PANEL -->
+      <div class="calc-results-panel">
+        <!-- HERO PROFIT METRIC -->
+        <div class="kpi-profit-hero">
+          <div>
+            <div class="profit-hero-label">Estimated Net Annual Profit (शुद्ध वार्षिक कमाई)</div>
+            <div class="profit-hero-val" id="resNetAnnualProfit">₹3,60,000</div>
+            <div class="profit-hero-monthly" id="resMonthlyIncome">Approx. ₹30,000 / month net profit</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 12px; color: #bbf7d0; text-transform: uppercase; font-weight: 700;">Payback Period</div>
+            <div style="font-size: 24px; font-weight: 850;" id="resPaybackMonths">5 Months</div>
+            <div style="font-size: 11.5px; color: #dcfce7; margin-top: 4px;" id="resRiskBadge">Low Risk • Indoors</div>
+          </div>
+        </div>
+
+        <!-- 4-METRIC BREAKDOWN -->
+        <div class="calc-metrics-grid">
+          <div class="calc-metric-box">
+            <div class="metric-box-title">Total Project Cost (कुल लागत)</div>
+            <div class="metric-box-val" id="resTotalCost">₹1,20,000</div>
+          </div>
+
+          <div class="calc-metric-box">
+            <div class="metric-box-title">Govt. Subsidy (सरकारी अनुदान)</div>
+            <div class="metric-box-val green" id="resSubsidyAmount">₹48,000 (40%)</div>
+          </div>
+
+          <div class="calc-metric-box">
+            <div class="metric-box-title">Net Farmer Capital (वास्तविक पूंजी)</div>
+            <div class="metric-box-val" id="resNetFarmerCapital">₹72,000</div>
+          </div>
+
+          <div class="calc-metric-box">
+            <div class="metric-box-title">Annual Gross Sales (कुल बिक्री)</div>
+            <div class="metric-box-val green" id="resGrossSales">₹5,40,000</div>
+          </div>
+        </div>
+
+        <!-- PRODUCTION NOTE -->
+        <div style="font-size: 12.5px; color: var(--ks-muted); background: var(--ks-surface-secondary); padding: 10px 14px; border-radius: 10px; border: 1px solid var(--ks-border);">
+          📦 <strong id="resProductionDetails">3 harvest cycles per year • 4,500 kg total harvest • ₹120/kg wholesale price</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       AGRICULTURE VIDEO ACADEMY SECTION
+       ============================================================ -->
+  <section class="video-academy-section" id="videoAcademySection">
+    <div class="visualizer-topbar" style="margin-bottom: 12px;">
+      <div class="visualizer-title-area">
+        <h2><span>🎬</span> Practical Agriculture Video Academy (किसान वीडियो ट्रेनिंग)</h2>
+        <p>Watch practical, field-tested video masterclasses on high-income agri-enterprises, crop techniques, drone spraying & organic farming.</p>
+      </div>
+    </div>
+
+    <!-- CATEGORY TABS -->
+    <div class="video-cat-tabs-row" id="videoCategoryTabs">
+      {% for cat in video_categories %}
+        <button type="button" class="video-tab-btn {% if forloop.first %}active{% endif %}" data-category="{{ cat.id }}">
+          <span>{{ cat.icon }}</span> {{ cat.label }}
+          <span class="video-tab-badge">{{ cat.count }}</span>
+        </button>
+      {% endfor %}
+    </div>
+
+    <!-- VIDEOS RESPONSIVE GRID -->
+    <div class="videos-grid" id="videosContainer">
+      {% for vid in videos %}
+        <div class="video-card" data-video-category="{{ vid.category }}">
+          <div>
+            <!-- THUMBNAIL WRAPPER -->
+            <div class="video-thumb-container" onclick="openVideoPlayer('{{ vid.youtube_id }}', '{{ vid.title|escapejs }}', '{{ vid.hindi_title|escapejs }}', '{{ vid.profit_badge|escapejs }}')">
+              <img
+                src="https://img.youtube.com/vi/{{ vid.youtube_id }}/hqdefault.jpg"
+                alt="{{ vid.title }}"
+                class="video-thumb-img"
+                loading="lazy"
+                onerror="this.src='https://img.youtube.com/vi/{{ vid.youtube_id }}/mqdefault.jpg'"
+              >
+              <div class="video-thumb-overlay">
+                <div class="video-top-badges">
+                  <span class="profit-badge-pill">💰 {{ vid.profit_badge }}</span>
+                  <span class="duration-pill">⏱️ {{ vid.duration }}</span>
+                </div>
+                <div class="video-play-center" title="Watch Video">
+                  ▶
+                </div>
+                <div class="video-bottom-meta">
+                  <span>{{ vid.speaker }}</span>
+                  <span>{{ vid.views }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- CARD CONTENT -->
+            <div class="video-card-body">
+              <div>
+                <h3>{{ vid.title }}</h3>
+                <div class="video-hindi-title">{{ vid.hindi_title }}</div>
+                <p class="video-summary-p">{{ vid.summary }}</p>
+
+                <!-- ACTIONABLE TAKEAWAYS -->
+                <div class="video-learnings-box">
+                  <div class="video-learnings-header">Key Action Steps (मुख्य बिंदु):</div>
+                  {% for step in vid.steps %}
+                    <div class="video-step-point">
+                      <span style="color:#16a34a; font-weight:800;">✓</span>
+                      <span>{{ step }}</span>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                class="video-btn-watch"
+                onclick="openVideoPlayer('{{ vid.youtube_id }}', '{{ vid.title|escapejs }}', '{{ vid.hindi_title|escapejs }}', '{{ vid.profit_badge|escapejs }}')"
+              >
+                <span>▶️</span> Watch Training (वीडियो देखें)
+              </button>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- ============================================================
+       DIRECT-TO-MARKET MONETIZATION PLAYBOOK
+       ============================================================ -->
+  <section class="modules-section" style="margin-bottom: 45px;">
+    <h2 class="section-h2"><span>📈</span> Revenue Acceleration: Earn 30% - 40% More Without Middlemen</h2>
+    <p class="section-sub">बिचौलियों (आढ़तियों) को हटाएं और अपनी फसल को सही ग्रेडिंग, वैल्यू एडिशन व सीधे मंडी/ग्राहकों तक पहुंचाकर अपनी आमदनी को बढ़ाएं।</p>
+
+    <div class="monetization-playbook-grid">
+      <div class="blueprint-card">
+        <div class="blueprint-step-badge">1️⃣</div>
+        <h4>Primary Processing & Grading</h4>
+        <p>कच्ची फसल को सीधे थोक में बेचने के बजाय ग्रेडिंग और सोर्टिंग करें। क्लीन की गई गेहूं, दाल या सरसों 20-25% अधिक भाव पर बिकती है।</p>
+      </div>
+
+      <div class="blueprint-card">
+        <div class="blueprint-step-badge">2️⃣</div>
+        <h4>Value Addition (वैल्यू एडिशन)</h4>
+        <p>सरसों का कच्चा तेल (Kolhu Mustard Oil), हल्दी पाउडर, या आटे की 5kg/10kg पैकेजिंग सीधे शहरों में बेचकर 50% अधिक लाभ कमाएं।</p>
+      </div>
+
+      <div class="blueprint-card">
+        <div class="blueprint-step-badge">3️⃣</div>
+        <h4>Join / Form FPO & e-NAM</h4>
+        <p>किसान उत्पादक संगठन (FPO) से जुड़कर सामूहिक खाद-बीज सस्ते में खरीदें और सीधे बड़े रिटेलर्स व ई-नाम मंडियों को ऑनलाइन डिजिटल पेमेंट पर बेचें।</p>
+      </div>
+
+      <div class="blueprint-card">
+        <div class="blueprint-step-badge">4️⃣</div>
+        <h4>Govt. Schemes & 3% Interest Loan</h4>
+        <p>Agriculture Infrastructure Fund (AIF) के तहत 3% ब्याज छूट पर कोल्ड स्टोरेज, ग्रेडिंग यूनिट या ट्रैक्टर-मशीनरी के लिए ₹2 करोड़ तक का बैंक लोन लें।</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CROP SELECTION TABS
+       ============================================================ -->
+  <div class="crops-nav-scroll" id="cropsNavSection">
+    <a
+      href="{% url 'encyclopedia:home' %}"
+      class="crop-tab-link {% if not selected_crop %}active{% endif %}"
+    >
+      <span>🌾</span> All Major Crops
     </a>
-
-</nav>
-
-
-<section class="hero">
-
-    <div class="hero-content">
-
-        <div class="badge">
-            🎓 FARMER LEARNING CENTER
-        </div>
-
-        <h1>
-            Learn. Grow. Modernize.
-        </h1>
-
-        <p>
-            Step-by-step farming roadmaps to help farmers learn
-            new crops, modern agricultural techniques, smart
-            irrigation, crop monitoring and better farm management.
-        </p>
-
-    </div>
-
-</section>
-
-
-<div class="container">
-
-    <div class="crop-filter">
-
-        <a href="{% url 'encyclopedia:home' %}">
-            🌱 All Crops
-        </a>
-
-        {% for roadmap in all_roadmaps %}
-
-            <a href="?crop={{ roadmap.id }}">
-                {{ roadmap.icon }} {{ roadmap.crop }}
-            </a>
-
-        {% endfor %}
-
-    </div>
-
-
-    {% for roadmap in roadmaps %}
-
-    <section class="roadmap">
-
-        <div class="roadmap-header">
-
-            <div class="crop-title">
-
-                <div class="crop-icon">
-                    {{ roadmap.icon }}
-                </div>
-
-                <div>
-
-                    <h2>
-                        {{ roadmap.title }}
-                    </h2>
-
-                    <p>
-                        {{ roadmap.description }}
-                    </p>
-
-                </div>
-
-            </div>
-
-            <div class="duration">
-                ⏱ {{ roadmap.duration }}
-            </div>
-
-        </div>
-
-
-        <div class="timeline">
-
-            {% for step in roadmap.steps %}
-
-            <div class="step">
-
-                <div class="step-number">
-                    {{ forloop.counter }}
-                </div>
-
-                <div class="step-card">
-
-                    <div class="step-title">
-
-                        <span>
-                            {{ step.icon }}
-                        </span>
-
-                        <h3>
-                            {{ step.title }}
-                        </h3>
-
-                    </div>
-
-                    <p>
-                        {{ step.description }}
-                    </p>
-
-
-                    <div class="modern-box">
-
-                        <div class="modern-title">
-                            🚀 Modern Farming Tips
-                        </div>
-
-                        <ul>
-
-                            {% for tip in step.modern %}
-
-                            <li>
-                                {{ tip }}
-                            </li>
-
-                            {% endfor %}
-
-                        </ul>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            {% endfor %}
-
-        </div>
-
-    </section>
-
-    {% empty %}
-
-    <div class="empty">
-
-        <h2>🌱 Roadmap not found</h2>
-
-        <p>
-            Please select another crop.
-        </p>
-
-    </div>
-
+    {% for item in crops_menu %}
+      <a
+        href="{% url 'encyclopedia:home' %}?crop={{ item.id }}"
+        class="crop-tab-link {% if selected_crop == item.id %}active{% endif %}"
+      >
+        <span>{{ item.icon }}</span> {{ item.name }} ({{ item.hindi }})
+      </a>
     {% endfor %}
+  </div>
+
+  <!-- ============================================================
+       ROADMAPS LIST
+       ============================================================ -->
+  {% for roadmap in roadmaps %}
+    <div class="roadmap-card" id="roadmap-{{ roadmap.id }}">
+      <div class="roadmap-header-row">
+        <div class="roadmap-title-box">
+          <h3><span>{{ roadmap.icon }}</span> {{ roadmap.title }}</h3>
+          <p>{{ roadmap.description }}</p>
+        </div>
+
+        <div class="roadmap-quick-metrics">
+          <div class="roadmap-metric-pill">
+            <span>⏱️</span> {{ roadmap.duration }}
+          </div>
+          <div class="roadmap-metric-pill">
+            <span>📅</span> {{ roadmap.season }}
+          </div>
+          <div class="roadmap-metric-pill">
+            <span>🌡️</span> {{ roadmap.ideal_temp }}
+          </div>
+          <div class="roadmap-metric-pill">
+            <span>💧</span> {{ roadmap.water_req }}
+          </div>
+        </div>
+      </div>
+
+      <!-- STEPS ACCORDION / STREAM -->
+      <div class="steps-stream">
+        {% for step in roadmap.steps %}
+          <div class="step-card">
+            <div class="step-top">
+              <div class="step-title-wrap">
+                <span class="step-badge-num">{{ step.stage_num }}</span>
+                <h4>{{ step.title }}</h4>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="step-day-pill">{{ step.days }}</span>
+                <button
+                  type="button"
+                  class="btn-audio-listen"
+                  data-text="{{ step.title }}. {{ step.description }}"
+                  title="Listen to this step"
+                >
+                  <span>🔊</span> Listen
+                </button>
+              </div>
+            </div>
+
+            <p class="step-desc">{{ step.description }}</p>
+
+            <!-- MODERN CHECKLIST -->
+            {% if step.modern %}
+              <div class="modern-bullets-list">
+                {% for point in step.modern %}
+                  <div class="modern-bullet-item">
+                    <span class="bullet-check-icon">✓</span>
+                    <span>{{ point }}</span>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <!-- DO & DONT CALLOUT -->
+            {% if step.do_dont %}
+              <div class="do-dont-grid">
+                <div class="do-box">
+                  <strong>✅ Best Practice (Do):</strong><br>
+                  {{ step.do_dont.do }}
+                </div>
+                <div class="dont-box">
+                  <strong>❌ Caution (Don't):</strong><br>
+                  {{ step.do_dont.dont }}
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+
+  <!-- ============================================================
+       MODERN SMART FARMING TECH MODULES
+       ============================================================ -->
+  <section class="modules-section">
+    <h2 class="section-h2"><span>🚀</span> Modern High-Tech Farming Masterclasses</h2>
+    <p class="section-sub">Master drone surveying, drip automation, protected cultivation, and zero-chemical natural farming.</p>
+
+    <div class="modules-grid">
+      {% for mod in modern_modules %}
+        <div class="module-card">
+          <div>
+            <div class="module-top">
+              <div class="module-icon-sq">{{ mod.icon }}</div>
+              <span class="module-badge">{{ mod.badge }}</span>
+            </div>
+            <h3>{{ mod.title }}</h3>
+            <div class="module-hindi">{{ mod.hindi_title }}</div>
+            <p class="module-summary">{{ mod.summary }}</p>
+          </div>
+
+          <div class="module-points">
+            {% for pt in mod.points %}
+              <div class="module-point">
+                <span style="color: #16a34a; font-weight: bold;">•</span>
+                <span>{{ pt }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- ============================================================
+       INTERACTIVE KNOWLEDGE QUIZ & FARMER BADGE
+       ============================================================ -->
+  <section class="quiz-card">
+    <h3 class="quiz-title"><span>🎯</span> Quick Knowledge Check: Test Your Farming IQ</h3>
+    <p style="color: var(--ks-muted); margin: 0; font-size: 22px;">Answer this question to verify your understanding and earn a Smart Farmer Certificate badge!</p>
+
+    <div class="quiz-box">
+      <div class="quiz-question">
+        Q: In wheat farming, at which stage is the 1st and most critical irrigation applied?
+      </div>
+      <div class="quiz-options">
+        <button type="button" class="quiz-opt-btn" data-correct="true">
+          A) Crown Root Initiation (CRI at 20-25 Days)
+        </button>
+        <button type="button" class="quiz-opt-btn" data-correct="false">
+          B) At mature hard dough stage (Day 110)
+        </button>
+        <button type="button" class="quiz-opt-btn" data-correct="false">
+          C) Just before harvesting combine enters field
+        </button>
+        <button type="button" class="quiz-opt-btn" data-correct="false">
+          D) Irrigation is never needed in wheat
+        </button>
+      </div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+    </div>
+  </section>
 
 </div>
 
-</body>
-</html>
+<!-- EMBEDDED METADATA FOR 3D ENGINE -->
+<script id="hotspotsData" type="application/json">
+  {{ hotspots_json|safe }}
+</script>
+
+<!-- ============================================================
+     THREE.JS 3D ENGINE IMPLEMENTATION
+     ============================================================ -->
+<script>
+  (function () {
+    "use strict";
+
+    const canvas = document.getElementById("webglCanvas");
+    if (!canvas) return;
+
+    let scene, camera, renderer, controls;
+    let currentMode = "crop";
+    let growthStage = 3;
+    let autoRotate = true;
+    let lightMode = "day"; // day, golden, night
+    let plantGroup, soilGroup, leafGroup;
+    let dirLight, hemiLight, ambientLight;
+
+    // Hotspots data
+    let hotspots = [];
+    try {
+      hotspots = JSON.parse(document.getElementById("hotspotsData").textContent);
+    } catch (e) {
+      console.warn("Hotspots parse error:", e);
+    }
+
+    const stageNames = {
+      1: "Stage 1: Seed & Germination (अंकुरण अवस्था)",
+      2: "Stage 2: Vegetative Growth (वानस्पतिक विकास)",
+      3: "Stage 3: Flowering & Pollination (पुष्पन अवस्था)",
+      4: "Stage 4: Grain / Fruit Development (दाना भराव)",
+      5: "Stage 5: Golden Harvest Maturity (पकी फसल)"
+    };
+
+    function initThree() {
+      // Scene
+      scene = new THREE.Scene();
+
+      // Camera
+      const width = canvas.parentElement.clientWidth;
+      const height = canvas.parentElement.clientHeight;
+      camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+      camera.position.set(0, 2.5, 6.2);
+
+      // Renderer
+      renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true,
+        alpha: true
+      });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+      // OrbitControls
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.maxPolarAngle = Math.PI / 2 + 0.1;
+      controls.minDistance = 2.5;
+      controls.maxDistance = 11;
+      controls.target.set(0, 1.3, 0);
+
+      // Lights
+      ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+      scene.add(ambientLight);
+
+      hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.45);
+      hemiLight.position.set(0, 20, 0);
+      scene.add(hemiLight);
+
+      dirLight = new THREE.DirectionalLight(0xfffaed, 0.9);
+      dirLight.position.set(5, 10, 5);
+      dirLight.castShadow = true;
+      dirLight.shadow.mapSize.width = 1024;
+      dirLight.shadow.mapSize.height = 1024;
+      scene.add(dirLight);
+
+      // Groups
+      plantGroup = new THREE.Group();
+      soilGroup = new THREE.Group();
+      leafGroup = new THREE.Group();
+
+      scene.add(plantGroup);
+      scene.add(soilGroup);
+      scene.add(leafGroup);
+
+      buildPlantModel(growthStage);
+      buildSoilModel();
+      buildLeafMicroscopeModel();
+
+      setMode("crop");
+      animate();
+    }
+
+    // ==========================================
+    // PROCEDURAL 3D PLANT MODEL
+    // ==========================================
+    function buildPlantModel(stage) {
+      while (plantGroup.children.length > 0) {
+        plantGroup.remove(plantGroup.children[0]);
+      }
+
+      // 1. Earthen Pot / Mound
+      const groundGeo = new THREE.CylinderGeometry(1.6, 1.4, 0.35, 32);
+      const groundMat = new THREE.MeshStandardMaterial({
+        color: 0x3d2714,
+        roughness: 0.9,
+        metalness: 0.1
+      });
+      const ground = new THREE.Mesh(groundGeo, groundMat);
+      ground.position.y = -0.17;
+      ground.receiveShadow = true;
+      plantGroup.add(ground);
+
+      // Grass top fringe
+      const grassGeo = new THREE.CylinderGeometry(1.62, 1.62, 0.06, 32);
+      const grassMat = new THREE.MeshStandardMaterial({
+        color: 0x2d6a4f,
+        roughness: 0.8
+      });
+      const grass = new THREE.Mesh(grassGeo, grassMat);
+      grass.position.y = 0.02;
+      plantGroup.add(grass);
+
+      // 2. Stage-dependent geometry
+      if (stage === 1) {
+        // Seed & Sprout
+        const seedGeo = new THREE.SphereGeometry(0.18, 16, 16);
+        const seedMat = new THREE.MeshStandardMaterial({ color: 0x8b5a2b, roughness: 0.7 });
+        const seed = new THREE.Mesh(seedGeo, seedMat);
+        seed.position.set(0, 0.1, 0);
+        plantGroup.add(seed);
+
+        // Small curved sprout stem
+        const stemCurve = new THREE.CatmullRomCurve3([
+          new THREE.Vector3(0, 0.1, 0),
+          new THREE.Vector3(0.06, 0.35, 0.02),
+          new THREE.Vector3(0.04, 0.65, 0)
+        ]);
+        const sproutStemGeo = new THREE.TubeGeometry(stemCurve, 20, 0.035, 8, false);
+        const sproutStemMat = new THREE.MeshStandardMaterial({ color: 0x74c69d, roughness: 0.6 });
+        const sproutStem = new THREE.Mesh(sproutStemGeo, sproutStemMat);
+        plantGroup.add(sproutStem);
+
+        // Cotyledon tiny leaves
+        [-0.15, 0.15].forEach(function (xOff) {
+          const lGeo = new THREE.SphereGeometry(0.14, 12, 12);
+          lGeo.scale(1.2, 0.3, 0.8);
+          const lMat = new THREE.MeshStandardMaterial({ color: 0x52b788, roughness: 0.5 });
+          const leaf = new THREE.Mesh(lGeo, lMat);
+          leaf.position.set(xOff, 0.65, 0);
+          leaf.rotation.z = xOff > 0 ? -0.4 : 0.4;
+          plantGroup.add(leaf);
+        });
+
+      } else {
+        // Stages 2 to 5: Main Stem, Foliage, Fruit / Grain
+        const stemHeight = 0.8 + stage * 0.45;
+        const stemCurve = new THREE.CatmullRomCurve3([
+          new THREE.Vector3(0, 0, 0),
+          new THREE.Vector3(0.04, stemHeight * 0.35, 0.02),
+          new THREE.Vector3(-0.03, stemHeight * 0.7, -0.02),
+          new THREE.Vector3(0, stemHeight, 0)
+        ]);
+        const stemThickness = 0.045 + (stage * 0.01);
+        const stemGeo = new THREE.TubeGeometry(stemCurve, 30, stemThickness, 10, false);
+        const stemColor = stage === 5 ? 0xc2a649 : 0x2d6a4f;
+        const stemMat = new THREE.MeshStandardMaterial({ color: stemColor, roughness: 0.65 });
+        const mainStem = new THREE.Mesh(stemGeo, stemMat);
+        mainStem.castShadow = true;
+        plantGroup.add(mainStem);
+
+        // Branching leaves
+        const leafCount = stage * 3 + 2;
+        const leafColor = stage === 5 ? 0xccb04c : 0x40916c;
+        const leafMat = new THREE.MeshStandardMaterial({
+          color: leafColor,
+          roughness: 0.45,
+          side: THREE.DoubleSide
+        });
+
+        for (let i = 0; i < leafCount; i++) {
+          const t = 0.18 + (i / leafCount) * 0.7;
+          const pt = stemCurve.getPoint(t);
+          const angle = (i * 2.39996); // Golden ratio angle
+
+          const leafShape = new THREE.Shape();
+          leafShape.moveTo(0, 0);
+          leafShape.quadraticCurveTo(0.2, 0.35, 0.08, 0.8);
+          leafShape.quadraticCurveTo(0, 0.9, -0.08, 0.8);
+          leafShape.quadraticCurveTo(-0.2, 0.35, 0, 0);
+
+          const leafGeo = new THREE.ShapeGeometry(leafShape);
+          const leafMesh = new THREE.Mesh(leafGeo, leafMat);
+          leafMesh.position.copy(pt);
+          leafMesh.rotation.y = angle;
+          leafMesh.rotation.x = 0.7;
+          leafMesh.rotation.z = 0.2;
+          const scale = 0.55 + (stage * 0.12);
+          leafMesh.scale.set(scale, scale, scale);
+          leafMesh.castShadow = true;
+          plantGroup.add(leafMesh);
+        }
+
+        // Stage 3 & 4 & 5: Flowers / Grains / Fruits
+        if (stage >= 3) {
+          if (stage === 3) {
+            // Yellow Flowers / Inflorescence
+            for (let f = 0; f < 5; f++) {
+              const flowerGeo = new THREE.SphereGeometry(0.12, 12, 12);
+              const flowerMat = new THREE.MeshStandardMaterial({
+                color: 0xfacc15,
+                roughness: 0.3,
+                emissive: 0x713f12
+              });
+              const flower = new THREE.Mesh(flowerGeo, flowerMat);
+              const t = 0.65 + (f * 0.08);
+              const pt = stemCurve.getPoint(t);
+              flower.position.set(pt.x + (Math.sin(f * 2) * 0.22), pt.y + 0.1, pt.z + (Math.cos(f * 2) * 0.22));
+              plantGroup.add(flower);
+            }
+          } else {
+            // Stage 4 & 5: Grains or Ripe Tomatoes
+            const produceCount = stage === 4 ? 4 : 6;
+            for (let g = 0; g < produceCount; g++) {
+              const fruitGeo = new THREE.SphereGeometry(0.18, 16, 16);
+              const fruitColor = stage === 5 ? 0xdc2626 : 0x84cc16; // Ripe red vs unripe green
+              const fruitMat = new THREE.MeshStandardMaterial({
+                color: fruitColor,
+                roughness: 0.25,
+                metalness: 0.15
+              });
+              const fruit = new THREE.Mesh(fruitGeo, fruitMat);
+              const t = 0.5 + (g * 0.08);
+              const pt = stemCurve.getPoint(t);
+              fruit.position.set(pt.x + (Math.sin(g * 2.2) * 0.26), pt.y - 0.05, pt.z + (Math.cos(g * 2.2) * 0.26));
+              fruit.castShadow = true;
+              plantGroup.add(fruit);
+            }
+
+            // Top Golden Grain Spikelet
+            const spikeGeo = new THREE.CylinderGeometry(0.08, 0.12, 0.6, 12);
+            const spikeColor = stage === 5 ? 0xd4af37 : 0xa3e635;
+            const spikeMat = new THREE.MeshStandardMaterial({ color: spikeColor, roughness: 0.5 });
+            const spike = new THREE.Mesh(spikeGeo, spikeMat);
+            spike.position.set(0, stemHeight + 0.25, 0);
+            plantGroup.add(spike);
+          }
+        }
+      }
+
+      // Add 3D Hotspot pins
+      hotspots.forEach(function (h) {
+        const pinGroup = new THREE.Group();
+        pinGroup.name = "hotspot_" + h.id;
+        pinGroup.userData = h;
+
+        const sphereGeo = new THREE.SphereGeometry(0.09, 16, 16);
+        const sphereMat = new THREE.MeshStandardMaterial({
+          color: 0x22c55e,
+          emissive: 0x166534,
+          roughness: 0.2
+        });
+        const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+        pinGroup.add(sphere);
+
+        // Ring aura
+        const ringGeo = new THREE.RingGeometry(0.12, 0.16, 24);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0x22c55e, side: THREE.DoubleSide });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.rotation.x = Math.PI / 2;
+        pinGroup.add(ring);
+
+        pinGroup.position.set(h.pos[0], h.pos[1], h.pos[2]);
+        plantGroup.add(pinGroup);
+      });
+    }
+
+    // ==========================================
+    // PROCEDURAL 3D SOIL HORIZONS CROSS-SECTION
+    // ==========================================
+    function buildSoilModel() {
+      // 3 Layers cutaway
+      const layerGeo = new THREE.BoxGeometry(2.6, 0.65, 2.6);
+
+      // Layer 1: Topsoil Horizon A (Humus rich)
+      const topMat = new THREE.MeshStandardMaterial({ color: 0x2d1e12, roughness: 0.95 });
+      const topsoil = new THREE.Mesh(layerGeo, topMat);
+      topsoil.position.y = 1.3;
+      soilGroup.add(topsoil);
+
+      // Layer 2: Subsoil Horizon B (Clay mineral)
+      const subMat = new THREE.MeshStandardMaterial({ color: 0x6e4726, roughness: 0.9 });
+      const subsoil = new THREE.Mesh(layerGeo, subMat);
+      subsoil.position.y = 0.65;
+      soilGroup.add(subsoil);
+
+      // Layer 3: Substratum Horizon C (Bedrock)
+      const bedMat = new THREE.MeshStandardMaterial({ color: 0x8a7f76, roughness: 0.85 });
+      const bedrock = new THREE.Mesh(layerGeo, bedMat);
+      bedrock.position.y = 0.0;
+      soilGroup.add(bedrock);
+
+      // Root network penetration
+      const rootCurve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0, 1.6, 0),
+        new THREE.Vector3(0.2, 1.2, 0.1),
+        new THREE.Vector3(-0.15, 0.7, -0.1),
+        new THREE.Vector3(0.1, 0.3, 0.05)
+      ]);
+      const rootGeo = new THREE.TubeGeometry(rootCurve, 25, 0.035, 8, false);
+      const rootMat = new THREE.MeshStandardMaterial({ color: 0xd4a373 });
+      const roots = new THREE.Mesh(rootGeo, rootMat);
+      soilGroup.add(roots);
+
+      // Animated Water droplets
+      for (let i = 0; i < 8; i++) {
+        const dropGeo = new THREE.SphereGeometry(0.06, 8, 8);
+        const dropMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, roughness: 0.1 });
+        const drop = new THREE.Mesh(dropGeo, dropMat);
+        drop.position.set((Math.random() - 0.5) * 1.8, 0.2 + Math.random() * 1.3, (Math.random() - 0.5) * 1.8);
+        soilGroup.add(drop);
+      }
+    }
+
+    // ==========================================
+    // PROCEDURAL 3D LEAF CELL MICROSCOPE
+    // ==========================================
+    function buildLeafMicroscopeModel() {
+      // Large zoom-in leaf plate
+      const plateGeo = new THREE.BoxGeometry(3.0, 0.12, 2.2);
+      const plateMat = new THREE.MeshStandardMaterial({
+        color: 0x22c55e,
+        roughness: 0.4,
+        metalness: 0.05
+      });
+      const plate = new THREE.Mesh(plateGeo, plateMat);
+      plate.position.y = 1.0;
+      leafGroup.add(plate);
+
+      // Central vein
+      const veinGeo = new THREE.CylinderGeometry(0.06, 0.06, 2.2, 16);
+      const veinMat = new THREE.MeshStandardMaterial({ color: 0x86efac, roughness: 0.5 });
+      const vein = new THREE.Mesh(veinGeo, veinMat);
+      vein.position.set(0, 1.06, 0);
+      vein.rotation.x = Math.PI / 2;
+      leafGroup.add(vein);
+
+      // Stomata hexagonal pore cells
+      for (let x = -1.1; x <= 1.1; x += 0.5) {
+        for (let z = -0.8; z <= 0.8; z += 0.45) {
+          const poreGeo = new THREE.TorusGeometry(0.08, 0.025, 8, 16);
+          const poreMat = new THREE.MeshStandardMaterial({ color: 0x14532d, roughness: 0.5 });
+          const pore = new THREE.Mesh(poreGeo, poreMat);
+          pore.position.set(x + (Math.random() * 0.1), 1.07, z);
+          pore.rotation.x = Math.PI / 2;
+          leafGroup.add(pore);
+        }
+      }
+
+      // Blight disease lesion simulation on corner
+      const lesionGeo = new THREE.SphereGeometry(0.45, 16, 16);
+      lesionGeo.scale(1.2, 0.15, 1.0);
+      const lesionMat = new THREE.MeshStandardMaterial({
+        color: 0x78350f,
+        roughness: 0.95
+      });
+      const lesion = new THREE.Mesh(lesionGeo, lesionMat);
+      lesion.position.set(0.85, 1.07, 0.5);
+      leafGroup.add(lesion);
+    }
+
+    // ==========================================
+    // MODE SWITCHER
+    // ==========================================
+    function setMode(mode) {
+      currentMode = mode;
+      plantGroup.visible = (mode === "crop");
+      soilGroup.visible = (mode === "soil");
+      leafGroup.visible = (mode === "leaf");
+
+      const timelineBox = document.getElementById("cropTimelineControls");
+      const statusBadge = document.getElementById("canvasStatusText");
+
+      if (mode === "crop") {
+        if (timelineBox) timelineBox.style.display = "block";
+        if (statusBadge) statusBadge.textContent = "3D Crop Lifecycle: " + stageNames[growthStage];
+        controls.target.set(0, 1.3, 0);
+        camera.position.set(0, 2.5, 6.2);
+      } else if (mode === "soil") {
+        if (timelineBox) timelineBox.style.display = "none";
+        if (statusBadge) statusBadge.textContent = "3D Soil Horizon & Nutrient Profile (A, B, C Layers)";
+        controls.target.set(0, 0.8, 0);
+        camera.position.set(2.5, 2.2, 4.5);
+      } else if (mode === "leaf") {
+        if (timelineBox) timelineBox.style.display = "none";
+        if (statusBadge) statusBadge.textContent = "3D Leaf Surface & Early Blight Diagnosis";
+        controls.target.set(0, 1.0, 0);
+        camera.position.set(0, 3.2, 3.0);
+      }
+    }
+
+    // ==========================================
+    // LIGHTING MODES
+    // ==========================================
+    function cycleLighting() {
+      const btn = document.getElementById("hudLightBtn");
+      if (lightMode === "day") {
+        lightMode = "golden";
+        dirLight.color.setHex(0xf97316);
+        dirLight.intensity = 1.1;
+        ambientLight.intensity = 0.5;
+        if (btn) btn.innerHTML = "<span>🌅</span>";
+      } else if (lightMode === "golden") {
+        lightMode = "night";
+        dirLight.color.setHex(0x38bdf8);
+        dirLight.intensity = 0.4;
+        ambientLight.intensity = 0.25;
+        if (btn) btn.innerHTML = "<span>🌙</span>";
+      } else {
+        lightMode = "day";
+        dirLight.color.setHex(0xfffaed);
+        dirLight.intensity = 0.9;
+        ambientLight.intensity = 0.65;
+        if (btn) btn.innerHTML = "<span>☀️</span>";
+      }
+    }
+
+    // ==========================================
+    // ANIMATION RENDER LOOP
+    // ==========================================
+    let clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const delta = clock.getDelta();
+      const elapsed = clock.getElapsedTime();
+
+      // Auto rotation
+      if (autoRotate && controls) {
+        if (currentMode === "crop") {
+          plantGroup.rotation.y += 0.005;
+        } else if (currentMode === "soil") {
+          soilGroup.rotation.y += 0.004;
+        } else if (currentMode === "leaf") {
+          leafGroup.rotation.y += 0.004;
+        }
+      }
+
+      // Pulse hotspot rings
+      if (plantGroup && plantGroup.visible) {
+        plantGroup.children.forEach(function (child) {
+          if (child.name && child.name.startsWith("hotspot_")) {
+            const ring = child.children[1];
+            if (ring) {
+              const s = 1.0 + Math.sin(elapsed * 4) * 0.15;
+              ring.scale.set(s, s, 1);
+            }
+          }
+        });
+      }
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    // ==========================================
+    // WINDOW RESIZE HANDLER
+    // ==========================================
+    window.addEventListener("resize", function () {
+      if (!canvas || !renderer || !camera) return;
+      const width = canvas.parentElement.clientWidth;
+      const height = canvas.parentElement.clientHeight;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    });
+
+    // ==========================================
+    // INTERACTION & RAYCASTING FOR HOTSPOTS
+    // ==========================================
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    const drawer = document.getElementById("hotspotDrawer");
+    const drawerTitle = document.getElementById("hotspotTitle");
+    const drawerBody = document.getElementById("hotspotBody");
+    const drawerClose = document.getElementById("closeHotspotDrawer");
+
+    if (drawerClose && drawer) {
+      drawerClose.addEventListener("click", function () {
+        drawer.style.display = "none";
+      });
+    }
+
+    canvas.addEventListener("click", function (event) {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(plantGroup.children, true);
+
+      for (let i = 0; i < intersects.length; i++) {
+        let obj = intersects[i].object;
+        while (obj && obj.parent && !obj.name.startsWith("hotspot_")) {
+          obj = obj.parent;
+        }
+        if (obj && obj.userData && obj.userData.title) {
+          drawerTitle.innerHTML = '<span>' + (obj.userData.icon || '🌱') + '</span> ' + obj.userData.title;
+          drawerBody.textContent = obj.userData.info;
+          drawer.style.display = "block";
+          break;
+        }
+      }
+    });
+
+    // Initialize 3D
+    initThree();
+
+    // ==========================================
+    // UI CONTROLS & LISTENERS
+    // ==========================================
+    // Stage Slider
+    const slider = document.getElementById("growthStageSlider");
+    const stageLabel = document.getElementById("timelineStageLabel");
+    const stageButtons = document.querySelectorAll(".stage-pill-btn");
+
+    function updateGrowthStage(stage) {
+      growthStage = parseInt(stage, 10);
+      slider.value = growthStage;
+      stageLabel.textContent = stageNames[growthStage];
+
+      stageButtons.forEach(function (btn) {
+        btn.classList.toggle("active", parseInt(btn.getAttribute("data-stage"), 10) === growthStage);
+      });
+
+      const statusBadge = document.getElementById("canvasStatusText");
+      if (statusBadge && currentMode === "crop") {
+        statusBadge.textContent = "3D Crop Lifecycle: " + stageNames[growthStage];
+      }
+
+      buildPlantModel(growthStage);
+    }
+
+    if (slider) {
+      slider.addEventListener("input", function (e) {
+        updateGrowthStage(e.target.value);
+      });
+    }
+
+    stageButtons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        updateGrowthStage(btn.getAttribute("data-stage"));
+      });
+    });
+
+    // Mode Tabs
+    document.querySelectorAll(".mode-tab-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        document.querySelectorAll(".mode-tab-btn").forEach(function (b) { b.classList.remove("active"); });
+        btn.classList.add("active");
+        setMode(btn.getAttribute("data-mode"));
+      });
+    });
+
+    // HUD Buttons
+    const hudRotate = document.getElementById("hudRotateBtn");
+    if (hudRotate) {
+      hudRotate.addEventListener("click", function () {
+        autoRotate = !autoRotate;
+        hudRotate.classList.toggle("active", autoRotate);
+      });
+    }
+
+    const hudLight = document.getElementById("hudLightBtn");
+    if (hudLight) {
+      hudLight.addEventListener("click", cycleLighting);
+    }
+
+    const hudReset = document.getElementById("hudResetCamBtn");
+    if (hudReset) {
+      hudReset.addEventListener("click", function () {
+        controls.reset();
+        setMode(currentMode);
+      });
+    }
+
+    // ==========================================
+    // SPEECH AUDIO GUIDANCE
+    // ==========================================
+    document.querySelectorAll(".btn-audio-listen").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const text = btn.getAttribute("data-text");
+        if (!window.speechSynthesis) {
+          alert("Audio playback is not supported on this browser.");
+          return;
+        }
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.95;
+        utterance.pitch = 1.0;
+        window.speechSynthesis.speak(utterance);
+      });
+    });
+
+    // ==========================================
+    // INTERACTIVE QUIZ
+    // ==========================================
+    const feedback = document.getElementById("quizFeedback");
+    document.querySelectorAll(".quiz-opt-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const isCorrect = btn.getAttribute("data-correct") === "true";
+        if (isCorrect) {
+          btn.style.background = "#16a34a";
+          btn.style.color = "#ffffff";
+          feedback.style.display = "block";
+          feedback.style.color = "#166534";
+          feedback.innerHTML = "🎉 Brilliant! Correct Answer. Applying 1st irrigation at Crown Root Initiation (CRI) guarantees optimal tiller emergence and root establishment. You earned the <strong>'Smart Wheat Agronomist'</strong> Badge! 🏆";
+        } else {
+          btn.style.background = "#dc2626";
+          btn.style.color = "#ffffff";
+          feedback.style.display = "block";
+          feedback.style.color = "#991b1b";
+          feedback.textContent = "❌ Not quite. Remember: Crown Root Initiation (CRI at 20-25 days) is the single most vital irrigation in wheat cultivation.";
+        }
+      });
+    });
+
+  })();
+</script>
+
+<!-- ============================================================
+     VIDEO MODAL PLAYER DOM
+     ============================================================ -->
+<div class="video-modal-backdrop" id="videoModalBackdrop" onclick="closeVideoPlayer(event)">
+  <div class="video-modal-window" onclick="event.stopPropagation()">
+    <div class="video-modal-header">
+      <div>
+        <h4 id="videoModalTitle">Agriculture Video Training</h4>
+        <div id="videoModalHindi" style="color:#16a34a; font-weight:700; font-size:13px; margin-top:2px;"></div>
+      </div>
+      <button type="button" class="video-modal-close-btn" onclick="closeVideoPlayer()" title="Close Player">×</button>
+    </div>
+
+    <div class="video-player-frame-wrap">
+      <iframe
+        id="videoModalIframe"
+        src=""
+        title="Agri Training Video Player"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+
+    <div class="video-modal-footer">
+      <div>
+        <span class="profit-badge-pill" id="videoModalProfitBadge">💰 High Profit</span>
+      </div>
+      <div>
+        <a href="#revenueCalculatorSection" class="btn-audio-listen" onclick="closeVideoPlayer()" style="text-decoration:none; padding:8px 16px;">
+          <span>📊</span> Calculate Profits in ROI Calculator
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EMBEDDED METADATA FOR REVENUE MODELS -->
+<script id="revenueModelsData" type="application/json">
+  {{ revenue_models_json|safe }}
+</script>
+
+<!-- ============================================================
+     VIDEO ACADEMY & REVENUE CALCULATOR JAVASCRIPT
+     ============================================================ -->
+<script>
+  (function () {
+    "use strict";
+
+    // ----------------------------------------------------
+    // VIDEO ACADEMY: CATEGORY FILTERING
+    // ----------------------------------------------------
+    const catButtons = document.querySelectorAll(".video-tab-btn");
+    const videoCards = document.querySelectorAll(".video-card");
+
+    catButtons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        catButtons.forEach(function (b) { b.classList.remove("active"); });
+        btn.classList.add("active");
+
+        const selectedCat = btn.getAttribute("data-category");
+        videoCards.forEach(function (card) {
+          const cardCat = card.getAttribute("data-video-category");
+          if (selectedCat === "all" || cardCat === selectedCat) {
+            card.style.display = "flex";
+          } else {
+            card.style.display = "none";
+          }
+        });
+      });
+    });
+
+    // ----------------------------------------------------
+    // VIDEO MODAL PLAYER FUNCTIONS (GLOBAL SCOPE)
+    // ----------------------------------------------------
+    const modalBackdrop = document.getElementById("videoModalBackdrop");
+    const modalIframe = document.getElementById("videoModalIframe");
+    const modalTitle = document.getElementById("videoModalTitle");
+    const modalHindi = document.getElementById("videoModalHindi");
+    const modalBadge = document.getElementById("videoModalProfitBadge");
+
+    window.openVideoPlayer = function (youtubeId, title, hindiTitle, profitBadge) {
+      if (!modalBackdrop || !modalIframe) return;
+      modalTitle.textContent = title;
+      modalHindi.textContent = hindiTitle || "";
+      modalBadge.textContent = "💰 " + (profitBadge || "High Profit");
+      modalIframe.src = "https://www.youtube.com/embed/" + encodeURIComponent(youtubeId) + "?autoplay=1&rel=0";
+      modalBackdrop.classList.add("active");
+      document.body.style.overflow = "hidden";
+    };
+
+    window.closeVideoPlayer = function (event) {
+      if (event && event.target && event.target !== modalBackdrop && !event.target.classList.contains("video-modal-close-btn")) {
+        return;
+      }
+      if (!modalBackdrop || !modalIframe) return;
+      modalIframe.src = "";
+      modalBackdrop.classList.remove("active");
+      document.body.style.overflow = "";
+    };
+
+    // Close on Escape key
+    window.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && modalBackdrop && modalBackdrop.classList.contains("active")) {
+        window.closeVideoPlayer();
+      }
+    });
+
+    // ----------------------------------------------------
+    // REVENUE & ROI CALCULATOR
+    // ----------------------------------------------------
+    let revenueModels = [];
+    try {
+      revenueModels = JSON.parse(document.getElementById("revenueModelsData").textContent);
+    } catch (e) {
+      console.warn("Failed to parse revenue models JSON:", e);
+    }
+
+    if (!revenueModels || !revenueModels.length) return;
+
+    let selectedModel = revenueModels[0];
+
+    const enterpriseChips = document.querySelectorAll(".enterprise-chip-btn");
+    const sliderCapacity = document.getElementById("inputUnitCapacity");
+    const labelCapacity = document.getElementById("labelUnitCapacity");
+    const displayCapacity = document.getElementById("valUnitCapacityDisplay");
+    const inputInvestment = document.getElementById("inputCustomInvestment");
+
+    const elProfitVal = document.getElementById("resNetAnnualProfit");
+    const elMonthlyVal = document.getElementById("resMonthlyIncome");
+    const elPaybackVal = document.getElementById("resPaybackMonths");
+    const elRiskBadge = document.getElementById("resRiskBadge");
+    const elTotalCost = document.getElementById("resTotalCost");
+    const elSubsidyAmt = document.getElementById("resSubsidyAmount");
+    const elNetCapital = document.getElementById("resNetFarmerCapital");
+    const elGrossSales = document.getElementById("resGrossSales");
+    const elProductionDetails = document.getElementById("resProductionDetails");
+
+    const elSubsidyTitle = document.getElementById("calcSubsidySchemeTitle");
+    const elSubsidyText = document.getElementById("calcSubsidySchemeText");
+    const elEnterpriseTip = document.getElementById("calcEnterpriseTip");
+
+    function renderCalculator() {
+      if (!selectedModel) return;
+
+      const scale = parseInt(sliderCapacity.value, 10) || 1;
+      displayCapacity.textContent = scale + " " + selectedModel.unit_multiplier_label;
+      labelCapacity.textContent = "Capacity / Scale (" + selectedModel.unit_multiplier_label + "):";
+
+      // If user hasn't typed custom investment, update default based on scale
+      const defaultInvest = selectedModel.default_investment * scale;
+      const customInvest = parseFloat(inputInvestment.value) || defaultInvest;
+
+      // Subsidies and returns
+      const subsidyPct = selectedModel.subsidy_pct;
+      const totalCost = customInvest;
+      const subsidyAmount = Math.round(totalCost * (subsidyPct / 100));
+      const netFarmerCapital = Math.max(0, totalCost - subsidyAmount);
+
+      const ratio = totalCost / (selectedModel.default_investment || 1);
+      const grossSales = Math.round(selectedModel.gross_revenue * ratio);
+      const operatingCost = Math.round(selectedModel.operating_cost * ratio);
+      const netAnnualProfit = Math.max(0, grossSales - operatingCost);
+      const monthlyIncome = Math.round(netAnnualProfit / 12);
+
+      const paybackMonths = monthlyIncome > 0 ? Math.max(1, Math.round(netFarmerCapital / monthlyIncome)) : 12;
+
+      // Update Text in DOM
+      elProfitVal.textContent = "₹" + netAnnualProfit.toLocaleString("en-IN");
+      elMonthlyVal.textContent = "Approx. ₹" + monthlyIncome.toLocaleString("en-IN") + " / month net profit";
+      elPaybackVal.textContent = paybackMonths + " Months";
+      elRiskBadge.textContent = selectedModel.risk_level;
+      elTotalCost.textContent = "₹" + totalCost.toLocaleString("en-IN");
+      elSubsidyAmt.textContent = "₹" + subsidyAmount.toLocaleString("en-IN") + " (" + subsidyPct + "%)";
+      elNetCapital.textContent = "₹" + netFarmerCapital.toLocaleString("en-IN");
+      elGrossSales.textContent = "₹" + grossSales.toLocaleString("en-IN");
+      elProductionDetails.textContent = selectedModel.production_details;
+
+      elSubsidyTitle.textContent = selectedModel.subsidy_scheme;
+      elSubsidyText.textContent = "Eligible for up to " + subsidyPct + "% capital subsidy + bank loan interest subvention.";
+      elEnterpriseTip.textContent = selectedModel.tips;
+    }
+
+    // Enterprise selection click listener
+    enterpriseChips.forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        enterpriseChips.forEach(function (c) { c.classList.remove("active"); });
+        chip.classList.add("active");
+
+        const modelId = chip.getAttribute("data-model-id");
+        selectedModel = revenueModels.find(function (m) { return m.id === modelId; }) || revenueModels[0];
+
+        // Reset scale slider to 1 and update default investment
+        sliderCapacity.value = 1;
+        inputInvestment.value = selectedModel.default_investment;
+
+        renderCalculator();
+      });
+    });
+
+    // Slider listener
+    if (sliderCapacity) {
+      sliderCapacity.addEventListener("input", function () {
+        if (selectedModel) {
+          inputInvestment.value = selectedModel.default_investment * parseInt(sliderCapacity.value, 10);
+        }
+        renderCalculator();
+      });
+    }
+
+    // Input listener
+    if (inputInvestment) {
+      inputInvestment.addEventListener("input", function () {
+        renderCalculator();
+      });
+    }
+
+    // Initial render
+    renderCalculator();
+
+  })();
+</script>
+{% endblock %}

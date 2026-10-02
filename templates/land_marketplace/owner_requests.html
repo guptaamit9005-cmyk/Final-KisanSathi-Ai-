@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Incoming Farmer Requests | AgriVisionAI Land Marketplace{% endblock %}
+
+{% block content %}
+<div style="max-width: 1100px; margin: 30px auto; padding: 0 20px;">
+    <!-- Top Header -->
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 28px;">
+        <div>
+            <div style="display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px; background: #dcfce7; color: #166534; border-radius: 999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
+                <span>📬</span> Inquiries
+            </div>
+            <h1 style="font-size: 2.2rem; font-weight: 800; color: #0f172a; margin: 8px 0 4px;">Incoming Farmer Proposals</h1>
+            <p style="color: #64748b; font-size: 0.95rem;">Review farmer applications, proposed crops, lease durations, and approve deals.</p>
+        </div>
+
+        <a href="{% url 'land_marketplace:my_land' %}" style="display: inline-flex; align-items: center; gap: 6px; padding: 11px 20px; background: white; border: 1.5px solid #cbd5e1; border-radius: 12px; color: #334155; font-weight: 600; text-decoration: none; font-size: 0.9rem;">
+            ← My Land Listings
+        </a>
+    </div>
+
+    <!-- Requests List -->
+    {% if requests %}
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+        {% for req in requests %}
+        <div style="background: white; border: 1px solid #e2e8f0; border-radius: 18px; padding: 24px; box-shadow: 0 4px 14px rgba(0,0,0,0.03);">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 16px;">
+                <div>
+                    <span style="font-size: 0.8rem; font-weight: 700; color: #166534; text-transform: uppercase;">
+                        Plot: {{ req.land.title }} ({{ req.land.location }})
+                    </span>
+                    <h3 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin: 4px 0 0;">
+                        Applicant: {{ req.requester.get_full_name|default:req.requester.username }}
+                    </h3>
+                    <p style="margin: 4px 0 0; color: #64748b; font-size: 0.85rem;">
+                        ✉️ {{ req.requester.email|default:"Registered KisanSathi Farmer" }} • Received on {{ req.created_at|date:"M d, Y" }}
+                    </p>
+                </div>
+
+                <div>
+                    {% if req.status == 'approved' %}
+                    <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; background: #dcfce7; color: #166534; font-weight: 700; font-size: 0.85rem; border-radius: 999px;">
+                        ✓ Deal Approved
+                    </span>
+                    {% elif req.status == 'rejected' %}
+                    <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; background: #fee2e2; color: #991b1b; font-weight: 700; font-size: 0.85rem; border-radius: 999px;">
+                        ✕ Rejected
+                    </span>
+                    {% else %}
+                    <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; background: #fef3c7; color: #b45309; font-weight: 700; font-size: 0.85rem; border-radius: 999px;">
+                        ⏳ Awaiting Your Review
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Parameters Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px;">
+                <div>
+                    <span style="font-size: 0.75rem; color: #64748b; display: block; font-weight: 600;">Requested Land</span>
+                    <strong style="font-size: 1.05rem; color: #0f172a;">{{ req.requested_area }} Acres</strong>
+                </div>
+                <div>
+                    <span style="font-size: 0.75rem; color: #64748b; display: block; font-weight: 600;">Duration</span>
+                    <strong style="font-size: 1.05rem; color: #0f172a;">{{ req.duration_months }} Months</strong>
+                </div>
+                <div>
+                    <span style="font-size: 0.75rem; color: #64748b; display: block; font-weight: 600;">Start Date</span>
+                    <strong style="font-size: 1.05rem; color: #0f172a;">{{ req.proposed_start_date|date:"M d, Y" }}</strong>
+                </div>
+                <div>
+                    <span style="font-size: 0.75rem; color: #64748b; display: block; font-weight: 600;">Monthly Rent</span>
+                    <strong style="font-size: 1.05rem; color: #166534;">₹{{ req.calculated_rent }}</strong>
+                </div>
+                <div>
+                    <span style="font-size: 0.75rem; color: #64748b; display: block; font-weight: 600;">Security Deposit</span>
+                    <strong style="font-size: 1.05rem; color: #0f172a;">₹{{ req.security_deposit }}</strong>
+                </div>
+            </div>
+
+            {% if req.message %}
+            <div style="font-size: 0.9rem; color: #334155; background: #f1f5f9; padding: 12px 16px; border-radius: 10px; margin-bottom: 16px;">
+                <strong>Farmer Farming Pitch:</strong> "{{ req.message }}"
+            </div>
+            {% endif %}
+
+            <!-- Actions row if pending review -->
+            {% if req.status == 'owner_review' or req.status == 'pending' %}
+            <div style="display: flex; gap: 12px; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 16px;">
+                <form method="POST" action="{% url 'land_marketplace:approve_request' req.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="padding: 10px 22px; background: #166534; color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; box-shadow: 0 2px 8px rgba(22, 101, 52, 0.25);">
+                        ✓ Approve Application & Reserve Area
+                    </button>
+                </form>
+
+                <form method="POST" action="{% url 'land_marketplace:reject_request' req.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="padding: 10px 18px; background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; border-radius: 10px; font-weight: 600; font-size: 0.9rem; cursor: pointer;">
+                        ✕ Decline Proposal
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 20px; padding: 60px 20px; text-align: center;">
+        <div style="font-size: 4rem; margin-bottom: 16px;">📭</div>
+        <h3 style="font-size: 1.4rem; font-weight: 800; color: #0f172a; margin-bottom: 8px;">No Proposals Received Yet</h3>
+        <p style="color: #64748b; max-width: 460px; margin: 0 auto 24px; font-size: 0.95rem;">
+            Farmers looking for land in your area will submit lease requests here. Keep your land details descriptive to attract high-intent farmers.
+        </p>
+        <a href="{% url 'land_marketplace:my_land' %}" style="display: inline-flex; align-items: center; gap: 6px; padding: 12px 24px; background: #166534; color: white; font-weight: 700; text-decoration: none; border-radius: 12px; font-size: 0.95rem;">
+            View My Active Listings →
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

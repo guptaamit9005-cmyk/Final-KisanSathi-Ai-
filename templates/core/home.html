@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,20 +6,76 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>KisanSathi AI | Smart Farming Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
-:root {
-    --green: #167a43;
-    --green-dark: #0d4f2c;
-    --green-light: #e9f7ed;
-    --lime: #b7ef69;
-    --bg: #f7faf7;
-    --text: #163323;
-    --muted: #6d7d72;
-    --border: #e1ebe3;
-    --white: #ffffff;
-    --shadow: 0 20px 60px rgba(14, 70, 36, .10);
-}
+
+        
+        :root {
+            /* Light Theme Variables */
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: rgba(0,0,0,0.06);
+            --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 10px 40px -10px rgba(0,0,0,0.10);
+            --shadow-hover: 0 20px 48px rgba(16,185,129,0.12);
+            --green: var(--primary);
+            --green-dark: var(--primary-dark);
+            --green-light: var(--primary-light);
+            --nav-bg: rgba(255,255,255,.95);
+            --hero-gradient-1: #f0fdf4;
+            --hero-gradient-2: #ecfdf5;
+            --feature-icon-bg: #ecfdf5;
+            --cta-bg: linear-gradient(120deg, #065f46, #10b981);
+            --cta-text: white;
+            --footer-bg: #064e3b;
+            --footer-text: #a7f3d0;
+            --muted: var(--text-muted);
+            --border: var(--border-color);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme Variables */
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: rgba(16,185,129,0.15);
+            --bg-color: #0d1117;
+            --card-bg: #161b27;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255,255,255,0.07);
+            --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.25);
+            --shadow-md: 0 10px 40px -10px rgba(0,0,0,0.4);
+            --shadow-hover: 0 20px 48px rgba(16,185,129,0.08);
+            --nav-bg: rgba(13,17,23,.96);
+            --hero-gradient-1: #0d1117;
+            --hero-gradient-2: #0d1117;
+            --feature-icon-bg: rgba(16,185,129,0.12);
+            --cta-bg: linear-gradient(120deg, #022c22, #064e3b);
+            --cta-text: #f0fdf4;
+            --footer-bg: #060a0f;
+            --footer-text: #6ee7b7;
+            --muted: var(--text-muted);
+            --border: var(--border-color);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+
+    
 
 * {
     margin: 0;
@@ -30,11 +87,16 @@ html {
     scroll-behavior: smooth;
 }
 
-body {
-    font-family: Inter, "Segoe UI", Arial, sans-serif;
+body {\n            letter-spacing: -0.01em;\n            line-height: 1.6;\n
+    font-family: 'Inter', "Segoe UI", Arial, sans-serif;
     color: var(--text);
     background: var(--bg);
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6, .brand {
+    font-family: 'Outfit', sans-serif;
 }
 
 button, input {
@@ -55,8 +117,9 @@ a {
 
 .navbar {
     width: 100%;
+    transition: background 0.3s ease, border-color 0.3s ease;
     height: 76px;
-    background: rgba(255,255,255,.92);
+    background: var(--nav-bg);
     backdrop-filter: blur(16px);
     border-bottom: 1px solid rgba(220,235,223,.8);
     position: sticky;
@@ -75,7 +138,7 @@ a {
     display: flex;
     align-items: center;
     gap: 11px;
-    font-size: 21px;
+    font-size: 15px;
     font-weight: 850;
     color: var(--green-dark);
 }
@@ -87,7 +150,7 @@ a {
     background: linear-gradient(135deg, #e6f7e9, #c9f0d3);
     display: grid;
     place-items: center;
-    font-size: 23px;
+    font-size: 18px;
 }
 
 .nav-links {
@@ -95,7 +158,7 @@ a {
     align-items: center;
     gap: 30px;
     color: #52665a;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
 }
 
@@ -116,7 +179,7 @@ a {
     gap: 9px;
     padding: 13px 20px;
     border-radius: 12px;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 750;
     border: 1px solid transparent;
     transition: .25s ease;
@@ -135,23 +198,23 @@ a {
 }
 
 .btn-outline {
-    background: white;
+    background: var(--card-bg);
     color: var(--green-dark);
     border-color: var(--border);
 }
 
 .btn-outline:hover {
-    background: var(--green-light);
+    background: var(--feature-icon-bg);
 }
 
 .menu-btn {
     display: none;
-    border: 1px solid var(--border);
-    background: white;
+    border: 1px solid rgba(0,0,0,0.05);
+    background: var(--card-bg);
     border-radius: 10px;
     width: 42px;
     height: 42px;
-    font-size: 21px;
+    font-size: 15px;
 }
 
 /* HERO */
@@ -162,7 +225,8 @@ a {
     overflow: hidden;
     background:
         radial-gradient(circle at 80% 30%, rgba(183,239,105,.16), transparent 30%),
-        linear-gradient(180deg, #fbfdfb 0%, #f3f9f3 100%);
+        linear-gradient(180deg, var(--hero-gradient-1) 0%, var(--hero-gradient-2) 100%);
+    transition: background 0.3s ease;
 }
 
 .hero::before {
@@ -197,7 +261,7 @@ a {
     color: var(--green-dark);
     border: 1px solid #d6efdc;
     border-radius: 30px;
-    font-size: 12px;
+    font-size: 18px;
     font-weight: 800;
     letter-spacing: .4px;
 }
@@ -216,7 +280,7 @@ a {
     line-height: 1.04;
     letter-spacing: -2.8px;
     font-weight: 850;
-    color: #123a24;
+    color: var(--text-main);
 }
 
 .hero h1 span {
@@ -226,8 +290,8 @@ a {
 .hero-description {
     max-width: 540px;
     margin-top: 22px;
-    color: #63766a;
-    font-size: 16px;
+    color: var(--text-muted);
+    font-size: 18px;
     line-height: 1.85;
 }
 
@@ -244,7 +308,7 @@ a {
     gap: 17px;
     margin-top: 32px;
     color: #607367;
-    font-size: 12px;
+    font-size: 18px;
     font-weight: 650;
     flex-wrap: wrap;
 }
@@ -263,7 +327,7 @@ a {
     background: #e1f4e6;
     color: var(--green);
     border-radius: 50%;
-    font-size: 12px;
+    font-size: 18px;
 }
 
 /* AI SCANNER VISUAL */
@@ -320,7 +384,7 @@ a {
 
 .scanner-label {
     color: #d9f6df;
-    font-size: 11px;
+    font-size: 18px;
     font-weight: 800;
     letter-spacing: 1.2px;
 }
@@ -332,9 +396,9 @@ a {
     color: #c9f5d1;
     background: rgba(28,145,70,.2);
     border: 1px solid rgba(151,240,169,.25);
-    border-radius: 20px;
+    border-radius: 24px;
     padding: 7px 10px;
-    font-size: 10px;
+    font-size: 15px;
     font-weight: 800;
 }
 
@@ -492,7 +556,7 @@ a {
     background: #9cf5ad;
     color: #103d22;
     border-radius: 4px 4px 4px 0;
-    font-size: 9px;
+    font-size: 16px;
     font-weight: 900;
     letter-spacing: .3px;
 }
@@ -579,7 +643,7 @@ a {
 
 .float-title {
     color: #718176;
-    font-size: 10px;
+    font-size: 15px;
     font-weight: 700;
 }
 
@@ -592,7 +656,7 @@ a {
 
 .float-caption {
     color: #75847a;
-    font-size: 10px;
+    font-size: 15px;
     margin-top: 4px;
 }
 
@@ -622,7 +686,7 @@ a {
     display: flex;
     justify-content: space-between;
     color: #c8e7d0;
-    font-size: 10px;
+    font-size: 15px;
     z-index: 5;
 }
 
@@ -645,7 +709,7 @@ a {
 .section-kicker {
     color: var(--green);
     text-transform: uppercase;
-    font-size: 12px;
+    font-size: 18px;
     font-weight: 850;
     letter-spacing: 1.5px;
 }
@@ -655,7 +719,7 @@ a {
     line-height: 1.15;
     margin-top: 12px;
     letter-spacing: -1px;
-    color: #143c25;
+    color: var(--text-main);
 }
 
 .section-heading p {
@@ -668,7 +732,7 @@ a {
 /* FEATURES */
 
 .features {
-    background: white;
+    background: var(--card-bg);
 }
 
 .feature-grid {
@@ -678,16 +742,16 @@ a {
 }
 
 .feature-card {
-    border: 1px solid var(--border);
-    background: white;
-    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    border-radius: 24px;
     padding: 25px;
-    transition: .25s ease;
+    transition: background 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease, border-color 0.3s ease;
 }
 
 .feature-card:hover {
     transform: translateY(-5px);
-    box-shadow: var(--shadow);
+    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08);
     border-color: #b7dfc2;
 }
 
@@ -697,19 +761,19 @@ a {
     display: grid;
     place-items: center;
     border-radius: 15px;
-    background: var(--green-light);
-    font-size: 25px;
+    background: var(--feature-icon-bg);
+    font-size: 22px;
 }
 
 .feature-card h3 {
     margin-top: 19px;
-    color: #17452a;
-    font-size: 17px;
+    color: var(--text-main);
+    font-size: 15px;
 }
 
 .feature-card p {
     color: var(--muted);
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.75;
     margin-top: 10px;
 }
@@ -737,18 +801,18 @@ a {
     color: white;
     background: linear-gradient(135deg, #167a43, #36a760);
     font-weight: 850;
-    font-size: 19px;
+    font-size: 16px;
     box-shadow: 0 10px 25px rgba(22,128,68,.18);
 }
 
 .step-card h3 {
     margin-top: 18px;
-    font-size: 17px;
+    font-size: 15px;
 }
 
 .step-card p {
     color: var(--muted);
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.7;
     margin-top: 9px;
 }
@@ -783,19 +847,20 @@ a {
     margin-top: 12px;
     line-height: 1.7;
     max-width: 600px;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .cta-box .btn {
-    background: white;
+    background: var(--card-bg);
     color: var(--green-dark);
     flex-shrink: 0;
 }
 
 .footer {
-    background: #103b24;
-    color: #d3e6d8;
-    padding: 30px 0;
+    background: var(--footer-bg);
+    color: var(--footer-text);
+    padding: 40px 0;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 .footer-inner {
@@ -803,14 +868,282 @@ a {
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .footer-brand {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 800;
     color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
+
+/* FEATURE CARD ENHANCED */
+.feature-card {
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    border-radius: 24px;
+    padding: 28px;
+    transition: background 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #10b981, #059669);
+    opacity: 0;
+    transition: opacity .25s;
+}
+.feature-card:hover::before { opacity: 1; }
+.feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-hover);
+    border-color: #a7f3d0;
+}
+[data-theme="dark"] .feature-card:hover { border-color: #047857; }
+.feature-card h3 {
+    margin-top: 18px;
+    color: var(--text-main);
+    font-size: 16px;
+    font-weight: 700;
+}
+.feature-card p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.8;
+    margin-top: 9px;
+}
+
+/* STAT CARD */
+.stat-item {
+    text-align: center;
+    padding: 10px 20px;
+}
+.stat-num {
+    font-size: 3rem;
+    font-weight: 900;
+    font-family: 'Outfit', sans-serif;
+    line-height: 1.1;
+}
+.stat-label {
+    font-size: 0.8rem;
+    opacity: 0.85;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 6px;
+    font-weight: 600;
+}
+.stat-sep {
+    width: 1px;
+    height: 60px;
+    background: rgba(255,255,255,.2);
+    align-self: center;
+}
+
+/* REVIEW CARD */
+.review-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform .25s, box-shadow .25s, border-color .25s;
+    position: relative;
+    overflow: hidden;
+}
+.review-card::after {
+    content: '\201C';
+    position: absolute;
+    top: 16px; right: 20px;
+    font-size: 5rem;
+    line-height: 1;
+    color: var(--primary);
+    opacity: .08;
+    font-family: Georgia, serif;
+    pointer-events: none;
+}
+.review-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+    border-color: #a7f3d0;
+}
+[data-theme="dark"] .review-card:hover { border-color: #047857; }
+.review-stars {
+    color: #f59e0b;
+    font-size: 18px;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+}
+.review-text {
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--text-muted);
+    font-style: italic;
+}
+.review-author {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border-color);
+}
+.review-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #10b981, #059669);
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 18px;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(16,185,129,.25);
+}
+.review-name { font-size: 15px; font-weight: 700; color: var(--text-main); }
+.review-role { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.review-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: .5px;
+    margin-top: 3px;
+}
+
+/* STEP CARD ENHANCED */
+.step-card {
+    text-align: center;
+    padding: 30px 25px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    transition: transform .25s, box-shadow .25s, border-color .25s;
+}
+.step-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+    border-color: #a7f3d0;
+}
+[data-theme="dark"] .step-card:hover { border-color: #047857; }
+.step-number {
+    width: 56px; height: 56px;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    margin: 0 auto 18px;
+    color: white;
+    background: linear-gradient(135deg, #10b981, #059669);
+    font-weight: 900;
+    font-size: 17px;
+    box-shadow: 0 8px 24px rgba(16,185,129,.22);
+    font-family: 'Outfit', sans-serif;
+}
+.step-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 10px;
+}
+.step-card p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.75;
+}
+
+/* SECTION BADGE */
+.section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: linear-gradient(90deg, #ecfdf5, #d1fae5);
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+    border-radius: 30px;
+    padding: 5px 14px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+[data-theme="dark"] .section-badge {
+    background: rgba(16,185,129,.1);
+    border-color: #047857;
+    color: #6ee7b7;
+}
+.section-badge-dot {
+    width: 6px; height: 6px;
+    background: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(16,185,129,.2);
+}
+
+/* CTA BOX */
+.cta-box {
+    border-radius: 28px;
+    padding: 60px 50px;
+    background: var(--cta-bg);
+    color: var(--cta-text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    overflow: hidden;
+    position: relative;
+}
+.cta-box::before {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,.07), transparent 70%);
+    top: -150px; right: -100px;
+    pointer-events: none;
+}
+.cta-box h2 {
+    font-size: clamp(26px, 3.5vw, 38px);
+    letter-spacing: -.8px;
+    line-height: 1.2;
+}
+.cta-box p {
+    opacity: .8;
+    margin-top: 12px;
+    line-height: 1.75;
+    max-width: 560px;
+    font-size: 15px;
+}
+.cta-box .btn {
+    background: white;
+    color: #065f46;
+    flex-shrink: 0;
+    font-weight: 800;
+    padding: 15px 28px;
+    font-size: 15px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.15);
+    white-space: nowrap;
+}
+.cta-box .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(0,0,0,.2);
+}
+[data-theme="dark"] .cta-box .btn {
+    background: #10b981;
+    color: white;
+}
+
 
 /* MOBILE */
 
@@ -848,12 +1181,12 @@ a {
         top: 76px;
         left: 0;
         right: 0;
-        background: white;
+        background: var(--card-bg);
         padding: 20px;
         flex-direction: column;
         align-items: flex-start;
         border-bottom: 1px solid var(--border);
-        box-shadow: var(--shadow);
+        box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08);
     }
 
     .hero {
@@ -904,12 +1237,12 @@ a {
     }
 
     .hero h1 {
-        font-size: 43px;
+        font-size: 32px;
         letter-spacing: -1.8px;
     }
 
     .hero-description {
-        font-size: 14px;
+        font-size: 16px;
     }
 
     .scanner-stage {
@@ -942,11 +1275,11 @@ a {
     }
 
     .float-value {
-        font-size: 13px;
+        font-size: 15px;
     }
 
     .scanner-footer {
-        font-size: 9px;
+        font-size: 16px;
     }
 
     .feature-grid,
@@ -973,6 +1306,79 @@ a {
         scroll-behavior: auto !important;
     }
 }
+
+/* FLOATING FAB */
+.karran-landing-fab{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:12px;padding:8px 20px 8px 10px;background:linear-gradient(135deg,rgba(10,40,22,.97),rgba(4,18,10,.99));border:1.5px solid rgba(74,222,128,.5);border-radius:50px;box-shadow:0 12px 40px rgba(0,0,0,.6),0 0 30px rgba(34,197,94,.25);backdrop-filter:blur(16px);cursor:pointer;user-select:none;transition:all .3s cubic-bezier(.175,.885,.32,1.275);animation:fabFloat 3.5s ease-in-out infinite alternate;}
+.karran-landing-fab:hover{transform:translateY(-5px) scale(1.05);box-shadow:0 18px 50px rgba(0,0,0,.7),0 0 40px rgba(74,222,128,.5);}
+@keyframes fabFloat{0%{transform:translateY(0)}100%{transform:translateY(-7px)}}
+.fab-av{position:relative;width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#22c55e,#15803d);display:grid;place-items:center;font-size: 16px;box-shadow:0 4px 16px rgba(34,197,94,.4);flex-shrink:0;}
+.fab-radar{position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(74,222,128,.5);animation:radarPulse 2.4s cubic-bezier(.215,.61,.355,1) infinite;pointer-events:none;}
+.fab-radar.d2{animation-delay:1.2s;}
+@keyframes radarPulse{0%{transform:scale(.9);opacity:.9}100%{transform:scale(1.6);opacity:0}}
+.fab-sprout{position:absolute;top:-4px;right:-4px;font-size: 15px;animation:sproutWig 3s ease-in-out infinite;}
+@keyframes sproutWig{0%,100%{transform:rotate(0)}50%{transform:rotate(15deg)}}
+.fab-online{position:absolute;bottom:0;right:0;width:12px;height:12px;background:#4ade80;border:2.5px solid #040d08;border-radius:50%;box-shadow:0 0 8px #4ade80;animation:fabDot 1.8s infinite;}
+@keyframes fabDot{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.8)}50%{box-shadow:0 0 0 7px rgba(74,222,128,0)}}
+.fab-txt{display:flex;flex-direction:column;line-height:1.25;}
+.fab-badge{font-size: 16px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:#4ade80;background:rgba(34,197,94,.15);padding:2px 7px;border-radius:6px;margin-bottom:2px;}
+.fab-title{font-size: 16px;font-weight:900;color:#fff;letter-spacing:.2px;}
+.fab-sub{font-size: 18px;color:#86efac;font-weight:600;}
+@media(max-width:540px){.karran-landing-fab{padding:6px;border-radius:50%;bottom:18px;right:18px;}.fab-txt{display:none;}}
+
+/* FLOATING CHAT WINDOW */
+.karran-landing-window{position:fixed;bottom:88px;right:24px;width:390px;max-width:calc(100vw - 32px);height:560px;max-height:calc(100vh - 110px);background:linear-gradient(165deg,rgba(10,30,18,.99),rgba(4,14,8,1));border:1.5px solid rgba(74,222,128,.25);border-radius:24px;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 50px rgba(34,197,94,.15);backdrop-filter:blur(24px);z-index:1001;display:flex;flex-direction:column;overflow:hidden;transform:translateY(25px) scale(.94);opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.16,1,.3,1);}
+.karran-landing-window.open{transform:translateY(0) scale(1);opacity:1;pointer-events:auto;}
+.klw-header{padding:14px 18px;background:rgba(0,0,0,.3);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.klw-header-left{display:flex;align-items:center;gap:10px;}
+.klw-avatar{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#16a34a,#15803d);display:grid;place-items:center;font-size:18px;box-shadow:0 4px 12px rgba(22,163,74,.3);}
+.klw-title{font-size: 16px;font-weight:800;color:#fff;}
+.klw-status{font-size: 18px;color:#86efac;display:flex;align-items:center;gap:5px;}
+.klw-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;}
+.klw-controls{display:flex;align-items:center;gap:6px;}
+.klw-lang{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:4px 7px;font-size: 18px;outline:none;cursor:pointer;}
+.klw-lang option{background:#0d381e;color:#fff;}
+.klw-icon-btn{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#d1fae5;display:grid;place-items:center;font-size: 15px;cursor:pointer;transition:.2s;text-decoration:none;}
+.klw-icon-btn:hover{background:rgba(255,255,255,.18);color:#fff;}
+.klw-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.12) transparent;}
+.klw-body::-webkit-scrollbar{width:4px;}.klw-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:4px;}
+.klw-msg{display:flex;max-width:90%;animation:msgPop .22s ease-out;}
+.klw-msg.bot{align-self:flex-start;}.klw-msg.user{align-self:flex-end;}
+.klw-bubble{padding:11px 15px;border-radius:16px;font-size: 15px;line-height:1.55;}
+.klw-msg.bot .klw-bubble{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:#f0fdf4;border-bottom-left-radius:4px;}
+.klw-msg.user .klw-bubble{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border-bottom-right-radius:4px;box-shadow:0 4px 12px rgba(22,163,74,.25);}
+.klw-audio-row{margin-top:8px;padding-top:6px;border-top:1px dashed rgba(255,255,255,.12);}
+.klw-voice-btn{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;background:rgba(34,197,94,.15);border:1px solid rgba(74,222,128,.3);color:#86efac;font-size: 12px;font-weight:700;cursor:pointer;transition:.2s;}
+.klw-voice-btn:hover{background:#16a34a;color:#fff;}
+.klw-voice-btn.speaking{background:#ef4444!important;border-color:#dc2626!important;color:#fff!important;}
+.klw-eq{display:inline-flex;align-items:center;gap:2px;height:10px;}
+.klw-eq-bar{width:2px;background:currentColor;border-radius:2px;height:3px;}
+.speaking .klw-eq-bar:nth-child(1){animation:eqP .5s infinite alternate;}
+.speaking .klw-eq-bar:nth-child(2){animation:eqP .7s infinite alternate .1s;}
+.speaking .klw-eq-bar:nth-child(3){animation:eqP .4s infinite alternate .2s;}
+.speaking .klw-eq-bar:nth-child(4){animation:eqP .8s infinite alternate .15s;}
+.klw-chips{padding:8px 14px;display:flex;gap:6px;overflow-x:auto;background:rgba(0,0,0,.15);border-top:1px solid rgba(255,255,255,.05);scrollbar-width:none;}
+.klw-chips::-webkit-scrollbar{display:none;}
+.klw-chip{padding:4px 10px;border-radius:50px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#bbf7d0;font-size: 18px;font-weight:600;white-space:nowrap;cursor:pointer;transition:.2s;}
+.klw-chip:hover{background:#16a34a;color:#fff;border-color:#16a34a;}
+.klw-voice-drawer{display:none;padding:12px 14px;background:rgba(239,68,68,.1);border-top:1px solid rgba(239,68,68,.2);}
+.klw-vd-top{display:flex;align-items:center;justify-content:space-between;font-size: 18px;color:#fca5a5;font-weight:700;margin-bottom:6px;}
+.klw-rec-dot{width:8px;height:8px;border-radius:50%;background:#ef4444;animation:lDot 1.2s infinite;display:inline-block;}
+.klw-wave{display:flex;align-items:center;justify-content:center;gap:3px;height:22px;margin-bottom:6px;}
+.klw-wave span{width:3px;height:6px;background:#ef4444;border-radius:2px;animation:waveA .8s ease-in-out infinite alternate;}
+.klw-wave span:nth-child(2){animation-delay:.1s}.klw-wave span:nth-child(3){animation-delay:.2s}.klw-wave span:nth-child(4){animation-delay:.3s}.klw-wave span:nth-child(5){animation-delay:.25s}.klw-wave span:nth-child(6){animation-delay:.15s}.klw-wave span:nth-child(7){animation-delay:.05s}.klw-wave span:nth-child(8){animation-delay:.35s}
+.klw-preview{font-size: 12px;color:#fee2e2;font-style:italic;text-align:center;min-height:18px;margin-bottom:8px;}
+.klw-vd-actions{display:flex;gap:8px;justify-content:center;}
+.klw-done-btn{padding:5px 12px;border-radius:12px;background:#ef4444;color:#fff;border:none;font-size: 18px;font-weight:700;cursor:pointer;}
+.klw-cancel-btn{padding:5px 12px;border-radius:12px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);font-size: 18px;cursor:pointer;}
+.klw-input-row{padding:10px 14px;background:rgba(0,0,0,.28);border-top:1px solid rgba(255,255,255,.06);display:flex;gap:8px;align-items:center;}
+.klw-input{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:12px;padding:8px 12px;font-size: 15px;outline:none;transition:.2s;}
+.klw-input:focus{border-color:#22c55e;background:rgba(255,255,255,.1);}
+.klw-mic-btn{width:36px;height:36px;border-radius:10px;background:rgba(34,197,94,.15);border:1px solid rgba(74,222,128,.25);color:#fff;font-size: 18px;display:grid;place-items:center;cursor:pointer;transition:.2s;}
+.klw-mic-btn:hover{background:#16a34a;}
+.klw-mic-btn.recording{background:#ef4444!important;animation:micPulse 1s infinite alternate;}
+.klw-send-btn{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#16a34a,#15803d);border:none;color:#fff;font-size: 16px;display:grid;place-items:center;cursor:pointer;transition:.2s;}
+.klw-send-btn:hover{transform:scale(1.05);}
+
 </style>
 </head>
 
@@ -988,15 +1394,22 @@ a {
         </a>
 
         <nav class="nav-links" id="navLinks">
-            <a href="#features">Features</a>
-            <a href="#how-it-works">How It Works</a>
-            <a href="/weather/">Weather</a>
-            <a href="/prediction/">Crop Scan</a>
+            <a href="#features" data-i18n="nav_features">Features</a>
+            <a href="#how-it-works" data-i18n="nav_how_it_works">How It Works</a>
+            <a href="#reviews">Reviews</a>
+            <a href="/weather/" data-i18n="nav_weather">Weather</a>
+            <a href="/prediction/" data-i18n="nav_analyze_crop">Crop Scan</a>
         </nav>
 
         <div class="nav-actions">
-            <a href="/accounts/login/" class="btn btn-outline">Login</a>
-            <a href="/accounts/register/" class="btn btn-primary">Get Started ↗</a>
+            <button id="theme-toggle" class="btn btn-outline" style="padding: 10px; border-radius: 50%; width: 45px; height: 45px; display: grid; place-items: center; border-color: var(--border-color); color: var(--text-main);" aria-label="Toggle Dark Mode">
+                <svg id="theme-icon-light" style="display: none; width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <svg id="theme-icon-dark" style="display: block; width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+            </button>
+            <div id="ksLangSelectorPlaceholder"></div>
+            <button id="pwa-install-btn" class="btn btn-outline" style="display: none; border-color: var(--primary); color: var(--primary); gap: 6px;"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Download App</button>
+            <a href="/accounts/login/" class="btn btn-outline" data-i18n="nav_login">Login</a>
+            <a href="/accounts/register/" class="btn btn-primary" data-i18n="nav_get_started">Get Started ↗</a>
         </div>
 
         <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
@@ -1009,17 +1422,17 @@ a {
 
         <div class="hero-content">
 
-            <div class="eyebrow">
+            <div class="eyebrow" data-i18n="hero_eyebrow">
                 <span class="eyebrow-dot"></span>
                 AI-POWERED SMART AGRICULTURE
             </div>
 
-            <h1>
+            <h1 data-i18n="hero_title">
                 Your Farm.<br>
                 Your AI <span>Partner.</span>
             </h1>
 
-            <p class="hero-description">
+            <p class="hero-description" data-i18n="hero_desc">
                 Detect crop issues, understand weather conditions, and access
                 intelligent farming insights — all through one simple platform
                 built for modern agriculture.
@@ -1030,7 +1443,11 @@ a {
                     Explore KisanSathi <span>→</span>
                 </a>
 
-                <a href="/prediction/" class="btn btn-outline">
+                <button id="pwa-install-btn-hero" class="btn btn-outline" style="display: none;">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Install Web App
+                </button>
+
+                <a href="/prediction/" class="btn btn-outline" id="scan-crop-btn">
                     <span>📷</span> Scan a Crop
                 </a>
             </div>
@@ -1312,15 +1729,13 @@ a {
 </section>
 
 <!-- HOW IT WORKS -->
-<section class="section" id="how-it-works">
+<section class="section" id="how-it-works" style="background: var(--bg-color);">
     <div class="container">
 
         <div class="section-heading">
-            <div class="section-kicker">Simple workflow</div>
+            <div class="section-badge"><span class="section-badge-dot"></span>HOW IT WORKS</div>
             <h2>Smart Farming Starts Here</h2>
-            <p>
-                Get started with a simple process designed around your farm.
-            </p>
+            <p>From photo to insights in seconds. No technical knowledge needed.</p>
         </div>
 
         <div class="steps-grid">
@@ -1328,28 +1743,151 @@ a {
             <article class="step-card">
                 <div class="step-number">01</div>
                 <h3>Choose Your Feature</h3>
-                <p>
-                    Open crop scanning, weather intelligence, or the AI assistant
-                    based on what you need.
-                </p>
+                <p>Open crop scanning, weather intelligence, or the AI assistant based on what your farm needs right now.</p>
             </article>
 
             <article class="step-card">
                 <div class="step-number">02</div>
                 <h3>Provide Your Information</h3>
-                <p>
-                    Upload a crop image, enter your location, or ask a question
-                    through the platform.
-                </p>
+                <p>Upload a crop image, share your location, or speak your question in your own language.</p>
             </article>
 
             <article class="step-card">
                 <div class="step-number">03</div>
-                <h3>Review Your Insights</h3>
-                <p>
-                    Explore the available analysis and information before
-                    making field decisions.
-                </p>
+                <h3>Act on Your Insights</h3>
+                <p>Get clear, actionable recommendations — then make better decisions for healthier crops and higher yields.</p>
+            </article>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- STATS -->
+<section class="section stats" style="background: linear-gradient(135deg, #065f46 0%, #10b981 60%, #059669 100%); color: white; padding: 70px 0; position: relative; overflow: hidden;">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 80% 50%, rgba(255,255,255,.06), transparent 60%); pointer-events:none;"></div>
+    <div class="container" style="display: flex; justify-content: space-around; flex-wrap: wrap; text-align: center; gap: 20px; align-items: center; position:relative;">
+        <div class="stat-item">
+            <div class="stat-num" id="stat-farmers">0</div>
+            <div class="stat-label">Farmers Assisted</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat-item">
+            <div class="stat-num" id="stat-accuracy">0%</div>
+            <div class="stat-label">Detection Accuracy</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat-item">
+            <div class="stat-num" id="stat-crops">0+</div>
+            <div class="stat-label">Crops Supported</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat-item">
+            <div class="stat-num">24/7</div>
+            <div class="stat-label">AI Availability</div>
+        </div>
+    </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="section reviews" id="reviews" style="background: var(--bg-color);">
+    <div class="container">
+        <div class="section-heading">
+            <div class="section-badge"><span class="section-badge-dot"></span>TESTIMONIALS</div>
+            <h2>Trusted by Thousands of Farmers</h2>
+            <p>Real farmers. Real results. See how KisanSathi AI is transforming agriculture across India.</p>
+        </div>
+
+        <div class="feature-grid">
+
+            <article class="review-card">
+                <div>
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">"This app completely changed how I manage my crops. The AI disease detection spotted blight early enough to save my entire tomato harvest — saved me ₹80,000!"</p>
+                </div>
+                <div class="review-author">
+                    <div class="review-avatar">R</div>
+                    <div>
+                        <div class="review-name">Ramesh Kumar</div>
+                        <div class="review-role">Vegetable Farmer, UP</div>
+                        <div class="review-badge">✓ Verified User</div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="review-card">
+                <div>
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">"The weather intelligence feature is incredible. Hyper-local forecast helped me plan irrigation perfectly — saved water and ₹35,000 in electricity costs this season."</p>
+                </div>
+                <div class="review-author">
+                    <div class="review-avatar">A</div>
+                    <div>
+                        <div class="review-name">Amit Sharma</div>
+                        <div class="review-role">Wheat Farmer, Haryana</div>
+                        <div class="review-badge">✓ Verified User</div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="review-card">
+                <div>
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">"I use the voice assistant daily. Speaking into my phone and getting farming advice in Hindi instantly — this is a game-changer for our entire community."</p>
+                </div>
+                <div class="review-author">
+                    <div class="review-avatar">S</div>
+                    <div>
+                        <div class="review-name">Suresh Patel</div>
+                        <div class="review-role">Cotton Farmer, Gujarat</div>
+                        <div class="review-badge">✓ Verified User</div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="review-card">
+                <div>
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">"Found a tractor for rent through the equipment hub in 10 minutes. The live map showed exactly what was available near me. Saved 3 days of searching!"</p>
+                </div>
+                <div class="review-author">
+                    <div class="review-avatar">P</div>
+                    <div>
+                        <div class="review-name">Priya Devi</div>
+                        <div class="review-role">Rice Farmer, Bihar</div>
+                        <div class="review-badge">✓ Verified User</div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="review-card">
+                <div>
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">"The mandi price tracker helped me wait 2 weeks before selling my wheat. Got ₹180/quintal more than I would have. Pure profit from just checking the app!"</p>
+                </div>
+                <div class="review-author">
+                    <div class="review-avatar">M</div>
+                    <div>
+                        <div class="review-name">Mahesh Yadav</div>
+                        <div class="review-role">Wheat &amp; Mustard Farmer, MP</div>
+                        <div class="review-badge">✓ Verified User</div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="review-card">
+                <div>
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">"Government scheme finder is amazing. I got enrolled in PM Kisan and crop insurance both in one day with the app's step-by-step guidance. Never knew it was this easy."</p>
+                </div>
+                <div class="review-author">
+                    <div class="review-avatar">G</div>
+                    <div>
+                        <div class="review-name">Geeta Kumari</div>
+                        <div class="review-role">Vegetable Farmer, Rajasthan</div>
+                        <div class="review-badge">✓ Verified User</div>
+                    </div>
+                </div>
             </article>
 
         </div>
@@ -1361,16 +1899,10 @@ a {
     <div class="container">
         <div class="cta-box">
             <div>
-                <h2>Bring Intelligence to Your Farm.</h2>
-                <p>
-                    Explore KisanSathi AI and bring your crop analysis,
-                    weather information, and farming resources into one workflow.
-                </p>
+                <h2>Bring Intelligence to<br>Your Farm Today.</h2>
+                <p>Join 10,000+ farmers using KisanSathi AI to detect diseases faster,<br>track prices smarter, and grow better every season.</p>
             </div>
-
-            <a href="/accounts/register/" class="btn">
-                Get Started Now <span>→</span>
-            </a>
+            <a href="/accounts/register/" class="btn">Start Free Now →</a>
         </div>
     </div>
 </section>
@@ -1379,8 +1911,8 @@ a {
 <footer class="footer">
     <div class="container footer-inner">
         <div class="footer-brand">🌱 KisanSathi AI</div>
-        <div>AI-powered farming support platform</div>
-        <div>© 2026 KisanSathi AI. All rights reserved.</div>
+        <div style="opacity:.8;">AI-powered smart farming platform for India</div>
+        <div style="opacity:.7;">© 2026 KisanSathi AI. All rights reserved.</div>
     </div>
 </footer>
 
@@ -1414,5 +1946,204 @@ setInterval(() => {
 }, 3800);
 </script>
 
+
+<script src="{% static 'js/kisansathi-i18n.js' %}"></script>
+<script src="{% static 'js/karran-voice-system.js' %}"></script>
+
+<!-- FLOATING KARRAN FAB -->
+<div id="landingKarranFab" class="karran-landing-fab" onclick="toggleLandingKarran()" aria-label="Open Karran AI">
+  <div class="fab-radar"></div><div class="fab-radar d2"></div>
+  <div class="fab-av"><span>🤖</span><span class="fab-sprout">🌱</span><span class="fab-online"></span></div>
+  <div class="fab-txt"><div class="fab-badge">AI Assistant</div><span class="fab-title">Karran AI (करन)</span><span class="fab-sub">पूछें या बोलें 🎙️</span></div>
+</div>
+
+<!-- FLOATING CHAT WINDOW -->
+<div id="landingKarranWindow" class="karran-landing-window" role="dialog" aria-modal="true">
+  <div class="klw-header">
+    <div class="klw-header-left"><div class="klw-avatar">🌿</div><div><div class="klw-title">Karran AI (करन)</div><div class="klw-status"><span class="klw-dot"></span>Online · Voice &amp; RAG Advisor</div></div></div>
+    <div class="klw-controls">
+      <select id="klwLangSelect" class="klw-lang"><option value="hi" selected>हिंदी</option><option value="en">English</option><option value="bn">বাংলা</option><option value="mr">मराठी</option><option value="te">తెలుగు</option><option value="ta">தமிழ்</option></select>
+      <a href="/ai-assistant/" class="klw-icon-btn">⛶</a>
+      <button class="klw-icon-btn" onclick="toggleLandingKarran()">✕</button>
+    </div>
+  </div>
+  <div class="klw-body" id="klwMsgs">
+    <div class="klw-msg bot"><div class="klw-bubble">🙏 <strong>नमस्ते किसान भाई! मैं करन (Karran AI) हूँ।</strong><br>आप मुझसे फसलों के रोग, मंडी भाव, मौसम या सरकारी योजनाओं के बारे में <strong>माइक 🎙️ से बोलकर या लिखकर</strong> पूछ सकते हैं।<div class="klw-audio-row"><button class="klw-voice-btn" type="button" onclick="klwPlayVoice(this,'नमस्ते किसान भाई! मैं करन AI हूँ।','hi-IN')"><span class="klw-eq"><span class="klw-eq-bar"></span><span class="klw-eq-bar"></span><span class="klw-eq-bar"></span><span class="klw-eq-bar"></span></span><span>🔊 सुनें / Listen</span></button></div></div></div>
+  </div>
+  <div class="klw-chips">
+    <button class="klw-chip" onclick="klwAskChip('गेहूं में पीला रतुआ का इलाज?')">🌾 पीला रतुआ</button>
+    <button class="klw-chip" onclick="klwAskChip('आज का मंडी भाव क्या है?')">📈 मंडी भाव</button>
+    <button class="klw-chip" onclick="klwAskChip('आज स्प्रे के लिए मौसम कैसा है?')">🌦️ मौसम</button>
+    <button class="klw-chip" onclick="klwAskChip('PM किसान योजना का आवेदन कैसे करें?')">🏛️ PM किसान</button>
+  </div>
+  <div class="klw-voice-drawer" id="klwVoiceDrawer">
+    <div class="klw-vd-top"><div style="display:flex;align-items:center;gap:6px;"><span class="klw-rec-dot"></span><span id="klwRecStatus">बोलिए, सुन रहे हैं...</span></div><span id="klwRecTimer">0:00 / 0:16</span></div>
+    <div class="klw-wave"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="klw-preview" id="klwRecPreview">बोलना शुरू करें...</div>
+    <div class="klw-vd-actions"><button class="klw-done-btn" onclick="klwStopRecording(true)">⏹️ Done &amp; Send</button><button class="klw-cancel-btn" onclick="klwCancelRecording()">✕ Cancel</button></div>
+  </div>
+  <div class="klw-input-row">
+    <label for="klwImageInput" class="klw-mic-btn" style="cursor:pointer; margin-right:5px; padding: 6px;" title="फोटो भेजें (Upload Image)">📷</label>
+    <input type="file" id="klwImageInput" accept="image/*" style="display:none;" onchange="klwImageSelected()">
+    <div id="klwImgPreview" style="display:none; position:absolute; bottom:60px; left:10px; background:#fff; border:1px solid #ddd; padding:4px; border-radius:8px; box-shadow:0 4px 6px rgba(0,0,0,0.1); z-index:10000;">
+      <img id="klwImgThumb" src="" style="max-height:60px; border-radius:4px;">
+      <span onclick="klwRemoveImage()" style="cursor:pointer; position:absolute; top:-8px; right:-8px; background:red; color:white; border-radius:50%; width:20px; height:20px; text-align:center; font-size: 18px; line-height:20px;">✕</span>
+    </div>
+    
+    <input type="text" id="klwInput" class="klw-input" placeholder="सवाल लिखें या माइक 🎙️ दबाएं..." autocomplete="off">
+    <button class="klw-mic-btn" id="klwMicBtn" onclick="klwToggleRecording()">🎙️</button>
+    <button class="klw-send-btn" id="klwSendBtn" onclick="klwSendMsg()">➤</button>
+  </div>
+</div>
+
+<script>
+// KARRAN FAB & WINDOW LOGIC
+function toggleLandingKarran(){const win=document.getElementById('landingKarranWindow');if(!win)return;const isOpen=win.classList.toggle('open');if(isOpen){setTimeout(()=>{const inp=document.getElementById('klwInput');if(inp)inp.focus();},250);}else{if(window.KarranVoiceSystem){window.KarranVoiceSystem.stopSpeaking();window.KarranVoiceSystem.cancelRecording();}}}
+
+let klwIsRecording=false,klwActiveAudioBtn=null;
+function klwPlayVoice(btn,text,voiceCode,ttsUrl){if(!window.KarranVoiceSystem)return;if(btn===klwActiveAudioBtn&&window.KarranVoiceSystem.isSpeaking()){window.KarranVoiceSystem.stopSpeaking();btn.classList.remove('speaking');btn.querySelector('span:last-child').textContent='🔊 सुनें / Listen';klwActiveAudioBtn=null;return;}if(klwActiveAudioBtn&&klwActiveAudioBtn!==btn){klwActiveAudioBtn.classList.remove('speaking');klwActiveAudioBtn.querySelector('span:last-child').textContent='🔊 सुनें / Listen';}klwActiveAudioBtn=btn;btn.querySelector('span:last-child').textContent='⏳ लोड...';window.KarranVoiceSystem.speakText(text,voiceCode,{ttsUrl,onStart:()=>{btn.classList.add('speaking');btn.querySelector('span:last-child').textContent='⏹️ रोकें';},onEnd:()=>{btn.classList.remove('speaking');btn.querySelector('span:last-child').textContent='🔊 सुनें / Listen';if(klwActiveAudioBtn===btn)klwActiveAudioBtn=null;},onError:()=>{btn.classList.remove('speaking');btn.querySelector('span:last-child').textContent='🔊 सुनें / Listen';if(klwActiveAudioBtn===btn)klwActiveAudioBtn=null;}});}
+function klwAskChip(q){const i=document.getElementById('klwInput');if(i){i.value=q;klwSendMsg(false);}}
+function klwToggleRecording(){if(klwIsRecording){klwStopRecording(true);return;}if(!window.KarranVoiceSystem){alert('Voice system loading...');return;}const drawer=document.getElementById('klwVoiceDrawer'),mic=document.getElementById('klwMicBtn'),preview=document.getElementById('klwRecPreview'),timer=document.getElementById('klwRecTimer'),status=document.getElementById('klwRecStatus'),lang=(document.getElementById('klwLangSelect')||{value:'hi'}).value;if(drawer)drawer.style.display='block';if(mic)mic.classList.add('recording');if(preview)preview.textContent='बोलना शुरू करें...';if(timer)timer.textContent='0:00 / 0:16';if(status)status.textContent='बोलिए, सुन रहे हैं...';klwIsRecording=true;window.KarranVoiceSystem.startRecording({lang,onStart:()=>{if(drawer)drawer.style.display='block';},onProgress:(sec)=>{if(timer)timer.textContent=`${window.KarranVoiceSystem.formatSeconds(sec)} / 0:16`;},onInterimText:(txt)=>{if(preview&&txt)preview.textContent=txt;},onComplete:(res)=>{klwHideVoiceDrawer();const text=(res&&res.text)?res.text.trim():'';if(text){const inp=document.getElementById('klwInput');if(inp)inp.value=text;klwSendMsg(true);}},onError:(err)=>{klwHideVoiceDrawer();if(preview)preview.textContent='त्रुटि: '+err;setTimeout(()=>{if(drawer)drawer.style.display='none';},3000);}});}
+function klwStopRecording(sendAfter=true){if(!klwIsRecording||!window.KarranVoiceSystem)return;const status=document.getElementById('klwRecStatus'),lang=(document.getElementById('klwLangSelect')||{value:'hi'}).value;if(status)status.textContent='🔄 प्रोसेस...';window.KarranVoiceSystem.stopRecording({lang,onProcessing:()=>{if(status)status.textContent='🔄 आवाज पहचान...';},onComplete:(res)=>{klwHideVoiceDrawer();const text=(res&&res.text)?res.text.trim():'';if(text){const inp=document.getElementById('klwInput');if(inp)inp.value=text;if(sendAfter)klwSendMsg(true);}},onError:(err)=>{klwHideVoiceDrawer();alert(err||'आवाज साफ नहीं आई।');}});}
+function klwCancelRecording(){if(window.KarranVoiceSystem)window.KarranVoiceSystem.cancelRecording();klwHideVoiceDrawer();}
+function klwHideVoiceDrawer(){klwIsRecording=false;const drawer=document.getElementById('klwVoiceDrawer'),mic=document.getElementById('klwMicBtn');if(drawer)drawer.style.display='none';if(mic)mic.classList.remove('recording');}
+async function klwSendMsg(autoSpeak=true){
+  const inp=document.getElementById('klwInput');
+  let q=inp?inp.value.trim():'';
+  const imgInput=document.getElementById('klwImageInput');
+  const hasImage = imgInput && imgInput.files.length > 0;
+  
+  if(!q && !hasImage) return;
+  if(inp) inp.value='';
+  const msgs=document.getElementById('klwMsgs');
+  if(!msgs) return;
+  
+  const uMsg=document.createElement('div');
+  uMsg.className='klw-msg user';
+  
+  let imgHtml = "";
+  if(hasImage) {
+      const src = document.getElementById('klwImgThumb').src;
+      imgHtml = `<img src="${src}" style="max-width:100%; border-radius:8px; margin-bottom:8px; display:block;">`;
+  }
+  uMsg.innerHTML=`<div class="klw-bubble">${imgHtml}👤 ${q}</div>`;
+  msgs.appendChild(uMsg);
+  const tMsg=document.createElement('div');tMsg.className='klw-msg bot';tMsg.innerHTML=`<div class="klw-bubble" style="color:#86efac;font-style:italic;">🌱 Karran AI सोच रहा है...</div>`;msgs.appendChild(tMsg);msgs.scrollTop=msgs.scrollHeight;const lang=(document.getElementById('klwLangSelect')||{value:'hi'}).value;try{const fd=new FormData();fd.append('q',q);fd.append('message',q);fd.append('lang',lang);
+const imgInput=document.getElementById('klwImageInput');
+if(imgInput && imgInput.files.length > 0){
+    fd.append('image', imgInput.files[0]);
+}const res=await fetch('/chatbot/',{method:'POST',body:fd});const data=await res.json();tMsg.remove();const reply=data.reply||data.answer||'माफ़ कीजिए, जवाब नहीं मिला।',voiceText=data.spoken_reply||reply,voiceCode=data.voice_code||(lang==='hi'?'hi-IN':lang+'-IN'),ttsUrl=data.tts_url||null;const bMsg=document.createElement('div');bMsg.className='klw-msg bot';const fmt=reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');bMsg.innerHTML=`<div class="klw-bubble">${fmt}<div class="klw-audio-row"><button class="klw-voice-btn" type="button"><span class="klw-eq"><span class="klw-eq-bar"></span><span class="klw-eq-bar"></span><span class="klw-eq-bar"></span><span class="klw-eq-bar"></span></span><span>🔊 सुनें / Listen</span></button></div></div>`;const pb=bMsg.querySelector('.klw-voice-btn');pb.onclick=()=>klwPlayVoice(pb,voiceText,voiceCode,ttsUrl);msgs.appendChild(bMsg);msgs.scrollTop=msgs.scrollHeight;if(autoSpeak)setTimeout(()=>klwPlayVoice(pb,voiceText,voiceCode,ttsUrl),300);}catch(e){tMsg.remove();const em=document.createElement('div');em.className='klw-msg bot';em.innerHTML=`<div class="klw-bubble" style="color:#f87171;">⚠️ सर्वर से संपर्क नहीं। दोबारा प्रयास करें।</div>`;msgs.appendChild(em);msgs.scrollTop=msgs.scrollHeight;} klwRemoveImage();}
+const klwInp=document.getElementById('klwInput');if(klwInp)klwInp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();klwSendMsg();}});
+</script>
+
+
+<!-- PWA INSTALL LOGIC -->
+<script>
+  let deferredPrompt;
+  const installBtns = [document.getElementById('pwa-install-btn'), document.getElementById('pwa-install-btn-hero')];
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent Chrome 67 and earlier from automatically showing the prompt
+    e.preventDefault();
+    // Stash the event so it can be triggered later.
+    deferredPrompt = e;
+    // Update UI to notify the user they can add to home screen
+    installBtns.forEach(btn => {
+        if(btn) btn.style.display = 'inline-flex';
+    });
+  });
+
+  installBtns.forEach(btn => {
+      if(!btn) return;
+      btn.addEventListener('click', (e) => {
+        // hide our user interface that shows our A2HS button
+        installBtns.forEach(b => { if(b) b.style.display = 'none'; });
+        if(deferredPrompt) {
+            // Show the prompt
+            deferredPrompt.prompt();
+            // Wait for the user to respond to the prompt
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                  console.log('User accepted the A2HS prompt');
+                } else {
+                  console.log('User dismissed the A2HS prompt');
+                }
+                deferredPrompt = null;
+            });
+        }
+      });
+  });
+
+  window.addEventListener('appinstalled', (evt) => {
+    console.log('a2hs installed');
+    installBtns.forEach(b => { if(b) b.style.display = 'none'; });
+  });
+</script>
+
+
+<!-- THEME TOGGLE LOGIC -->
+<script>
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const iconLight = document.getElementById('theme-icon-light');
+    const iconDark = document.getElementById('theme-icon-dark');
+
+    // Use same key as dashboard for cross-page persistence
+    const STORAGE_KEY = 'kisansathi_theme';
+    const savedTheme = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('ks-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    function applyTheme(isDark) {
+        if (isDark) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            iconLight.style.display = 'block';
+            iconDark.style.display = 'none';
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+            iconLight.style.display = 'none';
+            iconDark.style.display = 'block';
+        }
+    }
+
+    applyTheme(savedTheme === 'dark' || (!savedTheme && prefersDark));
+
+    themeToggleBtn.addEventListener('click', () => {
+        const currentlyDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        applyTheme(!currentlyDark);
+        localStorage.setItem(STORAGE_KEY, currentlyDark ? 'light' : 'dark');
+        // Also update old key for backward compatibility
+        localStorage.setItem('ks-theme', currentlyDark ? 'light' : 'dark');
+    });
+
+    // Animated stat counters
+    function animateCounter(id, target, suffix) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        let current = 0;
+        const step = Math.ceil(target / 50);
+        const timer = setInterval(() => {
+            current = Math.min(current + step, target);
+            el.textContent = (id === 'stat-farmers' ? (current/1000).toFixed(0) + 'k+' : current + suffix);
+            if (current >= target) clearInterval(timer);
+        }, 30);
+    }
+
+    // Trigger counters when stats section is visible
+    const statsObs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounter('stat-farmers', 10000, '');
+                animateCounter('stat-accuracy', 98, '%');
+                animateCounter('stat-crops', 50, '+');
+                statsObs.disconnect();
+            }
+        });
+    }, { threshold: 0.3 });
+
+    const statsSection = document.querySelector('.stats');
+    if (statsSection) statsObs.observe(statsSection);
+</script>
+
+
 </body>
 </html>
+

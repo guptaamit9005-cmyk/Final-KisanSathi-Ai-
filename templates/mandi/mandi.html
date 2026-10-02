@@ -2,419 +2,551 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Mandi Market Rates | AgriVisionAI</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>KisanSathi - Mandi Prices</title>
+    <!-- Tailwind CSS (Using exact color scheme: Slate/Green/Emerald) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="/static/js/kisansathi-i18n.js"></script>
 
     <style>
-
         * {
             box-sizing: border-box;
         }
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f4f8f1;
-            color: #173b24;
+        body {\n            letter-spacing: -0.01em;\n            line-height: 1.6;\n
+            font-family: Inter, 'Noto Sans Devanagari', 'Noto Sans Bengali', 'Noto Sans Telugu', 'Noto Sans Tamil', ui-sans-serif, system-ui, -apple-system, sans-serif;
         }
 
-        .container {
-            max-width: 1100px;
-            margin: auto;
-            padding: 30px 20px;
+        .mandi-card {
+            transition: all 0.25s ease;
         }
 
-        .header {
-            margin-bottom: 25px;
+        .mandi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 32px rgba(15, 23, 42, 0.08);
         }
 
-        .header h1 {
-            color: #176b36;
-            font-size: 32px;
+        .hero-bg {
+            background:
+                radial-gradient(circle at 10% 20%, rgba(34, 197, 94, 0.12), transparent 30%),
+                radial-gradient(circle at 90% 10%, rgba(16, 185, 129, 0.10), transparent 25%),
+                linear-gradient(135deg, #ffffff, #f0fdf4);
         }
 
-        .header p {
-            color: #68786d;
-            margin-top: 8px;
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.90);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.85);
         }
 
-        .card {
-            background: white;
-            padding: 24px;
-            border-radius: 20px;
-            box-shadow: 0 5px 25px rgba(0,0,0,.06);
-            margin-bottom: 20px;
+        /* Modal styling */
+        .modal-active {
+            display: flex !important;
         }
-
-        .crop-form {
-            display: flex;
-            gap: 12px;
-        }
-
-        .crop-form select {
-            flex: 1;
-            padding: 13px;
-            border: 1px solid #d4e1d4;
-            border-radius: 10px;
-            background: white;
-        }
-
-        .crop-form button {
-            padding: 13px 24px;
-            border: none;
-            border-radius: 10px;
-            background: #176b36;
-            color: white;
-            cursor: pointer;
-        }
-
-        .summary {
-            display: grid;
-            grid-template-columns:
-                repeat(3, 1fr);
-            gap: 15px;
-        }
-
-        .summary-box {
-            background: #edf7ed;
-            padding: 20px;
-            border-radius: 15px;
-        }
-
-        .summary-box span {
-            display: block;
-            color: #6b7c70;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-
-        .summary-box strong {
-            color: #176b36;
-            font-size: 25px;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            background: #176b36;
-            color: white;
-            text-align: left;
-            padding: 14px;
-        }
-
-        td {
-            padding: 15px;
-            border-bottom: 1px solid #e5ece5;
-        }
-
-        .price {
-            font-weight: bold;
-            color: #176b36;
-        }
-
-        .positive {
-            color: #218c4a;
-            font-weight: bold;
-        }
-
-        .negative {
-            color: #c34a32;
-            font-weight: bold;
-        }
-
-        .note {
-            background: #fff8df;
-            padding: 15px;
-            border-radius: 12px;
-            color: #6f5b22;
-            line-height: 1.5;
-        }
-
-        @media(max-width: 700px) {
-
-            .crop-form {
-                flex-direction: column;
-            }
-
-            .summary {
-                grid-template-columns: 1fr;
-            }
-
-        }
-
     </style>
-
 </head>
 
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
 
-<body>
+<!-- =====================================================
+     NAVBAR
+====================================================== -->
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="h-16 flex items-center justify-between">
+            <!-- BRAND -->
+            <a href="/dashboard/" class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-green-600 text-white flex items-center justify-center font-black text-lg shadow-sm">
+                    A
+                </div>
+                <div>
+                    <h1 class="font-bold text-slate-900 leading-tight">AgriVisionAI</h1>
+                    <p class="text-xs text-slate-500">Live Mandi Market Intelligence</p>
+                </div>
+            </a>
 
-<div class="container">
-
-
-    <div class="header">
-
-        <h1>📈 Mandi Market Prices</h1>
-
-        <p>
-            Check crop prices across available markets.
-        </p>
-
+            <!-- NAVIGATION -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <span id="ksLangSelectorPlaceholder"></span>
+                <a href="{% url 'land_marketplace:list' %}"
+                   class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm transition">
+                    🌾 Land Market
+                </a>
+                <a href="/weather/"
+                   class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm transition">
+                    ⛅ Weather
+                </a>
+                <a href="/dashboard/"
+                   class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm transition" data-i18n="nav_dashboard">
+                    ← Dashboard
+                </a>
+            </div>
+        </div>
     </div>
+</header>
 
 
-    <!-- CROP SELECT -->
+<!-- =====================================================
+     HERO & LIVE CROP COMMODITY TICKER
+====================================================== -->
+<section class="hero-bg border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 py-10 lg:py-14">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <div class="lg:col-span-7">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase tracking-wider">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-ping"></span>
+                    Live Pan-India Mandi Price Index • Updated {{ last_updated }}
+                </div>
 
-    <div class="card">
+                <h2 class="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 mt-4 leading-tight">
+                    Current Market Rates
+                    <span class="block text-green-600">Across All Crop Varieties</span>
+                </h2>
 
-        <form
-            method="GET"
-            class="crop-form"
-        >
+                <p class="mt-4 text-base sm:text-lg leading-relaxed text-slate-600 max-w-xl">
+                    Real-time APMC wholesale auction rates, official Minimum Support Price (MSP) comparisons, and daily price trends covering Cereals, Pulses, Oilseeds, Cash Crops & Vegetables.
+                </p>
 
-            <select name="crop">
-
-                <option
-                    value="rice"
-                    {% if selected_crop == "rice" %}
-                    selected
-                    {% endif %}
-                >
-                    Rice
-                </option>
-
-                <option
-                    value="wheat"
-                    {% if selected_crop == "wheat" %}
-                    selected
-                    {% endif %}
-                >
-                    Wheat
-                </option>
-
-                <option
-                    value="tomato"
-                    {% if selected_crop == "tomato" %}
-                    selected
-                    {% endif %}
-                >
-                    Tomato
-                </option>
-
-                <option
-                    value="potato"
-                    {% if selected_crop == "potato" %}
-                    selected
-                    {% endif %}
-                >
-                    Potato
-                </option>
-
-                <option
-                    value="maize"
-                    {% if selected_crop == "maize" %}
-                    selected
-                    {% endif %}
-                >
-                    Maize
-                </option>
-
-            </select>
-
-
-            <button type="submit">
-                Check Price
-            </button>
-
-        </form>
-
-    </div>
-
-
-    <!-- SUMMARY -->
-
-    {% if markets %}
-
-    <div class="card">
-
-        <h2>
-            {{ crop_name }} Market Overview
-        </h2>
-
-        <br>
-
-        <div class="summary">
-
-            <div class="summary-box">
-
-                <span>
-                    Highest Price
-                </span>
-
-                <strong>
-                    ₹{{ markets.0.price }}
-                </strong>
-
+                <!-- HERO STATS ROW -->
+                <div class="flex flex-wrap gap-4 mt-6">
+                    <div class="bg-white/80 border border-slate-200/80 px-4 py-2.5 rounded-xl">
+                        <span class="text-xs text-slate-500 font-medium block">Tracked Crops</span>
+                        <strong class="text-lg font-black text-slate-900">{{ total_crops_count }} Commodities</strong>
+                    </div>
+                    <div class="bg-white/80 border border-slate-200/80 px-4 py-2.5 rounded-xl">
+                        <span class="text-xs text-slate-500 font-medium block">Covered Mandis</span>
+                        <strong class="text-lg font-black text-green-700">{{ total_markets_tracked }}+ Major Hubs</strong>
+                    </div>
+                    <div class="bg-white/80 border border-slate-200/80 px-4 py-2.5 rounded-xl">
+                        <span class="text-xs text-slate-500 font-medium block">Standard Unit</span>
+                        <strong class="text-lg font-black text-slate-900">₹ / Quintal (100 Kg)</strong>
+                    </div>
+                </div>
             </div>
 
+            <!-- Right: Interactive Harvest Value Calculator -->
+            <div class="lg:col-span-5">
+                <div class="glass-panel p-6 sm:p-7 rounded-3xl shadow-xl shadow-slate-200/60">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                        <div>
+                            <span class="text-xs font-bold text-green-700 uppercase tracking-wider">Farmer Calculator</span>
+                            <h3 class="text-lg font-black text-slate-900 mt-0.5">Harvest Income Calculator</h3>
+                        </div>
+                        <span class="text-2xl">💰</span>
+                    </div>
 
-            <div class="summary-box">
+                    <div class="mt-4 space-y-3.5 text-xs sm:text-sm">
+                        <div>
+                            <label class="block font-semibold text-slate-700 mb-1">Select Crop:</label>
+                            <select id="calcCropSelect" onchange="syncHarvestCalc()" class="w-full px-3 py-2 border border-slate-200 rounded-xl bg-white font-medium focus:outline-none focus:border-green-600">
+                                {% for c in all_crops %}
+                                <option value="{{ c.id }}" data-rate="{{ c.avg_price }}" data-name="{{ c.name }}">{{ c.name }} — ₹{{ c.avg_price }}/Qtl</option>
+                                {% endfor %}
+                            </select>
+                        </div>
 
-                <span>
-                    Markets Available
-                </span>
+                        <div>
+                            <div class="flex justify-between font-semibold text-slate-600 mb-1">
+                                <span>Harvest Quantity (Quintals / 100kg):</span>
+                                <span id="calcQtyLabel" class="text-green-700 font-bold">25 Quintals</span>
+                            </div>
+                            <input type="range" id="calcQtySlider" min="1" max="200" step="1" value="25" oninput="syncHarvestCalc()"
+                                   class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-green-600">
+                        </div>
 
-                <strong>
-                    {{ markets|length }}
-                </strong>
-
-            </div>
-
-
-            <div class="summary-box">
-
-                <span>
-                    Unit
-                </span>
-
-                <strong>
-                    Quintal
-                </strong>
-
+                        <!-- Income Result Box -->
+                        <div class="p-3.5 bg-green-50 border border-green-200 rounded-2xl flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-green-800 font-medium block">Estimated Market Realization</span>
+                                <span class="text-2xl font-black text-green-700" id="calcRevenueDisplay">₹60,500</span>
+                            </div>
+                            <span class="text-xs font-bold px-2.5 py-1 bg-green-200 text-green-800 rounded-lg">Instant Quote</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
-
     </div>
+</section>
 
 
-    <!-- MARKET TABLE -->
-
-    <div class="card">
-
-        <h2>
-            🏪 Available Markets
-        </h2>
-
-        <br>
-
-        <div class="table-wrapper">
-
-            <table>
-
-                <thead>
-
-                    <tr>
-
-                        <th>
-                            Market
-                        </th>
-
-                        <th>
-                            District
-                        </th>
-
-                        <th>
-                            Price
-                        </th>
-
-                        <th>
-                            Change
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                {% for market in markets %}
-
-                    <tr>
-
-                        <td>
-                            {{ market.market }}
-                        </td>
-
-                        <td>
-                            {{ market.district }}
-                        </td>
-
-                        <td class="price">
-                            ₹{{ market.price }}
-                        </td>
-
-                        <td>
-
-                            {% if "+" in market.change %}
-
-                                <span class="positive">
-                                    {{ market.change }}
-                                </span>
-
-                            {% else %}
-
-                                <span class="negative">
-                                    {{ market.change }}
-                                </span>
-
-                            {% endif %}
-
-                        </td>
-
-                    </tr>
-
-                {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
+<!-- =====================================================
+     QUICK COMMODITY TICKER BAR
+====================================================== -->
+<div class="bg-white border-b border-slate-200 py-3 overflow-x-auto">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-center gap-6 whitespace-nowrap text-xs font-semibold">
+        <span class="text-slate-400 uppercase tracking-wider font-bold shrink-0">📊 Price Barometer:</span>
+        {% for c in all_crops %}
+        <a href="?crop={{ c.id }}" class="flex items-center gap-1.5 hover:text-green-600 transition shrink-0">
+            <span>{{ c.icon }}</span>
+            <span class="text-slate-700">{{ c.name|slice:":15" }}</span>
+            <strong class="text-slate-900">₹{{ c.avg_price }}</strong>
+            <span class="{% if c.trend_direction == 'up' %}text-green-600{% elif c.trend_direction == 'down' %}text-red-500{% else %}text-slate-500{% endif %}">
+                {{ c.trend }}
+            </span>
+        </a>
+        {% endfor %}
     </div>
-
-
-    {% else %}
-
-    <div class="card">
-
-        <h2>
-            No market data found
-        </h2>
-
-    </div>
-
-    {% endif %}
-
-
-    <div class="note">
-
-        ⚠️ <strong>Demo Data:</strong>
-        The prices currently displayed are sample application data.
-        Before production use, connect this module to a verified live
-        mandi/market-price data source.
-
-    </div>
-
-
 </div>
 
-</body>
 
+<!-- =====================================================
+     SEARCH, FILTER & CATEGORIES TOOLBAR
+====================================================== -->
+<main class="max-w-7xl mx-auto px-5 sm:px-8 py-10 flex-1 w-full">
+
+    <div class="bg-white border border-slate-200 rounded-3xl p-5 sm:p-7 shadow-sm mb-8">
+        <form method="GET" action="{% url 'mandi:home' %}" class="space-y-4">
+            <!-- Keyword search row -->
+            <div class="flex flex-col sm:flex-row gap-3">
+                <div class="relative flex-1">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        🔍
+                    </span>
+                    <input type="text" name="q" value="{{ search_query }}"
+                           placeholder="Search any crop, state, or mandi (e.g. Wheat, Chana, Mustard, Kolar, Lasalgaon)..."
+                           class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-green-600 bg-slate-50/50">
+                </div>
+
+                <div class="flex gap-2 shrink-0">
+                    <button type="submit"
+                            class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl text-sm transition shadow-sm">
+                        Find Rates
+                    </button>
+                    <a href="{% url 'mandi:home' %}"
+                       class="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition flex items-center justify-center">
+                        Reset
+                    </a>
+                </div>
+            </div>
+
+            <!-- Categories Tabs -->
+            <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center gap-2">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">Crop Categories:</span>
+                
+                <a href="?category=all"
+                   class="px-3.5 py-1.5 rounded-full text-xs font-bold transition {% if selected_category == 'all' %}bg-green-600 text-white shadow-sm{% else %}bg-slate-100 hover:bg-slate-200 text-slate-700{% endif %}">
+                    🌾 All Types ({{ total_crops_count }})
+                </a>
+
+                {% for cat in categories %}
+                <a href="?category={{ cat }}"
+                   class="px-3.5 py-1.5 rounded-full text-xs font-bold transition {% if selected_category == cat %}bg-green-600 text-white shadow-sm{% else %}bg-slate-100 hover:bg-slate-200 text-slate-700{% endif %}">
+                    {{ cat }}
+                </a>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+
+
+    <!-- RESULTS HEADER & SORTING -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+            <h2 class="text-2xl sm:text-3xl font-black text-slate-900">
+                Crop Market Directory
+            </h2>
+            <p class="text-sm text-slate-500 mt-1">
+                Showing current prices for <strong>{{ crops|length }}</strong> agricultural commodities across India.
+            </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <select id="sortCropsSelect" onchange="sortCropCards()" class="px-3.5 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 bg-white">
+                <option value="default">Default View</option>
+                <option value="price-desc">Price: Highest to Lowest</option>
+                <option value="price-asc">Price: Lowest to Highest</option>
+                <option value="name-asc">Alphabetical (A - Z)</option>
+            </select>
+        </div>
+    </div>
+
+
+    {% if crops %}
+    <!-- CROPS GRID -->
+    <div id="cropsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        {% for crop in crops %}
+        <article class="mandi-card bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between"
+                 data-price="{{ crop.avg_price }}"
+                 data-name="{{ crop.name|lower }}">
+            
+            <div>
+                <!-- CARD HEADER -->
+                <div class="p-5 border-b border-slate-100 flex items-start justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-green-50 border border-green-100 flex items-center justify-center text-2xl shrink-0">
+                            {{ crop.icon }}
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block">{{ crop.category }}</span>
+                            <h3 class="text-lg font-bold text-slate-900 leading-tight">{{ crop.name }}</h3>
+                        </div>
+                    </div>
+
+                    <span class="px-2.5 py-1 rounded-full text-xs font-bold shrink-0 {% if crop.trend_direction == 'up' %}bg-green-100 text-green-800{% elif crop.trend_direction == 'down' %}bg-red-100 text-red-800{% else %}bg-slate-100 text-slate-800{% endif %}">
+                        {{ crop.trend }}
+                    </span>
+                </div>
+
+                <!-- METRICS BANNER -->
+                <div class="px-5 py-3.5 bg-slate-50/70 border-b border-slate-100 grid grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <span class="text-slate-400 font-semibold block">Modal Avg Price</span>
+                        <strong class="text-base font-black text-green-700">₹{{ crop.avg_price }}</strong>
+                        <span class="text-slate-400 font-normal"> / {{ crop.unit }}</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-semibold block">Govt MSP</span>
+                        {% if crop.msp %}
+                        <strong class="text-base font-black text-slate-900">₹{{ crop.msp }}</strong>
+                        <span class="text-slate-400 font-normal"> / Qtl</span>
+                        {% else %}
+                        <span class="text-slate-400 italic">Open Market</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- TOP MANDIS LIST -->
+                <div class="p-5">
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">
+                        <span>Top Mandi Hubs</span>
+                        <span>Rate / Qtl</span>
+                    </div>
+
+                    <div class="space-y-2">
+                        {% for m in crop.markets|slice:":3" %}
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100/80 transition text-xs border border-slate-100">
+                            <div>
+                                <span class="font-bold text-slate-800 block">{{ m.market }}</span>
+                                <span class="text-slate-400 text-[11px]">{{ m.district }}, {{ m.state }}</span>
+                            </div>
+                            <div class="text-right">
+                                <strong class="font-extrabold text-slate-900 block text-sm">₹{{ m.price }}</strong>
+                                <span class="text-[11px] {% if '+' in m.change %}text-green-600{% else %}text-red-500{% endif %} font-semibold">
+                                    {{ m.change }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD FOOTER BUTTON -->
+            <div class="p-5 pt-0">
+                <button type="button"
+                        onclick="openMandiDetail('{{ crop.id }}')"
+                        class="w-full py-2.5 px-4 bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 font-bold rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-1.5 shadow-sm">
+                    View All Mandis & Varieties →
+                </button>
+            </div>
+
+        </article>
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+    <!-- EMPTY STATE -->
+    <div class="bg-white border border-slate-200 rounded-3xl py-16 px-6 text-center shadow-sm">
+        <div class="w-20 h-20 mx-auto rounded-2xl bg-green-100 flex items-center justify-center text-4xl">
+            📈
+        </div>
+        <h3 class="text-2xl font-black text-slate-900 mt-5">
+            No Crops Found Matching Query
+        </h3>
+        <p class="max-w-md mx-auto text-slate-500 mt-2 text-sm sm:text-base leading-relaxed">
+            We couldn't find any commodities matching "{{ search_query }}". Try resetting your filter to explore the full catalog.
+        </p>
+        <div class="mt-6 flex justify-center gap-3">
+            <a href="{% url 'mandi:home' %}"
+               class="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl text-sm transition shadow-sm">
+                View All Crop Rates
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+</main>
+
+
+<!-- =====================================================
+     INTERACTIVE COMMODITY DETAIL MODAL
+====================================================== -->
+<div id="mandiModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <button onclick="closeMandiModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center font-bold text-lg">
+            ✕
+        </button>
+
+        <div class="flex items-center gap-4 mb-6">
+            <div id="modalCropIcon" class="w-14 h-14 rounded-2xl bg-green-50 border border-green-200 flex items-center justify-center text-3xl">
+                🌾
+            </div>
+            <div>
+                <span id="modalCropCat" class="text-xs font-bold uppercase tracking-wider text-green-700">Category</span>
+                <h3 id="modalCropTitle" class="text-2xl font-black text-slate-900 mt-0.5">Crop Name</h3>
+                <p id="modalTopMarket" class="text-xs text-slate-500">Benchmark Hub</p>
+            </div>
+        </div>
+
+        <!-- Key Metrics Strip -->
+        <div class="grid grid-cols-3 gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100 mb-6 text-center text-xs">
+            <div>
+                <span class="text-slate-400 block font-semibold">Average Rate</span>
+                <strong id="modalAvgPrice" class="text-lg font-black text-green-700">₹0</strong>
+            </div>
+            <div>
+                <span class="text-slate-400 block font-semibold">Official MSP</span>
+                <strong id="modalMSP" class="text-lg font-black text-slate-900">₹0</strong>
+            </div>
+            <div>
+                <span class="text-slate-400 block font-semibold">Season</span>
+                <strong id="modalSeason" class="text-lg font-black text-slate-900">Rabi / Kharif</strong>
+            </div>
+        </div>
+
+        <h4 class="text-sm font-bold text-slate-900 uppercase tracking-wide mb-3">All Reporting Mandis & Auction Range</h4>
+
+        <!-- Markets Table -->
+        <div class="border border-slate-200 rounded-2xl overflow-hidden mb-6">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200">
+                    <tr>
+                        <th class="p-3">Mandi / State</th>
+                        <th class="p-3">Variety</th>
+                        <th class="p-3">Min - Max</th>
+                        <th class="p-3">Modal Rate</th>
+                        <th class="p-3">Trend</th>
+                    </tr>
+                </thead>
+                <tbody id="modalMarketsBody" class="divide-y divide-slate-100">
+                    <!-- Populated dynamically via JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flex justify-end">
+            <button type="button" onclick="closeMandiModal()" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-sm transition">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- =====================================================
+     FOOTER
+====================================================== -->
+<footer class="border-t border-slate-200 bg-white mt-auto">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 py-7">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+                <p class="font-bold text-slate-900">AgriVisionAI — Live Mandi Intelligence</p>
+                <p class="text-xs text-slate-500 mt-0.5">Direct price transparency & crop market rates for Indian farmers</p>
+            </div>
+            <p class="text-xs text-slate-400">
+                Helping farmers sell smart & earn more 🌱
+            </p>
+        </div>
+    </div>
+</footer>
+
+
+<!-- =====================================================
+     SCRIPTS: CALCULATOR, MODAL & SORTING
+====================================================== -->
+<script>
+    // Embedded crops dataset for client-side instant lookups
+    const CROPS_DATA = {{ all_crops|safe }};
+
+    // Harvest Income Calculator
+    function syncHarvestCalc() {
+        const cropSelect = document.getElementById("calcCropSelect");
+        const qtySlider = document.getElementById("calcQtySlider");
+        const qtyLabel = document.getElementById("calcQtyLabel");
+        const revDisplay = document.getElementById("calcRevenueDisplay");
+
+        if (!cropSelect || !qtySlider) return;
+
+        const selectedOption = cropSelect.options[cropSelect.selectedIndex];
+        const rate = parseFloat(selectedOption.getAttribute("data-rate")) || 0;
+        const qty = parseFloat(qtySlider.value) || 0;
+
+        qtyLabel.innerText = qty + " Quintals (" + (qty * 100) + " Kg)";
+        const revenue = rate * qty;
+        revDisplay.innerText = "₹" + revenue.toLocaleString("en-IN");
+    }
+
+    syncHarvestCalc();
+
+    // Modal Details Popup
+    function openMandiDetail(cropId) {
+        const crop = CROPS_DATA.find(c => c.id === cropId);
+        if (!crop) return;
+
+        document.getElementById("modalCropIcon").innerText = crop.icon;
+        document.getElementById("modalCropCat").innerText = crop.category;
+        document.getElementById("modalCropTitle").innerText = crop.name;
+        document.getElementById("modalTopMarket").innerText = "Primary Hub: " + crop.top_market;
+        document.getElementById("modalAvgPrice").innerText = "₹" + crop.avg_price + "/" + crop.unit;
+        document.getElementById("modalMSP").innerText = crop.msp ? ("₹" + crop.msp + "/Qtl") : "Open Market";
+        document.getElementById("modalSeason").innerText = crop.season;
+
+        const tbody = document.getElementById("modalMarketsBody");
+        tbody.innerHTML = "";
+
+        crop.markets.forEach(m => {
+            const tr = document.createElement("tr");
+            tr.className = "hover:bg-slate-50";
+            tr.innerHTML = `
+                <td class="p-3">
+                    <strong class="text-slate-900 block font-bold">${m.market}</strong>
+                    <span class="text-slate-400">${m.district}, ${m.state}</span>
+                </td>
+                <td class="p-3 text-slate-700">${m.variety || "Standard Grade"}</td>
+                <td class="p-3 text-slate-600">₹${m.min_price} - ₹${m.max_price}</td>
+                <td class="p-3 font-extrabold text-green-700 text-sm">₹${m.price}</td>
+                <td class="p-3 font-bold ${m.change.includes('+') ? 'text-green-600' : 'text-red-500'}">${m.change}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById("mandiModal").classList.add("modal-active");
+    }
+
+    function closeMandiModal() {
+        document.getElementById("mandiModal").classList.remove("modal-active");
+    }
+
+    // Client-side Sorting of Crop Cards
+    function sortCropCards() {
+        const select = document.getElementById("sortCropsSelect");
+        const grid = document.getElementById("cropsGrid");
+        if (!grid || !select) return;
+
+        const cards = Array.from(grid.querySelectorAll("article"));
+        const mode = select.value;
+
+        if (mode === "price-desc") {
+            cards.sort((a, b) => parseFloat(b.dataset.price) - parseFloat(a.dataset.price));
+        } else if (mode === "price-asc") {
+            cards.sort((a, b) => parseFloat(a.dataset.price) - parseFloat(b.dataset.price));
+        } else if (mode === "name-asc") {
+            cards.sort((a, b) => a.dataset.name.localeCompare(b.dataset.name));
+        }
+
+        cards.forEach(card => grid.appendChild(card));
+    }
+</script>
+
+</body>
 </html>

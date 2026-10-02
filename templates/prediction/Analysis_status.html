@@ -7,20 +7,49 @@
 <title>Crop Analysis Result | KisanSathi AI</title>
 
 <style>
-:root {
-    --green: #166534;
-    --green2: #15803d;
-    --ink: #1f2937;
-    --muted: #64748b;
-    --line: #e2e8f0;
-    --bg: #f8fafc;
-}
+
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --bg-color: #fafafa;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #94a3b8;
+            --border-color: #f1f5f9;
+            --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 40px rgba(16, 185, 129, 0.08);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --green: var(--primary);
+            --green-dark: var(--primary-dark);
+            --green-deep: #06472d;
+            --green-soft: #ecfdf5;
+            --green-light: #f0fdf4;
+            --background: var(--bg-color);
+            --white: #ffffff;
+            --text: var(--text-main);
+            --muted: var(--text-muted);
+            --border: var(--border-color);
+            --yellow: var(--accent);
+            --yellow-soft: #fffbeb;
+            --blue: #3b82f6;
+            --blue-soft: #eff6ff;
+            --orange: #f97316;
+            --orange-soft: #fff7ed;
+            --red: #ef4444;
+            --red-soft: #fef2f2;
+        }
+    
 
 * {
     box-sizing: border-box;
 }
 
-body {
+body {\n            letter-spacing: -0.01em;\n            line-height: 1.6;\n
     margin: 0;
     background: var(--bg);
     color: var(--ink);
@@ -86,7 +115,7 @@ button,
     border-radius: 9px;
     padding: 11px 15px;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 22px;
     cursor: pointer;
     text-decoration: none;
     display: inline-flex;
@@ -119,7 +148,7 @@ button:disabled {
 .status {
     margin-top: 10px;
     color: #475569;
-    font-size: 13px;
+    font-size: 20px;
     min-height: 20px;
 }
 
@@ -149,7 +178,7 @@ button:disabled {
 }
 
 .label {
-    font-size: 12px;
+    font-size: 18px;
     color: var(--muted);
     font-weight: 700;
     text-transform: uppercase;
@@ -181,7 +210,7 @@ button:disabled {
 .metric span {
     display: block;
     color: var(--muted);
-    font-size: 11px;
+    font-size: 26px;
     font-weight: 700;
     text-transform: uppercase;
 }
@@ -216,7 +245,7 @@ button:disabled {
 
 .advice h3 {
     margin: 0 0 8px;
-    font-size: 17px;
+    font-size: 28px;
 }
 
 .advice p {
@@ -255,7 +284,7 @@ button:disabled {
 }
 
 .note {
-    font-size: 13px;
+    font-size: 20px;
     color: var(--muted);
     margin-top: 12px;
 }
@@ -286,6 +315,10 @@ button:disabled {
     }
 }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="{% static 'js/kisansathi-i18n.js' %}"></script>
 </head>
 
 <body>
@@ -296,38 +329,51 @@ button:disabled {
     <p>Crop health analysis and advisory report</p>
 </header>
 
-<!-- Hindi Voice Assistant -->
+<!-- Multilingual Voice Assistant -->
 <section class="card voice" aria-labelledby="voiceTitle">
-    <h2 id="voiceTitle">🔊 हिंदी वॉइस असिस्टेंट</h2>
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+        <h2 id="voiceTitle" data-i18n="voice_title" style="margin:0;">🔊 Voice Assistant</h2>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <label for="statusVoiceLang" style="font-weight:700; font-size: 20px; color:var(--green);" data-i18n="select_language">Language:</label>
+            <select id="statusVoiceLang" class="ks-voice-lang-select" style="padding:6px 12px; border-radius:8px; border:1px solid #cbd5e1; font-weight:600; cursor:pointer;">
+                <option value="en">English (US/UK)</option>
+                <option value="hi" selected>Hindi (हिंदी)</option>
+                <option value="bn">Bengali (বাংলা)</option>
+                <option value="mr">Marathi (मराठी)</option>
+                <option value="te">Telugu (తెలుగు)</option>
+                <option value="ta">Tamil (தமிழ்)</option>
+            </select>
+        </div>
+    </div>
 
-    <p>
-        पूरी रिपोर्ट या किसी एक सलाह को हिंदी वॉइस में सुनने के लिए बटन दबाएं।
+    <p id="voiceDesc">
+        Listen to the complete crop health report or advisory in your preferred language.
     </p>
 
     <div class="controls">
-        <button type="button" class="green" id="speakReport">
-            🔊 पूरी रिपोर्ट सुनें
+        <button type="button" class="green" id="speakReport" data-i18n="voice_speak_all">
+            🔊 Listen Full Report
         </button>
 
-        <button type="button" class="blue" id="pauseSpeech">
-            ⏸ रोकें
+        <button type="button" class="blue" id="pauseSpeech" data-i18n="voice_pause">
+            ⏸ Pause
         </button>
 
-        <button type="button" class="blue" id="resumeSpeech">
-            ▶ फिर शुरू करें
+        <button type="button" class="blue" id="resumeSpeech" data-i18n="voice_resume">
+            ▶ Resume
         </button>
 
-        <button type="button" class="gray" id="stopSpeech">
-            ■ बंद करें
+        <button type="button" class="gray" id="stopSpeech" data-i18n="voice_stop">
+            ■ Stop
         </button>
 
-        <button type="button" class="gray" id="testSpeech">
-            🗣 हिंदी वॉइस टेस्ट
+        <button type="button" class="gray" id="testSpeech" data-i18n="voice_test">
+            🗣 Voice Test
         </button>
     </div>
 
     <div class="status" id="voiceStatus" role="status" aria-live="polite">
-        वॉइस शुरू करने के लिए बटन दबाएं।
+        Voice assistant ready.
     </div>
 </section>
 
@@ -448,7 +494,7 @@ button:disabled {
             </p>
 
             <button type="button" class="blue speakPart" data-target="solutionText">
-                🔊 हिंदी में सुनें
+                🔊 Listen
             </button>
         </article>
 
@@ -460,7 +506,7 @@ button:disabled {
             </p>
 
             <button type="button" class="green speakPart" data-target="fertilizerText">
-                🔊 हिंदी में सुनें
+                🔊 Listen
             </button>
         </article>
 
@@ -472,7 +518,7 @@ button:disabled {
             </p>
 
             <button type="button" class="blue speakPart" data-target="pesticideText">
-                🔊 हिंदी में सुनें
+                🔊 Listen
             </button>
         </article>
 
@@ -508,114 +554,70 @@ button:disabled {
 
     const synth = window.speechSynthesis;
     const statusEl = document.getElementById("voiceStatus");
+    const langSelect = document.getElementById("statusVoiceLang");
 
     const buttons = document.querySelectorAll(
         "#speakReport, #pauseSpeech, #resumeSpeech, #stopSpeech, #testSpeech, .speakPart"
     );
 
     if (!synth || !("SpeechSynthesisUtterance" in window)) {
-        statusEl.textContent =
-            "इस browser में speech सुविधा उपलब्ध नहीं है। Updated Chrome या Edge में प्रयास करें।";
-
-        buttons.forEach(button => {
-            button.disabled = true;
-        });
-
+        if (statusEl) statusEl.textContent = "Speech synthesis is not supported on this browser. Try Chrome or Edge.";
+        buttons.forEach(b => b.disabled = true);
         return;
     }
 
-    let hindiVoice = null;
-
-    function loadVoices() {
-        const voices = synth.getVoices();
-
-        hindiVoice =
-            voices.find(voice => (voice.lang || "").toLowerCase() === "hi-in") ||
-            voices.find(voice => (voice.lang || "").toLowerCase().startsWith("hi")) ||
-            null;
-
-        if (!hindiVoice) {
-            statusEl.textContent =
-                "Hindi voice device पर उपलब्ध नहीं मिली। फिर भी browser hi-IN voice का प्रयास करेगा।";
-        }
-    }
-
-    loadVoices();
-
-    if ("onvoiceschanged" in synth) {
-        synth.onvoiceschanged = loadVoices;
+    if (langSelect && window.KisanSathiI18n) {
+        langSelect.value = window.KisanSathiI18n.getCurrentLang();
+        langSelect.addEventListener("change", (e) => {
+            window.KisanSathiI18n.setLang(e.target.value);
+        });
+        document.addEventListener("ks:langchange", (e) => {
+            langSelect.value = e.detail.lang;
+        });
     }
 
     function textOf(id) {
-        const element = document.getElementById(id);
-
-        return element
-            ? (element.innerText || element.textContent || "")
-                .replace(/\s+/g, " ")
-                .trim()
-            : "";
+        const el = document.getElementById(id);
+        return el ? (el.innerText || el.textContent || "").replace(/\s+/g, " ").trim() : "";
     }
 
     function speak(text) {
         const value = String(text || "").trim();
-
         if (!value) {
-            statusEl.textContent = "सुनाने के लिए जानकारी उपलब्ध नहीं है।";
+            statusEl.textContent = "No content available to speak.";
             return;
         }
 
-        synth.cancel();
-
-        const utterance = new SpeechSynthesisUtterance(value);
-
-        utterance.lang = "hi-IN";
-        utterance.rate = 0.88;
-        utterance.pitch = 1;
-        utterance.volume = 1;
-
-        if (hindiVoice) {
-            utterance.voice = hindiVoice;
+        const lang = langSelect ? langSelect.value : (window.KisanSathiI18n ? window.KisanSathiI18n.getCurrentLang() : "hi");
+        if (window.KisanSathiI18n && window.KisanSathiI18n.speak) {
+            window.KisanSathiI18n.speak(value, lang, {
+                onstart: () => { statusEl.textContent = "🔊 Reading out report in selected language..."; },
+                onend:   () => { statusEl.textContent = "✅ Report reading complete."; },
+                onerror: (e) => { statusEl.textContent = "Speech error: " + (e.error || "playback failed"); }
+            });
         }
-
-        utterance.onstart = () => {
-            statusEl.textContent = "हिंदी वॉइस रिपोर्ट चल रही है…";
-        };
-
-        utterance.onend = () => {
-            statusEl.textContent = "रिपोर्ट पूरी हो गई।";
-        };
-
-        utterance.onerror = event => {
-            statusEl.textContent =
-                "Voice error: " + (event.error || "Playback failed") +
-                ". Hindi speech voice settings जांचें।";
-        };
-
-        synth.speak(utterance);
     }
 
     function reportText() {
-        const signs = Array.from(
-            document.querySelectorAll("#visualSigns li")
-        )
-        .map(li => li.innerText.trim())
-        .filter(Boolean)
-        .join("। ");
+        const signs = Array.from(document.querySelectorAll("#visualSigns li"))
+            .map(li => li.innerText.trim())
+            .filter(Boolean)
+            .join(". ");
 
         return [
-            "नमस्ते। किसान साथी ए आई की फसल जांच रिपोर्ट सुनिए।",
-            "फसल का नाम: " + textOf("cropName") + "।",
-            "पहचानी गई बीमारी: " + textOf("diseaseName") + "।",
-            "विश्वास स्तर: " + textOf("confidence") + "।",
-            "जांच की स्थिति: " + textOf("analysisStatus") + "।",
-            "दिखाई देने वाले लक्षण: " + signs + "।",
-            "शुरुआती लक्षण: " + textOf("earlySymptoms") + "।",
-            "गंभीरता के संकेत: " + textOf("severityIndicators") + "।",
-            "सुझाया गया समाधान: " + textOf("solutionText") + "।",
-            "खाद संबंधी सलाह: " + textOf("fertilizerText") + "।",
-            "कीटनाशक संबंधी सलाह: " + textOf("pesticideText") + "।",
-            "बचाव और निगरानी: " + textOf("preventionText") + "।",
-            "किसी भी उपचार से पहले कृषि विशेषज्ञ से सलाह लें। धन्यवाद।"
+            "KisanSathi AI Crop Analysis Report.",
+            "Crop: " + textOf("cropName") + ".",
+            "Diagnosed condition: " + textOf("diseaseName") + ".",
+            "Confidence: " + textOf("confidence") + ".",
+            "Status: " + textOf("analysisStatus") + ".",
+            "Observed symptoms: " + signs + ".",
+            "Early symptoms: " + textOf("earlySymptoms") + ".",
+            "Severity indicators: " + textOf("severityIndicators") + ".",
+            "Suggested treatment: " + textOf("solutionText") + ".",
+            "Fertilizer recommendations: " + textOf("fertilizerText") + ".",
+            "Pesticide recommendations: " + textOf("pesticideText") + ".",
+            "Prevention and monitoring: " + textOf("preventionText") + ".",
+            "Always consult your local agricultural extension officer before chemical treatments."
         ].join(" ");
     }
 
@@ -624,28 +626,35 @@ button:disabled {
     });
 
     document.getElementById("testSpeech").addEventListener("click", () => {
-        speak(
-            "नमस्ते। किसान साथी ए आई में आपका स्वागत है। यह हिंदी वॉइस टेस्ट है।"
-        );
+        const lang = langSelect ? langSelect.value : "hi";
+        const testPhrases = {
+            en: "Welcome to KisanSathi AI. This is a voice synthesis test.",
+            hi: "नमस्ते। किसान साथी ए आई में आपका स्वागत है। यह हिंदी वॉइस टेस्ट है।",
+            bn: "নমস্কার! কিষাণসাথী এআই তে স্বাগতম। এটি একটি ভয়েস টেস্ট।",
+            mr: "नमस्कार! किसानसाथी AI मध्ये आपले स्वागत आहे. ही व्हॉईस टेस्ट आहे.",
+            te: "నమస్కారం! కిసాన్‌సాథీ AI కి స్వాగతం. ఇది వాయిస్ టెస్ట్.",
+            ta: "வணக்கம்! கிசான்சாதி AI-க்கு வரவேற்கிறோம். இது குரல் சோதனை."
+        };
+        speak(testPhrases[lang] || testPhrases["en"]);
     });
 
     document.getElementById("pauseSpeech").addEventListener("click", () => {
         if (synth.speaking && !synth.paused) {
             synth.pause();
-            statusEl.textContent = "वॉइस रोक दी गई है।";
+            statusEl.textContent = "Voice paused.";
         }
     });
 
     document.getElementById("resumeSpeech").addEventListener("click", () => {
         if (synth.paused) {
             synth.resume();
-            statusEl.textContent = "वॉइस फिर से शुरू हो रही है।";
+            statusEl.textContent = "Voice resumed.";
         }
     });
 
     document.getElementById("stopSpeech").addEventListener("click", () => {
         synth.cancel();
-        statusEl.textContent = "वॉइस बंद कर दी गई है।";
+        statusEl.textContent = "Voice stopped.";
     });
 
     document.querySelectorAll(".speakPart").forEach(button => {

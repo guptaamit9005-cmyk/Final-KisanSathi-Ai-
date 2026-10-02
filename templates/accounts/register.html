@@ -22,28 +22,46 @@
         }
 
 
+        
         :root {
-
-            --green: #087443;
-            --green-dark: #075b37;
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --bg-color: #fafafa;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #94a3b8;
+            --border-color: #f1f5f9;
+            --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 40px rgba(16, 185, 129, 0.08);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --green: var(--primary);
+            --green-dark: var(--primary-dark);
             --green-deep: #06472d;
-
-            --bg: #f3f8f2;
-
+            --green-soft: #ecfdf5;
+            --green-light: #f0fdf4;
+            --background: var(--bg-color);
             --white: #ffffff;
-
-            --text: #18372a;
-
-            --muted: #758079;
-
-            --border: #dce7df;
-
-            --soft: #e7f3eb;
-
+            --text: var(--text-main);
+            --muted: var(--text-muted);
+            --border: var(--border-color);
+            --yellow: var(--accent);
+            --yellow-soft: #fffbeb;
+            --blue: #3b82f6;
+            --blue-soft: #eff6ff;
+            --orange: #f97316;
+            --orange-soft: #fff7ed;
+            --red: #ef4444;
+            --red-soft: #fef2f2;
         }
+    
 
 
-        body {
+        body {\n            letter-spacing: -0.01em;\n            line-height: 1.6;\n
 
             min-height: 100vh;
 
@@ -157,7 +175,7 @@
 
             font-weight: 800;
 
-            font-size: 9px;
+            font-size: 22px;
 
         }
 
@@ -177,7 +195,7 @@
 
             color: var(--muted);
 
-            font-size: 10px;
+            font-size: 24px;
 
         }
 
@@ -231,7 +249,7 @@
 
         label {
 
-            font-size: 9px;
+            font-size: 22px;
 
             font-weight: 800;
 
@@ -254,7 +272,7 @@
 
             padding: 0 11px;
 
-            font-size: 10px;
+            font-size: 24px;
 
             outline: none;
 
@@ -276,7 +294,7 @@
 
             color: var(--muted);
 
-            font-size: 8px;
+            font-size: 20px;
 
             line-height: 1.4;
 
@@ -295,7 +313,7 @@
 
             padding: 8px;
 
-            font-size: 8px;
+            font-size: 20px;
 
         }
 
@@ -317,7 +335,7 @@
 
             color: var(--green);
 
-            font-size: 9px;
+            font-size: 22px;
 
             text-decoration: none;
 
@@ -340,7 +358,7 @@
 
             border-radius: 8px;
 
-            font-size: 10px;
+            font-size: 24px;
 
             font-weight: 800;
 
@@ -372,7 +390,7 @@
 
             padding: 0 6%;
 
-            font-size: 8px;
+            font-size: 20px;
 
         }
 
@@ -414,6 +432,11 @@
 
     </style>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="/static/js/kisansathi-i18n.js"></script>
+
 </head>
 
 
@@ -423,7 +446,7 @@
 <div class="page">
 
 
-    <header class="header">
+    <header class="header" style="display:flex; justify-content:space-between; align-items:center;">
 
         <a href="/" class="brand">
 
@@ -434,6 +457,8 @@
             KisanSathi AI
 
         </a>
+
+        <span id="ksLangSelectorPlaceholder"></span>
 
     </header>
 

@@ -1,0 +1,23 @@
+{
+  "name": "KisanSathi AI",
+  "short_name": "KisanSathi",
+  "description": "AgriVision AI - Farm Management Dashboard",
+  "start_url": "/dashboard/",
+  "display": "standalone",
+  "background_color": "#f8fdf8",
+  "theme_color": "#2c6b2f",
+  "icons": [
+    {
+      "src": "/static/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

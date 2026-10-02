@@ -8,13 +8,43 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-:root {
-  --green:#176b3a;
-  --dark:#104d2b;
-  --bg:#f4f8f5;
-  --border:#dce7df;
-  --muted:#66756b;
-}
+
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --bg-color: #fafafa;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #94a3b8;
+            --border-color: #f1f5f9;
+            --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 40px rgba(16, 185, 129, 0.08);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --green: var(--primary);
+            --green-dark: var(--primary-dark);
+            --green-deep: #06472d;
+            --green-soft: #ecfdf5;
+            --green-light: #f0fdf4;
+            --background: var(--bg-color);
+            --white: #ffffff;
+            --text: var(--text-main);
+            --muted: var(--text-muted);
+            --border: var(--border-color);
+            --yellow: var(--accent);
+            --yellow-soft: #fffbeb;
+            --blue: #3b82f6;
+            --blue-soft: #eff6ff;
+            --orange: #f97316;
+            --orange-soft: #fff7ed;
+            --red: #ef4444;
+            --red-soft: #fef2f2;
+        }
+    
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:#203027}
 header{background:linear-gradient(120deg,var(--dark),var(--green));color:white;padding:25px 5%}
@@ -26,7 +56,7 @@ main{max-width:1200px;margin:28px auto;padding:0 18px}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
 .card{background:white;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px}
 .metric{font-size:28px;font-weight:bold;color:var(--green);margin-top:10px}
-.muted{color:var(--muted);font-size:14px;line-height:1.5}
+.muted{color:var(--muted);font-size: 22px;line-height:1.5}
 .chart-wrap{height:330px;position:relative}
 .alert{padding:13px 15px;border-radius:9px;margin:10px 0;line-height:1.5}
 .warning{background:#fff2d8;color:#6b4b08}

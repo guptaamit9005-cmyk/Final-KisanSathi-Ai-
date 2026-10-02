@@ -199,3 +199,65 @@ class GovernmentScheme(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse("government_schemes:scheme_detail", kwargs={"slug": self.slug})
+
+    @property
+    def benefits_list(self):
+        if not self.benefits:
+            return []
+        items = []
+        for line in self.benefits.splitlines():
+            cleaned = line.strip().lstrip("•-–*").strip()
+            if cleaned:
+                items.append(cleaned)
+        return items
+
+    @property
+    def eligibility_list(self):
+        if not self.eligibility:
+            return []
+        items = []
+        for line in self.eligibility.splitlines():
+            cleaned = line.strip().lstrip("•-–*").strip()
+            if cleaned:
+                items.append(cleaned)
+        return items
+
+    @property
+    def documents_list(self):
+        if not self.documents:
+            return []
+        items = []
+        for line in self.documents.splitlines():
+            cleaned = line.strip().lstrip("•-–*").strip()
+            if cleaned:
+                items.append(cleaned)
+        return items
+
+    @property
+    def steps_list(self):
+        if not self.application_process:
+            return []
+        items = []
+        for line in self.application_process.splitlines():
+            cleaned = line.strip()
+            if cleaned:
+                items.append(cleaned)
+        return items
+
+    @property
+    def category_icon(self):
+        icons = {
+            "income": "💰",
+            "insurance": "🛡️",
+            "credit": "💳",
+            "subsidy": "🎁",
+            "equipment": "🚜",
+            "irrigation": "💧",
+            "education": "🎓",
+            "other": "🌾",
+        }
+        return icons.get(self.category, "🌾")

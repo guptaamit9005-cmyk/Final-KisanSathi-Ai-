@@ -6,19 +6,45 @@
 <title>KisanSathi AI | Advanced Soil Analysis</title>
 
 <style>
-:root {
-  --green: #176b3a;
-  --green-dark: #104d2b;
-  --green-light: #eaf6ee;
-  --text: #1d2b22;
-  --muted: #66756b;
-  --border: #dce7df;
-  --bg: #f5f8f5;
-  --white: #fff;
-  --red: #b42318;
-}
+
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --bg-color: #fafafa;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #94a3b8;
+            --border-color: #f1f5f9;
+            --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 40px rgba(16, 185, 129, 0.08);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --green: var(--primary);
+            --green-dark: var(--primary-dark);
+            --green-deep: #06472d;
+            --green-soft: #ecfdf5;
+            --green-light: #f0fdf4;
+            --background: var(--bg-color);
+            --white: #ffffff;
+            --text: var(--text-main);
+            --muted: var(--text-muted);
+            --border: var(--border-color);
+            --yellow: var(--accent);
+            --yellow-soft: #fffbeb;
+            --blue: #3b82f6;
+            --blue-soft: #eff6ff;
+            --orange: #f97316;
+            --orange-soft: #fff7ed;
+            --red: #ef4444;
+            --red-soft: #fef2f2;
+        }
+    
 * { box-sizing: border-box; }
-body {
+body {\n            letter-spacing: -0.01em;\n            line-height: 1.6;\n
   margin: 0;
   background: var(--bg);
   color: var(--text);
@@ -46,28 +72,28 @@ header p { margin: 0; opacity: .9; }
 .card h2 { margin:0 0 8px; font-size:20px; }
 .subtitle { color:var(--muted); margin:0 0 22px; line-height:1.5; }
 .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
-.field label { display:block; font-weight:700; font-size:14px; margin-bottom:8px; }
+.field label { display:block; font-weight:700; font-size: 22px; margin-bottom:8px; }
 .field input, .field select {
   width:100%; padding:12px; border:1px solid #cbd8ce;
-  border-radius:9px; background:white; font-size:15px;
+  border-radius:9px; background:white; font-size: 24px;
 }
 .field input:focus, .field select:focus {
   outline:2px solid #a6d6b5; border-color:var(--green);
 }
-.help { font-size:12px; color:var(--muted); margin-top:6px; }
-.errorlist { color:var(--red); font-size:13px; padding-left:18px; }
+.help { font-size: 18px; color:var(--muted); margin-top:6px; }
+.errorlist { color:var(--red); font-size: 20px; padding-left:18px; }
 .section-title {
   margin:26px 0 15px; padding-bottom:10px;
   border-bottom:1px solid var(--border); color:var(--green-dark);
 }
 .notice {
   background:#fff8e6; border:1px solid #f2dfaa; color:#624b12;
-  padding:14px; border-radius:10px; line-height:1.5; font-size:13px;
+  padding:14px; border-radius:10px; line-height:1.5; font-size: 20px;
   margin-bottom:20px;
 }
 button {
   width:100%; margin-top:24px; padding:15px; border:0; border-radius:10px;
-  background:var(--green); color:white; font-size:16px; font-weight:700;
+  background:var(--green); color:white; font-size: 26px; font-weight:700;
   cursor:pointer;
 }
 button:hover { background:var(--green-dark); }

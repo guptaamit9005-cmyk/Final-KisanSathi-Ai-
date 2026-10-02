@@ -1,252 +1,874 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
+{% load static %}
 
-<head>
+{% block title %}{{ scheme.title }} | Government Schemes | KisanSathi AI{% endblock %}
 
-    <meta charset="UTF-8">
+{% block content %}
+<style>
+  .scheme-detail-page {
+    --primary: #166534;
+    --primary-light: #dcfce7;
+    --primary-dark: #14532d;
+    --accent: #eab308;
+    --accent-light: #fef9c3;
+    padding-bottom: 50px;
+  }
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+  /* Breadcrumb */
+  .detail-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 22px;
+    color: var(--ks-muted);
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .detail-breadcrumb a {
+    color: var(--ks-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .detail-breadcrumb a:hover {
+    color: var(--ks-primary);
+  }
+  .detail-breadcrumb .separator {
+    opacity: 0.5;
+  }
+  .detail-breadcrumb .current {
+    color: var(--ks-text);
+    font-weight: 600;
+  }
 
-    <title>
-        {{ scheme.title }} | KisanSathi
-    </title>
+  /* Hero Header */
+  .scheme-hero-card {
+    background: var(--ks-surface);
+    border: 1px solid var(--ks-border);
+    border-radius: 20px;
+    padding: 36px 32px;
+    box-shadow: var(--ks-shadow);
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .scheme-hero-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #166534, #22c55e, #eab308);
+  }
+  .badge-cluster {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .scheme-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 20px;
+    font-weight: 700;
+    text-transform: capitalize;
+  }
+  .pill-category {
+    background: var(--ks-surface-secondary);
+    color: var(--ks-primary);
+    border: 1px solid var(--ks-border);
+  }
+  .pill-state {
+    background: #e0f2fe;
+    color: #0369a1;
+  }
+  html[data-theme="dark"] .pill-state {
+    background: #082f49;
+    color: #7dd3fc;
+  }
+  .pill-verified {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+  }
+  html[data-theme="dark"] .pill-verified {
+    background: #064e3b;
+    color: #6ee7b7;
+    border-color: #059669;
+  }
+  .scheme-main-title {
+    font-size: clamp(26px, 3.2vw, 36px);
+    font-weight: 800;
+    color: var(--ks-text);
+    line-height: 1.25;
+    margin-bottom: 14px;
+  }
+  .scheme-main-desc {
+    font-size: 26px;
+    line-height: 1.6;
+    color: var(--ks-muted);
+    max-width: 950px;
+    margin-bottom: 26px;
+  }
 
-    <script src="https://cdn.tailwindcss.com"></script>
+  /* Actions Bar */
+  .hero-actions-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding-top: 14px;
+    border-top: 1px solid var(--ks-border);
+  }
+  .btn-apply-main {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 28px;
+    background: #166534;
+    color: #ffffff !important;
+    font-weight: 700;
+    font-size: 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(22, 101, 52, 0.35);
+    transition: transform 0.2s, background 0.2s;
+  }
+  .btn-apply-main:hover {
+    background: #14532d;
+    transform: translateY(-2px);
+  }
+  .btn-action-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: var(--ks-surface-secondary);
+    color: var(--ks-text) !important;
+    border: 1px solid var(--ks-border);
+    font-weight: 600;
+    font-size: 22px;
+    border-radius: 12px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-action-secondary:hover {
+    background: var(--ks-border);
+    transform: translateY(-1px);
+  }
 
-</head>
+  /* Metric Highlights Strip */
+  .metrics-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+  .metric-card {
+    background: var(--ks-surface);
+    border: 1px solid var(--ks-border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: var(--ks-shadow);
+  }
+  .metric-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--ks-surface-secondary);
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .metric-content span {
+    font-size: 18px;
+    color: var(--ks-muted);
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .metric-content strong {
+    font-size: 24px;
+    color: var(--ks-text);
+    font-weight: 700;
+  }
 
+  /* Main Details Sections */
+  .detail-sections-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+  .content-section {
+    background: var(--ks-surface);
+    border: 1px solid var(--ks-border);
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: var(--ks-shadow);
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--ks-border);
+  }
+  .section-icon-badge {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--ks-surface-secondary);
+    display: grid;
+    place-items: center;
+    font-size: 19px;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--ks-text);
+    margin: 0;
+  }
+  .section-desc-text {
+    font-size: 24px;
+    line-height: 1.7;
+    color: var(--ks-text);
+    white-space: pre-line;
+  }
 
-<body class="bg-green-50 text-gray-800">
+  /* Benefits Grid */
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .benefit-card {
+    background: var(--ks-surface-secondary);
+    border: 1px solid var(--ks-border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .benefit-check {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #166534;
+    color: #ffffff;
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .benefit-card p {
+    margin: 0;
+    font-size: 14.5px;
+    color: var(--ks-text);
+    line-height: 1.5;
+    font-weight: 500;
+  }
 
+  /* Eligibility Checklist */
+  .checklist-items {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--ks-bg);
+    border: 1px solid var(--ks-border);
+    border-radius: 12px;
+  }
+  .checklist-bullet {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    background: #16a34a;
+    color: #ffffff;
+    display: grid;
+    place-items: center;
+    font-size: 26px;
+    font-weight: bold;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .checklist-item span {
+    font-size: 14.5px;
+    color: var(--ks-text);
+    line-height: 1.5;
+  }
 
-<header class="bg-green-900 text-white">
+  /* Documents Grid */
+  .documents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+  }
+  .doc-card {
+    background: var(--ks-bg);
+    border: 1px solid var(--ks-border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .doc-card-icon {
+    font-size: 22px;
+  }
+  .doc-card strong {
+    font-size: 22px;
+    color: var(--ks-text);
+    font-weight: 600;
+  }
 
-    <div class="max-w-5xl mx-auto px-6 py-5">
+  /* Step by Step Process */
+  .steps-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .timeline-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 18px 20px;
+    background: var(--ks-bg);
+    border: 1px solid var(--ks-border);
+    border-radius: 14px;
+    transition: transform 0.2s;
+  }
+  .timeline-step:hover {
+    transform: translateX(4px);
+  }
+  .step-number-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #166534;
+    color: #ffffff;
+    display: grid;
+    place-items: center;
+    font-size: 24px;
+    font-weight: 800;
+    flex-shrink: 0;
+    box-shadow: 0 3px 8px rgba(22, 101, 52, 0.3);
+  }
+  .step-text {
+    font-size: 24px;
+    color: var(--ks-text);
+    line-height: 1.6;
+    margin: 0;
+    padding-top: 4px;
+  }
 
-        <div class="flex justify-between items-center">
+  /* Official Helpline & Advisory */
+  .helpline-box {
+    background: linear-gradient(135deg, #14532d, #064e3b);
+    color: #ffffff;
+    border-radius: 16px;
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .helpline-text h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .helpline-text p {
+    margin: 0;
+    font-size: 22px;
+    color: #d1fae5;
+  }
+  .helpline-dial-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    background: #ffffff;
+    color: #14532d !important;
+    font-weight: 800;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
 
-            <a
-                href="{% url 'government_schemes:home' %}"
-                class="font-semibold"
-            >
-                ← All Schemes
-            </a>
+  .safety-advisory {
+    background: #fefce8;
+    border: 1px solid #fde047;
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    color: #713f12;
+  }
+  html[data-theme="dark"] .safety-advisory {
+    background: #422006;
+    border-color: #854d0e;
+    color: #fef08a;
+  }
+  .safety-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .safety-advisory p {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
 
-            <a
-                href="{% url 'dashboard:home' %}"
-                class="text-green-200"
-            >
-                Dashboard
-            </a>
+  /* Related Schemes */
+  .related-schemes-section {
+    margin-top: 40px;
+  }
+  .related-schemes-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--ks-text);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .related-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  .related-scheme-card {
+    background: var(--ks-surface);
+    border: 1px solid var(--ks-border);
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: var(--ks-shadow);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .related-scheme-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(22, 101, 52, 0.12);
+  }
+  .related-card-top {
+    margin-bottom: 16px;
+  }
+  .related-scheme-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ks-text);
+    margin: 10px 0 8px;
+    line-height: 1.35;
+  }
+  .related-scheme-desc {
+    font-size: 13.5px;
+    color: var(--ks-muted);
+    line-height: 1.5;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .related-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid var(--ks-border);
+  }
+  .related-view-link {
+    color: var(--ks-primary);
+    font-weight: 700;
+    font-size: 22px;
+    text-decoration: none;
+  }
+  .related-view-link:hover {
+    text-decoration: underline;
+  }
 
-        </div>
+  /* Toast Notification */
+  .toast-notification {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #166534;
+    color: #ffffff;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 22px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    display: none;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
+  @media (max-width: 768px) {
+    .scheme-hero-card {
+      padding: 24px 20px;
+    }
+    .hero-actions-bar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .btn-apply-main, .btn-action-secondary {
+      justify-content: center;
+    }
+  }
+</style>
+
+<div class="scheme-detail-page">
+
+  <!-- BREADCRUMBS -->
+  <nav class="detail-breadcrumb" aria-label="Breadcrumb">
+    <a href="{% url 'dashboard:home' %}">Dashboard</a>
+    <span class="separator">›</span>
+    <a href="{% url 'government_schemes:home' %}">Government Schemes</a>
+    <span class="separator">›</span>
+    <span class="current">{{ scheme.title|truncatechars:45 }}</span>
+  </nav>
+
+  <!-- SCHEME HERO CARD -->
+  <div class="scheme-hero-card">
+    <div class="badge-cluster">
+      <span class="scheme-pill pill-category">
+        {{ scheme.category_icon }} {{ scheme.get_category_display }}
+      </span>
+      <span class="scheme-pill pill-state">
+        📍 {{ scheme.state }}
+      </span>
+      <span class="scheme-pill pill-verified">
+        ✓ Verified Government Initiative
+      </span>
     </div>
 
-</header>
+    <h1 class="scheme-main-title">{{ scheme.title }}</h1>
+    <p class="scheme-main-desc">{{ scheme.short_description }}</p>
 
-
-<main class="max-w-5xl mx-auto px-6 py-10">
-
-
-    <!-- TITLE -->
-
-    <section class="bg-white rounded-3xl shadow-sm p-8">
-
-        <span
-            class="inline-flex px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-semibold"
-        >
-            {{ scheme.get_category_display }}
-        </span>
-
-
-        <h1 class="text-3xl md:text-4xl font-bold text-green-950 mt-5">
-            {{ scheme.title }}
-        </h1>
-
-
-        <p class="text-gray-600 text-lg mt-4 leading-8">
-            {{ scheme.short_description }}
-        </p>
-
-
-        {% if scheme.official_url %}
-
-        <a
-            href="{{ scheme.official_url }}"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex mt-6 bg-green-700 hover:bg-green-800 text-white px-6 py-3 rounded-xl font-semibold"
-        >
-            Visit Official Website ↗
+    <!-- ACTION BUTTONS -->
+    <div class="hero-actions-bar">
+      {% if scheme.official_url %}
+        <a href="{{ scheme.official_url }}" target="_blank" rel="noopener noreferrer" class="btn-apply-main">
+          <span>Apply on Official Portal ↗</span>
         </a>
+      {% endif %}
 
-        {% endif %}
+      <button type="button" class="btn-action-secondary" id="saveSchemeBtn" data-slug="{{ scheme.slug }}">
+        <span id="saveHeart">♡</span> <span id="saveLabel">Bookmark Scheme</span>
+      </button>
 
-    </section>
+      <button type="button" class="btn-action-secondary" id="shareSchemeBtn">
+        <span>🔗</span> <span>Share Scheme</span>
+      </button>
 
+      <a href="{% url 'government_schemes:home' %}" class="btn-action-secondary">
+        <span>← All Schemes Directory</span>
+      </a>
+    </div>
+  </div>
 
-    <!-- DESCRIPTION -->
-
-    <section class="bg-white rounded-3xl shadow-sm p-8 mt-6">
-
-        <h2 class="text-2xl font-bold text-green-900">
-            About the Scheme
-        </h2>
-
-        <p class="mt-4 text-gray-600 leading-8 whitespace-pre-line">
-            {{ scheme.description }}
-        </p>
-
-    </section>
-
-
-    <!-- BENEFITS + ELIGIBILITY -->
-
-    <div class="grid md:grid-cols-2 gap-6 mt-6">
-
-
-        <section class="bg-white rounded-3xl shadow-sm p-7">
-
-            <h2 class="text-xl font-bold text-green-900">
-                🌾 Benefits
-            </h2>
-
-            <ul class="mt-5 space-y-3">
-
-                {% for item in scheme.benefits_list %}
-
-                <li class="flex gap-3 text-gray-700">
-
-                    <span
-                        class="w-6 h-6 flex items-center justify-center rounded-full bg-green-100 text-green-700 flex-shrink-0"
-                    >
-                        ✓
-                    </span>
-
-                    {{ item }}
-
-                </li>
-
-                {% endfor %}
-
-            </ul>
-
-        </section>
-
-
-        <section class="bg-white rounded-3xl shadow-sm p-7">
-
-            <h2 class="text-xl font-bold text-green-900">
-                👨‍🌾 Eligibility
-            </h2>
-
-            <ul class="mt-5 space-y-3">
-
-                {% for item in scheme.eligibility_list %}
-
-                <li class="flex gap-3 text-gray-700">
-
-                    <span
-                        class="w-6 h-6 flex items-center justify-center rounded-full bg-green-100 text-green-700 flex-shrink-0"
-                    >
-                        ✓
-                    </span>
-
-                    {{ item }}
-
-                </li>
-
-                {% endfor %}
-
-            </ul>
-
-        </section>
-
+  <!-- METRICS STRIP -->
+  <div class="metrics-strip">
+    <div class="metric-card">
+      <div class="metric-icon-box">{{ scheme.category_icon }}</div>
+      <div class="metric-content">
+        <span>Scheme Category</span>
+        <strong>{{ scheme.get_category_display }}</strong>
+      </div>
     </div>
 
+    <div class="metric-card">
+      <div class="metric-icon-box">👨‍🌾</div>
+      <div class="metric-content">
+        <span>Target Farmers</span>
+        <strong>{{ scheme.get_farmer_type_display|default:"All Farmers" }}</strong>
+      </div>
+    </div>
 
-    <!-- DOCUMENTS -->
+    <div class="metric-card">
+      <div class="metric-icon-box">🏛️</div>
+      <div class="metric-content">
+        <span>Implementation</span>
+        <strong>{{ scheme.verification_source|default:"Govt of India"|truncatechars:28 }}</strong>
+      </div>
+    </div>
 
-    <section class="bg-white rounded-3xl shadow-sm p-8 mt-6">
+    <div class="metric-card">
+      <div class="metric-icon-box">📞</div>
+      <div class="metric-content">
+        <span>Official Support</span>
+        <strong>{{ scheme.helpline|default:"1800-180-1551"|truncatechars:20 }}</strong>
+      </div>
+    </div>
+  </div>
 
-        <h2 class="text-xl font-bold text-green-900">
-            📄 Required Documents
-        </h2>
+  <!-- MAIN SECTIONS CONTAINER -->
+  <div class="detail-sections-container">
 
-        <ul class="mt-5 grid md:grid-cols-2 gap-3">
+    <!-- 1. ABOUT & OBJECTIVES -->
+    <div class="content-section">
+      <div class="section-header">
+        <div class="section-icon-badge">📖</div>
+        <h2 class="section-title">About the Scheme</h2>
+      </div>
+      <div class="section-desc-text">{{ scheme.description }}</div>
+    </div>
 
-            {% for document in scheme.documents_list %}
+    <!-- 2. FINANCIAL & OPERATIONAL BENEFITS -->
+    <div class="content-section">
+      <div class="section-header">
+        <div class="section-icon-badge">💰</div>
+        <h2 class="section-title">Benefits & Financial Assistance</h2>
+      </div>
+      <div class="benefits-grid">
+        {% for benefit in scheme.benefits_list %}
+          <div class="benefit-card">
+            <span class="benefit-check">✓</span>
+            <p>{{ benefit }}</p>
+          </div>
+        {% empty %}
+          <div class="benefit-card">
+            <span class="benefit-check">✓</span>
+            <p>{{ scheme.benefits }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
 
-            <li class="bg-green-50 rounded-xl p-4 text-gray-700">
-                📌 {{ document }}
-            </li>
+    <!-- 3. ELIGIBILITY CRITERIA -->
+    <div class="content-section">
+      <div class="section-header">
+        <div class="section-icon-badge">✅</div>
+        <h2 class="section-title">Who is Eligible? (Eligibility Criteria)</h2>
+      </div>
+      <div class="checklist-items">
+        {% for item in scheme.eligibility_list %}
+          <div class="checklist-item">
+            <span class="checklist-bullet">✓</span>
+            <span>{{ item }}</span>
+          </div>
+        {% empty %}
+          <div class="checklist-item">
+            <span class="checklist-bullet">✓</span>
+            <span>{{ scheme.eligibility }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
 
-            {% empty %}
+    <!-- 4. REQUIRED DOCUMENTS -->
+    <div class="content-section">
+      <div class="section-header">
+        <div class="section-icon-badge">📄</div>
+        <h2 class="section-title">Required Documents Checklist</h2>
+      </div>
+      <div class="documents-grid">
+        {% for doc in scheme.documents_list %}
+          <div class="doc-card">
+            <span class="doc-card-icon">📌</span>
+            <strong>{{ doc }}</strong>
+          </div>
+        {% empty %}
+          <div class="doc-card">
+            <span class="doc-card-icon">📌</span>
+            <strong>Aadhaar Card, Land Records (Khasra/Khatauni), and Bank Passbook</strong>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
 
-            <li class="text-gray-500">
-                Document information not available.
-            </li>
-
-            {% endfor %}
-
-        </ul>
-
-    </section>
-
-
-    <!-- APPLICATION -->
-
-    {% if scheme.application_process %}
-
-    <section class="bg-white rounded-3xl shadow-sm p-8 mt-6">
-
-        <h2 class="text-xl font-bold text-green-900">
-            📝 Application Process
-        </h2>
-
-        <p class="mt-4 text-gray-600 leading-8 whitespace-pre-line">
-            {{ scheme.application_process }}
-        </p>
-
-    </section>
-
+    <!-- 5. STEP-BY-STEP APPLICATION PROCESS -->
+    {% if scheme.steps_list %}
+    <div class="content-section">
+      <div class="section-header">
+        <div class="section-icon-badge">📝</div>
+        <h2 class="section-title">Step-by-Step How to Apply</h2>
+      </div>
+      <div class="steps-timeline">
+        {% for step in scheme.steps_list %}
+          <div class="timeline-step">
+            <span class="step-number-circle">{{ forloop.counter }}</span>
+            <p class="step-text">{{ step }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
     {% endif %}
 
-
+    <!-- 6. HELPLINE CALLOUT -->
     {% if scheme.helpline %}
-
-    <section class="bg-green-900 text-white rounded-3xl p-8 mt-6">
-
-        <h2 class="text-xl font-bold">
-            📞 Helpline
-        </h2>
-
-        <p class="mt-3 text-green-100">
-            {{ scheme.helpline }}
-        </p>
-
-    </section>
-
+    <div class="helpline-box">
+      <div class="helpline-text">
+        <h3>Need Help or Application Assistance?</h3>
+        <p>Official Toll-Free Helpline: <strong>{{ scheme.helpline }}</strong> (Available on all working days)</p>
+      </div>
+      <a href="tel:{{ scheme.helpline }}" class="helpline-dial-btn">
+        <span>📞</span> Call Helpline Now
+      </a>
+    </div>
     {% endif %}
 
-
-    <div class="mt-8 bg-yellow-50 border border-yellow-200 rounded-2xl p-5">
-
-        <p class="text-sm text-yellow-800">
-            <strong>Important:</strong>
-            Scheme eligibility, benefits, application procedures
-            and deadlines can change. Verify the latest information
-            on the official government portal before applying.
-        </p>
-
+    <!-- 7. OFFICIAL SAFETY ADVISORY -->
+    <div class="safety-advisory">
+      <span class="safety-icon">⚠️</span>
+      <p>
+        <strong>Farmer Advisory & Fraud Alert:</strong>
+        Government scheme registrations on official portals (ending in <strong>.gov.in</strong> or <strong>.nic.in</strong>) or at authorized CSC Jan Seva Kendras are secure.
+        Never pay unverified agents or share your banking passwords/OTPs with anyone.
+      </p>
     </div>
 
+  </div>
 
-</main>
+  <!-- RELATED SCHEMES -->
+  {% if related_schemes %}
+  <div class="related-schemes-section">
+    <h2 class="related-schemes-title">
+      <span>🌾</span> Explore Other Relevant Schemes
+    </h2>
+    <div class="related-cards-grid">
+      {% for rel in related_schemes %}
+        <div class="related-scheme-card">
+          <div class="related-card-top">
+            <span class="scheme-pill pill-category">
+              {{ rel.category_icon }} {{ rel.get_category_display }}
+            </span>
+            <h3 class="related-scheme-title">{{ rel.title }}</h3>
+            <p class="related-scheme-desc">{{ rel.short_description }}</p>
+          </div>
+          <div class="related-card-footer">
+            <a href="{{ rel.get_absolute_url }}" class="related-view-link">View Details →</a>
+            {% if rel.official_url %}
+              <a href="{{ rel.official_url }}" target="_blank" rel="noopener noreferrer" class="btn-action-secondary" style="padding: 6px 12px; font-size: 18px;">Official Portal ↗</a>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
 
-</body>
-</html>
+</div>
+
+<!-- TOAST MESSAGE -->
+<div id="toastNotification" class="toast-notification" role="status"></div>
+
+<script>
+  (function() {
+    "use strict";
+
+    const STORAGE_KEY = "kisansathi-saved-schemes";
+    const currentSlug = "{{ scheme.slug }}";
+
+    function getSavedSlugs() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function isSaved(slug) {
+      return getSavedSlugs().includes(slug);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toastNotification");
+      if (!toast) return;
+      toast.textContent = message;
+      toast.style.display = "block";
+      setTimeout(function() {
+        toast.style.display = "none";
+      }, 3000);
+    }
+
+    // Initialize bookmark state
+    const saveBtn = document.getElementById("saveSchemeBtn");
+    const saveHeart = document.getElementById("saveHeart");
+    const saveLabel = document.getElementById("saveLabel");
+
+    function updateSaveBtnState() {
+      if (!saveBtn) return;
+      const saved = isSaved(currentSlug);
+      if (saved) {
+        saveHeart.textContent = "♥";
+        saveHeart.style.color = "#ef4444";
+        saveLabel.textContent = "Saved in Shortlist";
+      } else {
+        saveHeart.textContent = "♡";
+        saveHeart.style.color = "inherit";
+        saveLabel.textContent = "Bookmark Scheme";
+      }
+    }
+    updateSaveBtnState();
+
+    if (saveBtn) {
+      saveBtn.addEventListener("click", function() {
+        let slugs = getSavedSlugs();
+        if (slugs.includes(currentSlug)) {
+          slugs = slugs.filter(s => s !== currentSlug);
+          showToast("Scheme removed from your saved list.");
+        } else {
+          slugs.push(currentSlug);
+          showToast("Scheme bookmarked to your saved list! ✓");
+        }
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(slugs));
+        } catch(e) {}
+        updateSaveBtnState();
+      });
+    }
+
+    // Share button
+    const shareBtn = document.getElementById("shareSchemeBtn");
+    if (shareBtn) {
+      shareBtn.addEventListener("click", function() {
+        const shareUrl = window.location.href;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(shareUrl).then(function() {
+            showToast("Scheme URL copied to clipboard! 📋");
+          }).catch(function() {
+            showToast("Share this link: " + shareUrl);
+          });
+        } else {
+          prompt("Copy scheme link:", shareUrl);
+        }
+      });
+    }
+
+  })();
+</script>
+{% endblock %}

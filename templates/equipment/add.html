@@ -1,446 +1,206 @@
+{% extends "base.html" %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
+{% block title %}List Farm Equipment | Custom Hiring Center | AgriVisionAI{% endblock %}
 
-<head>
+{% block content %}
+<script src="https://cdn.tailwindcss.com"></script>
 
-    <meta charset="UTF-8">
+<div class="min-h-screen bg-slate-50 text-slate-800 pb-16">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Add Equipment | KisanSathi AI</title>
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f3f8f1;
-            color: #193b21;
-        }
-
-        .navbar {
-            height: 70px;
-            background: #ffffff;
-            border-bottom: 1px solid #dfe9dc;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 6%;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: #174f27;
-        }
-
-        .brand-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: #def1dc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-        }
-
-        .brand-name {
-            font-size: 19px;
-            font-weight: 800;
-        }
-
-        .brand-sub {
-            font-size: 11px;
-            color: #78907d;
-            margin-top: 2px;
-        }
-
-        .back {
-            text-decoration: none;
-            color: #327043;
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .container {
-            width: min(900px, 92%);
-            margin: 40px auto 70px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header-icon {
-            width: 70px;
-            height: 70px;
-            margin: 0 auto 15px;
-            border-radius: 20px;
-            background: #dff3dc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 35px;
-        }
-
-        .header h1 {
-            margin: 0 0 8px;
-            color: #185c2b;
-            font-size: 32px;
-        }
-
-        .header p {
-            color: #718074;
-            font-size: 14px;
-        }
-
-        .card {
-            background: #ffffff;
-            border: 1px solid #dfe9dc;
-            border-radius: 22px;
-            padding: 32px;
-            box-shadow: 0 10px 30px rgba(25, 70, 30, .06);
-        }
-
-        .form-group {
-            margin-bottom: 21px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 700;
-            color: #294d31;
-        }
-
-        input,
-        select,
-        textarea {
-            width: 100%;
-            border: 1px solid #d5e1d2;
-            border-radius: 10px;
-            padding: 13px;
-            font-family: inherit;
-            font-size: 14px;
-            background: #ffffff;
-        }
-
-        textarea {
-            min-height: 110px;
-            resize: vertical;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: #4c9a5a;
-            box-shadow: 0 0 0 3px rgba(76, 154, 90, .10);
-        }
-
-        .help {
-            margin-top: 6px;
-            font-size: 12px;
-            color: #829087;
-        }
-
-        .errorlist {
-            color: #b13732;
-            margin: 6px 0;
-            padding-left: 18px;
-            font-size: 13px;
-        }
-
-        .image-preview {
-            display: none;
-            width: 100%;
-            max-height: 280px;
-            object-fit: contain;
-            margin-top: 14px;
-            border-radius: 13px;
-            border: 1px solid #e0e9dd;
-            background: #f6f9f5;
-        }
-
-        .actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 28px;
-        }
-
-        .btn {
-            flex: 1;
-            border: none;
-            border-radius: 11px;
-            padding: 14px 20px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background: #247b38;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #1b642d;
-        }
-
-        .btn-secondary {
-            background: #edf5eb;
-            color: #2c6035;
-        }
-
-        .info {
-            margin-top: 22px;
-            padding: 15px;
-            background: #f4f8ee;
-            border-radius: 11px;
-            color: #667568;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        @media(max-width:600px) {
-
-            .navbar {
-                padding: 0 4%;
-            }
-
-            .brand-sub {
-                display: none;
-            }
-
-            .container {
-                width: 94%;
-                margin-top: 25px;
-            }
-
-            .card {
-                padding: 22px;
-            }
-
-            .header h1 {
-                font-size: 26px;
-            }
-
-            .actions {
-                flex-direction: column;
-            }
-
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-
-<nav class="navbar">
-
-    <a
-        href="{% url 'dashboard:home' %}"
-        class="brand"
-    >
-
-        <div class="brand-icon">
-            🌱
-        </div>
-
-        <div>
-
-            <div class="brand-name">
-                KisanSathi AI
+    <!-- Top Sub-Navigation Bar -->
+    <section class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="{% url 'equipment:home' %}" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center font-bold transition">
+                    ←
+                </a>
+                <div>
+                    <h1 class="text-base font-bold text-slate-900 leading-tight">List Your Farm Equipment</h1>
+                    <p class="text-xs text-slate-500 font-medium">Make machinery available to farmers in your region</p>
+                </div>
             </div>
 
-            <div class="brand-sub">
-                Smart Farming Assistant
+            <a href="{% url 'equipment:my_equipment' %}" class="px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs transition">
+                ⚙️ My Equipment
+            </a>
+        </div>
+    </section>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+        
+        <div class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-xs">
+            
+            <div class="flex items-center gap-4 pb-6 border-b border-slate-100 mb-8">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-3xl">
+                    🚜
+                </div>
+                <div>
+                    <h2 class="text-xl sm:text-2xl font-black text-slate-900">Equipment Listing Details</h2>
+                    <p class="text-xs text-slate-500 font-medium mt-0.5">Fill in machine specifications, rental rates and operator options</p>
+                </div>
             </div>
 
-        </div>
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
 
-    </a>
+                {% if form.non_field_errors %}
+                <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold">
+                    {{ form.non_field_errors }}
+                </div>
+                {% endif %}
 
+                <!-- Section: Basic Info -->
+                <div>
+                    <h3 class="text-xs font-extrabold text-emerald-800 uppercase tracking-wider mb-4 flex items-center gap-1.5">
+                        <span>1️⃣</span> Machine Identification
+                    </h3>
 
-    <a
-        href="{% url 'equipment:home' %}"
-        class="back"
-    >
-        ← Equipment
-    </a>
-
-</nav>
-
-
-<main class="container">
-
-
-    <div class="header">
-
-        <div class="header-icon">
-            🚜
-        </div>
-
-        <h1>
-            Add Farm Equipment
-        </h1>
-
-        <p>
-            List your tractor or agricultural machine
-            and make it available for nearby farmers.
-        </p>
-
-    </div>
-
-
-    <div class="card">
-
-        <form
-            method="POST"
-            enctype="multipart/form-data"
-        >
-
-            {% csrf_token %}
-
-
-            {% if form.non_field_errors %}
-
-                {{ form.non_field_errors }}
-
-            {% endif %}
-
-
-            {% for field in form %}
-
-                <div class="form-group">
-
-                    {{ field.label_tag }}
-
-                    {{ field }}
-
-                    {% if field.help_text %}
-
-                        <div class="help">
-                            {{ field.help_text }}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Equipment Name / Title *</label>
+                            <input type="text" name="name" value="{{ form.name.value|default:'' }}" required placeholder="e.g. Mahindra 575 DI Tractor with Trolley" class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
+                            {% if form.name.errors %}<p class="text-[11px] text-rose-600 mt-1">{{ form.name.errors.0 }}</p>{% endif %}
                         </div>
 
-                    {% endif %}
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Equipment Category *</label>
+                            <select name="equipment_type" required class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
+                                <option value="tractor" {% if form.equipment_type.value == 'tractor' %}selected{% endif %}>🚜 Tractor</option>
+                                <option value="rotavator" {% if form.equipment_type.value == 'rotavator' %}selected{% endif %}>🔄 Rotavator</option>
+                                <option value="seed_drill" {% if form.equipment_type.value == 'seed_drill' %}selected{% endif %}>🌱 Seed Drill</option>
+                                <option value="sprayer" {% if form.equipment_type.value == 'sprayer' %}selected{% endif %}>💦 Sprayer</option>
+                                <option value="harvester" {% if form.equipment_type.value == 'harvester' %}selected{% endif %}>🌾 Harvester</option>
+                                <option value="cultivator" {% if form.equipment_type.value == 'cultivator' %}selected{% endif %}>⛏️ Cultivator</option>
+                                <option value="thresher" {% if form.equipment_type.value == 'thresher' %}selected{% endif %}>⚙️ Thresher</option>
+                                <option value="other" {% if form.equipment_type.value == 'other' %}selected{% endif %}>🛠️ Other Implements</option>
+                            </select>
+                            {% if form.equipment_type.errors %}<p class="text-[11px] text-rose-600 mt-1">{{ form.equipment_type.errors.0 }}</p>{% endif %}
+                        </div>
 
-                    {% if field.errors %}
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Brand / Manufacturer</label>
+                            <input type="text" name="brand" value="{{ form.brand.value|default:'' }}" placeholder="e.g. John Deere, Swaraj, Sonalika" class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
+                        </div>
 
-                        {{ field.errors }}
-
-                    {% endif %}
-
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Model / Horse Power (HP)</label>
+                            <input type="text" name="model_number" value="{{ form.model_number.value|default:'' }}" placeholder="e.g. 50 HP, 4WD" class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
+                        </div>
+                    </div>
                 </div>
 
-            {% endfor %}
+                <!-- Section: Rental Pricing & Location -->
+                <div class="pt-4 border-t border-slate-100">
+                    <h3 class="text-xs font-extrabold text-emerald-800 uppercase tracking-wider mb-4 flex items-center gap-1.5">
+                        <span>2️⃣</span> Rental Pricing & Location
+                    </h3>
 
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Rent Type *</label>
+                            <select name="rent_type" required class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
+                                <option value="hour" {% if form.rent_type.value == 'hour' %}selected{% endif %}>Per Hour</option>
+                                <option value="day" {% if form.rent_type.value == 'day' or not form.rent_type.value %}selected{% endif %}>Per Day</option>
+                                <option value="acre" {% if form.rent_type.value == 'acre' %}selected{% endif %}>Per Acre</option>
+                            </select>
+                        </div>
 
-            <img
-                id="imagePreview"
-                class="image-preview"
-                alt="Equipment preview"
-            >
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Rent Amount (₹) *</label>
+                            <input type="number" step="0.01" min="0" name="rent_amount" value="{{ form.rent_amount.value|default:'' }}" required placeholder="e.g. 600" class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
+                            {% if form.rent_amount.errors %}<p class="text-[11px] text-rose-600 mt-1">{{ form.rent_amount.errors.0 }}</p>{% endif %}
+                        </div>
 
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Security Deposit (₹)</label>
+                            <input type="number" step="0.01" min="0" name="security_deposit" value="{{ form.security_deposit.value|default:'0' }}" placeholder="0 for none" class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
+                        </div>
 
-            <div class="actions">
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Location / Village / Landmark *</label>
+                            <input type="text" name="location" value="{{ form.location.value|default:'' }}" required placeholder="e.g. Near Kisan Mandi, Rampur Road" class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
+                        </div>
 
-                <a
-                    href="{% url 'equipment:home' %}"
-                    class="btn btn-secondary"
-                >
-                    Cancel
-                </a>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">District</label>
+                            <input type="text" name="district" value="{{ form.district.value|default:'' }}" placeholder="e.g. Bareilly" class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
+                        </div>
+                    </div>
+                </div>
 
-                <button
-                    type="submit"
-                    class="btn btn-primary"
-                >
-                    🚜 Add Equipment
-                </button>
+                <!-- Section: Options & Photo -->
+                <div class="pt-4 border-t border-slate-100">
+                    <h3 class="text-xs font-extrabold text-emerald-800 uppercase tracking-wider mb-4 flex items-center gap-1.5">
+                        <span>3️⃣</span> Services & Machine Photo
+                    </h3>
 
-            </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-3">
+                            <label class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-200 cursor-pointer">
+                                <input type="checkbox" name="operator_available" {% if form.operator_available.value %}checked{% endif %} class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500">
+                                <span class="text-xs font-bold text-slate-800">Certified machine operator/driver available</span>
+                            </label>
 
+                            <label class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-200 cursor-pointer">
+                                <input type="checkbox" name="delivery_available" {% if form.delivery_available.value %}checked{% endif %} class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500">
+                                <span class="text-xs font-bold text-slate-800">Farm site delivery / pickup transport available</span>
+                            </label>
 
-            <div class="info">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Contact Phone Number</label>
+                                <input type="text" name="contact_number" value="{{ form.contact_number.value|default:'' }}" placeholder="e.g. +91 9876543210" class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
+                            </div>
+                        </div>
 
-                <strong>Tip:</strong>
-                Add a clear equipment photo and accurate
-                location, rent amount and availability details.
-                This helps nearby farmers find your equipment.
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Equipment Photo (Recommended)</label>
+                            <input type="file" name="image" id="eqImage" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-50 file:text-emerald-800 hover:file:bg-emerald-100 cursor-pointer">
+                            <img id="imagePreview" class="hidden w-full h-36 object-cover rounded-xl mt-3 border border-slate-200">
+                        </div>
+                    </div>
 
-            </div>
+                    <div class="mt-4">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Machine Description & Extra Attachments</label>
+                        <textarea name="description" rows="3" placeholder="State fuel condition, suitable crops, implement sizes (e.g. 7-feet rotavator, 9-tyne cultivator)..." class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white resize-none">{{ form.description.value|default:'' }}</textarea>
+                    </div>
+                </div>
 
-        </form>
+                <!-- Submit Action -->
+                <div class="pt-6 border-t border-slate-100 flex items-center justify-end gap-3">
+                    <a href="{% url 'equipment:home' %}" class="py-3 px-5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 transition">
+                        Cancel
+                    </a>
+                    <button type="submit" class="py-3 px-8 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs transition shadow-md flex items-center gap-2">
+                        🚜 Publish Equipment Listing
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
 
-    </div>
-
-</main>
-
+</div>
 
 <script>
+    const imageInput = document.getElementById('eqImage');
+    const imagePreview = document.getElementById('imagePreview');
 
-const fileInput = document.querySelector(
-    'input[type="file"]'
-);
-
-const preview = document.getElementById(
-    "imagePreview"
-);
-
-if (fileInput) {
-
-    fileInput.addEventListener(
-        "change",
-        function () {
-
+    if (imageInput) {
+        imageInput.addEventListener('change', function() {
             const file = this.files[0];
-
-            if (!file) {
-
-                preview.style.display = "none";
-
-                return;
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.classList.add('hidden');
             }
-
-            const reader = new FileReader();
-
-            reader.onload = function(event) {
-
-                preview.src =
-                    event.target.result;
-
-                preview.style.display =
-                    "block";
-            };
-
-            reader.readAsDataURL(file);
-
-        }
-    );
-}
-
+        });
+    }
 </script>
 
-
-</body>
-
-</html>
+{% endblock %}

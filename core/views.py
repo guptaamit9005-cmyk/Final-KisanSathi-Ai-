@@ -1,161 +1,67 @@
+import json
+import urllib.parse
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from ai_assistant.rag_engine import ask_karran_ai
+from .speech import clean_for_voice
 
 
 def home(request):
     return render(request, "core/home.html")
 
 
-@require_POST
+@csrf_exempt
+@require_http_methods(["GET", "POST"])
 def karran_chat(request):
+    """
+    Karran AI Agricultural Chatbot API endpoint with RAG (Retrieval-Augmented Generation),
+    LLM integration, and multilingual voice routing (Hindi, English, Bengali, Marathi, Telugu, Tamil).
+    """
+    if request.method == "POST":
+        # Supports JSON or Form-data
+        if request.content_type and "application/json" in request.content_type:
+            try:
+                data = json.loads(request.body.decode("utf-8"))
+            except Exception:
+                data = {}
+            question = data.get("q") or data.get("message") or data.get("question") or data.get("query", "")
+            user_lang = data.get("lang")
+        else:
+            question = request.POST.get("q") or request.POST.get("message") or request.POST.get("question") or request.POST.get("query", "")
+            user_lang = request.POST.get("lang")
+    else:
+        question = request.GET.get("q") or request.GET.get("message") or request.GET.get("question") or request.GET.get("query", "")
+        user_lang = request.GET.get("lang")
 
-    message = request.POST.get("message", "").strip().lower()
+    question = (question or "").strip()
 
-    if not message:
+    if not question:
         return JsonResponse({
             "success": False,
-            "reply": "Please ask me something."
+            "reply": "कृपया अपना सवाल पूछें / Please ask your question.",
+            "answer": "कृपया अपना सवाल पूछें / Please ask your question.",
+            "lang": "hi",
+            "voice_code": "hi-IN"
         })
 
-    # -----------------------------------------
-    # KARRAN RESPONSES
-    # -----------------------------------------
+    # Pass through RAG + LLM Engine
+    result = ask_karran_ai(question, user_lang=user_lang)
 
-    if any(word in message for word in [
-        "hello",
-        "hi",
-        "hey",
-        "namaste",
-        "नमस्ते"
-    ]):
-
-        reply = (
-            "Namaste! 🌱 Main Karran hoon, "
-            "KisanSathi AI ka farming assistant. "
-            "Aap crop disease, weather, farming, "
-            "market ya government schemes ke baare mein "
-            "mujhse pooch sakte hain."
-        )
-
-    elif any(word in message for word in [
-        "crop",
-        "फसल",
-        "disease",
-        "बीमारी",
-        "रोग"
-    ]):
-
-        reply = (
-            "Aap apni crop ki clear photo upload karke "
-            "Crop Analysis feature use kar sakte hain. "
-            "AI possible disease identify karega aur "
-            "result expert verification ke liye bheja jayega."
-        )
-
-    elif any(word in message for word in [
-        "weather",
-        "मौसम",
-        "बारिश",
-        "rain"
-    ]):
-
-        reply = (
-            "🌦️ KisanSathi AI mein Weather section se "
-            "apne city ka current weather check kar sakte hain. "
-            "Weather information ke basis par farming guidance "
-            "bhi mil sakti hai."
-        )
-
-    elif any(word in message for word in [
-        "market",
-        "mandi",
-        "price",
-        "भाव",
-        "मंडी"
-    ]):
-
-        reply = (
-            "📈 Aap Mandi section mein crop ke market prices "
-            "check kar sakte hain. Crop select karke available "
-            "market information dekhi ja sakti hai."
-        )
-
-    elif any(word in message for word in [
-        "scheme",
-        "government",
-        "सरकार",
-        "योजना",
-        "scheme"
-    ]):
-
-        reply = (
-            "🏛️ KisanSathi AI mein Government Schemes section "
-            "mein farmers ke liye available schemes, eligibility "
-            "aur application information explore kar sakte hain."
-        )
-
-    elif any(word in message for word in [
-        "equipment",
-        "tractor",
-        "machine",
-        "ट्रैक्टर",
-        "मशीन"
-    ]):
-
-        reply = (
-            "🚜 KisanSathi AI par farmers agricultural equipment "
-            "rent par list aur book kar sakte hain, jaise tractors, "
-            "sprayers, harvesters aur seed drills."
-        )
-
-    elif any(word in message for word in [
-        "land",
-        "जमीन",
-        "खेत"
-    ]):
-
-        reply = (
-            "🌾 Land Marketplace ke through available agricultural "
-            "land listings explore ki ja sakti hain."
-        )
-
-    elif any(word in message for word in [
-        "learning",
-        "learn",
-        "खेती सीखना",
-        "सीखना"
-    ]):
-
-        reply = (
-            "📚 Farmer Learning section mein crop-wise farming "
-            "guidance, crop stages aur modern farming practices "
-            "seekh sakte hain."
-        )
-
-    elif any(word in message for word in [
-        "who are you",
-        "what are you",
-        "tum kaun",
-        "आप कौन"
-    ]):
-
-        reply = (
-            "🤖 Main Karran hoon — KisanSathi AI ka virtual "
-            "farming assistant. Main farmers ko farming-related "
-            "information aur platform features samajhne mein help "
-            "karta hoon."
-        )
-
-    else:
-
-        reply = (
-            "🌱 Main Karran hoon. Aap mujhse crop disease, "
-            "weather, mandi prices, farming learning, equipment, "
-            "land ya government schemes ke baare mein pooch sakte hain."
-        )
+    reply_text = result.get("reply", "")
+    lang = result.get("lang", "hi")
+    voice_code = result.get("voice_code", "hi-IN")
+    spoken_text = clean_for_voice(reply_text, max_chars=240)
+    tts_url = f"/karran/tts/?text={urllib.parse.quote(spoken_text)}&lang={lang}"
 
     return JsonResponse({
-        "success": True,
-        "reply": reply
+        "success": result.get("success", True),
+        "reply": reply_text,
+        "answer": reply_text,  # Backwards compatibility
+        "spoken_reply": spoken_text,
+        "tts_url": tts_url,
+        "lang": lang,
+        "voice_code": voice_code,
+        "has_context": result.get("has_context", False)
     })

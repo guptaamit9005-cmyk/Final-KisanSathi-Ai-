@@ -1,24 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KisanSathi AI | Weather Intelligence</title>
 
+<script>
+    (function() {
+        const saved = localStorage.getItem('ks-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', saved);
+    })();
+</script>
+
 <style>
+
 :root {
-    --green: #168044;
-    --green-dark: #0c542d;
-    --green-light: #e9f7ed;
-    --bg: #f4f8f4;
-    --white: #ffffff;
-    --text: #173321;
-    --muted: #718178;
-    --border: #dce9df;
-    --shadow: 0 10px 30px rgba(17,63,35,.07);
-    --red: #dc2626;
-    --orange: #d97706;
-    --blue: #2563eb;
+    --green: #10b981;
+    --green-dark: #065f46;
+    --green-deep: #022c22;
+    --green-light: #ecfdf5;
+    --green-glow: rgba(16, 185, 129, 0.2);
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --card-border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --shadow: 0 10px 30px rgba(0,0,0,0.05);
+    --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
+    --red: #ef4444;
+    --orange: #f59e0b;
+    --blue: #3b82f6;
+    --nav-bg: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="dark"] {
+    --green: #34d399;
+    --green-dark: #059669;
+    --green-deep: #022c22;
+    --green-light: rgba(52, 211, 153, 0.12);
+    --green-glow: rgba(52, 211, 153, 0.25);
+    --bg: #090e17;
+    --card-bg: #111a28;
+    --card-border: #1e293b;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --border: #1e293b;
+    --shadow: 0 10px 30px rgba(0,0,0,0.4);
+    --shadow-lg: 0 20px 40px rgba(0,0,0,0.6);
+    --nav-bg: rgba(17, 26, 40, 0.9);
 }
 
 * {
@@ -28,11 +61,17 @@
 }
 
 body {
-    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+h1, h2, h3, .brand, .temperature, .section-title, .dec-title, .forecast-temp {
+    font-family: 'Outfit', sans-serif;
+}
+
 
 button, input, select {
     font: inherit;
@@ -44,7 +83,7 @@ button {
 
 .navbar {
     height: 72px;
-    background: white;
+    background: var(--card-bg);
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
@@ -159,8 +198,8 @@ button {
 }
 
 .hero-side {
-    background: white;
-    border: 1px solid var(--border);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 25px;
     padding: 27px;
     box-shadow: var(--shadow);
@@ -188,8 +227,8 @@ button {
 }
 
 .card {
-    background: white;
-    border: 1px solid var(--border);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 20px;
     padding: 22px;
     box-shadow: var(--shadow);
@@ -221,7 +260,7 @@ button {
 .search-input {
     flex: 1;
     min-width: 0;
-    border: 1px solid var(--border);
+    border: 1px solid var(--card-border);
     background: #fbfdfb;
     border-radius: 12px;
     padding: 14px 15px;
@@ -251,7 +290,7 @@ button {
 
 .location-btn {
     width: 48px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--card-border);
     background: var(--green-light);
     border-radius: 12px;
     color: var(--green-dark);
@@ -275,7 +314,7 @@ button {
 
 .form-control {
     width: 100%;
-    border: 1px solid var(--border);
+    border: 1px solid var(--card-border);
     background: #fbfdfb;
     border-radius: 10px;
     padding: 12px;
@@ -406,8 +445,8 @@ button {
 }
 
 .metric {
-    background: white;
-    border: 1px solid var(--border);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 18px;
     padding: 20px;
     box-shadow: var(--shadow);
@@ -446,7 +485,7 @@ button {
 }
 
 .forecast-day {
-    border: 1px solid var(--border);
+    border: 1px solid var(--card-border);
     border-radius: 15px;
     padding: 15px 9px;
     text-align: center;
@@ -542,6 +581,130 @@ button {
     display: none !important;
 }
 
+/* DECISION MATRIX STYLING ("Karna Chahiye Ki Nahi") */
+.decisions-card {
+    margin-top: 20px;
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 24px;
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+}
+
+.decisions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 16px;
+    margin-top: 18px;
+}
+
+.decision-card {
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 16px 18px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform .2s ease, box-shadow .2s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,.03);
+}
+
+.decision-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(17,63,35,.08);
+}
+
+.decision-card.do {
+    border-left: 5px solid #16a34a;
+    background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 45%);
+}
+
+.decision-card.dont {
+    border-left: 5px solid #dc2626;
+    background: linear-gradient(180deg, #fef2f2 0%, #ffffff 45%);
+}
+
+.decision-card.caution {
+    border-left: 5px solid #d97706;
+    background: linear-gradient(180deg, #fffbeb 0%, #ffffff 45%);
+}
+
+.dec-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.dec-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dec-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.badge-success {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #86efac;
+}
+
+.badge-danger {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+}
+
+.badge-warning {
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.dec-verdict {
+    font-size: 13.5px;
+    color: #334155;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.dec-tip {
+    font-size: 12.5px;
+    color: #64748b;
+    background: rgba(0,0,0,.03);
+    padding: 8px 12px;
+    border-radius: 10px;
+    border-left: 3px solid #94a3b8;
+    line-height: 1.45;
+}
+
+.microclimate-bar {
+    margin-top: 20px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: #f8faf8;
+    border: 1px solid var(--card-border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 13px;
+    color: var(--muted);
+    justify-content: space-around;
+}
+
 .footer {
     padding: 25px 0;
     text-align: center;
@@ -615,6 +778,236 @@ button {
         font-size: 20px;
     }
 }
+
+.city-chip {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.city-chip:hover {
+    background: var(--green);
+    color: #ffffff;
+    border-color: var(--green);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--green-glow);
+}
+.nav-theme-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+.nav-theme-btn:hover {
+    border-color: var(--green);
+    color: var(--green);
+    transform: rotate(15deg);
+}
+
+/* Dark Mode Comprehensive Overrides */
+[data-theme="dark"] .search-input,
+[data-theme="dark"] .form-control {
+    background: #141f2e !important;
+    border-color: #24354d !important;
+    color: #f8fafc !important;
+}
+[data-theme="dark"] .search-input::placeholder,
+[data-theme="dark"] .form-control::placeholder {
+    color: #64748b;
+}
+[data-theme="dark"] .search-input:focus,
+[data-theme="dark"] .form-control:focus {
+    border-color: var(--green) !important;
+    box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.18) !important;
+}
+[data-theme="dark"] .form-group label {
+    color: #94a3b8;
+}
+[data-theme="dark"] .section-title {
+    color: #34d399;
+}
+[data-theme="dark"] .hero-side small {
+    color: #94a3b8;
+}
+[data-theme="dark"] .hero-side strong {
+    color: #34d399;
+}
+[data-theme="dark"] .forecast-day {
+    background: #142134;
+    border-color: #22344d;
+}
+[data-theme="dark"] .forecast-day strong {
+    color: #cbd5e1;
+}
+[data-theme="dark"] .forecast-temp {
+    color: #34d399;
+}
+[data-theme="dark"] .advice-item {
+    background: #13241c;
+    border-color: #1e3b2e;
+}
+[data-theme="dark"] .advice-item strong {
+    color: #34d399;
+}
+[data-theme="dark"] .advice-item p {
+    color: #cbd5e1;
+}
+[data-theme="dark"] .metric {
+    background: #111a28;
+    border-color: #1e293b;
+}
+[data-theme="dark"] .metric-value {
+    color: #34d399;
+}
+[data-theme="dark"] .metric-label {
+    color: #94a3b8;
+}
+[data-theme="dark"] .microclimate-bar {
+    background: #141f2e;
+    border-color: #22344d;
+    color: #94a3b8;
+}
+[data-theme="dark"] .decision-card {
+    background: #111a28;
+    border-color: #1e293b;
+}
+[data-theme="dark"] .decision-card.do {
+    background: linear-gradient(180deg, rgba(22,163,74,0.18) 0%, #111a28 65%);
+}
+[data-theme="dark"] .decision-card.dont {
+    background: linear-gradient(180deg, rgba(220,38,38,0.18) 0%, #111a28 65%);
+}
+[data-theme="dark"] .decision-card.caution {
+    background: linear-gradient(180deg, rgba(217,119,6,0.18) 0%, #111a28 65%);
+}
+[data-theme="dark"] .dec-verdict {
+    color: #e2e8f0;
+}
+[data-theme="dark"] .dec-tip {
+    background: rgba(255,255,255,0.06);
+    color: #94a3b8;
+    border-left-color: #475569;
+}
+[data-theme="dark"] .disclaimer {
+    background: #0f1f33;
+    border-color: #1e3a5f;
+    color: #93c5fd;
+}
+[data-theme="dark"] .alert-item {
+    background: #2b1d0d;
+    border-color: #5c3917;
+    color: #fde047;
+}
+[data-theme="dark"] .alert-item.safe {
+    background: #0f2b1d;
+    border-color: #1a4d35;
+    color: #86efac;
+}
+[data-theme="dark"] .nav-links a {
+    color: #94a3b8;
+}
+[data-theme="dark"] .nav-links a:hover {
+    background: rgba(52, 211, 153, 0.12);
+    color: #34d399;
+}
+[data-theme="dark"] .brand {
+    color: #34d399;
+}
+[data-theme="dark"] .brand-icon {
+    background: rgba(52, 211, 153, 0.15);
+}
+
+/* In-Section Dark & Light Mode Switcher UI */
+.search-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+}
+
+.weather-theme-switch-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg);
+    padding: 6px 12px;
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+}
+
+.theme-switch-label {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.theme-segmented-ctrl {
+    display: inline-flex;
+    align-items: center;
+    background: #e2e8f0;
+    padding: 3px;
+    border-radius: 9999px;
+    gap: 3px;
+    border: 1px solid var(--border);
+    transition: all 0.25s ease;
+}
+
+[data-theme="dark"] .theme-segmented-ctrl {
+    background: #172233;
+    border-color: #24354d;
+}
+
+.theme-seg-btn {
+    border: none;
+    background: transparent;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+}
+
+.theme-seg-btn:hover {
+    color: var(--text);
+}
+
+.theme-seg-btn.active {
+    background: #ffffff;
+    color: #0f172a;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+[data-theme="dark"] .theme-seg-btn.active {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff;
+    box-shadow: 0 3px 12px rgba(16, 185, 129, 0.35);
+}
+
 </style>
 </head>
 
@@ -631,6 +1024,7 @@ button {
             <a href="/dashboard/">Dashboard</a>
             <a href="/prediction/">Crop Analysis</a>
             <a href="/ai-assistant/">AI Assistant</a>
+            <button type="button" class="nav-theme-btn" id="themeToggleBtn" title="Toggle Dark/Light Mode" aria-label="Toggle Dark/Light Mode">🌙</button>
         </div>
     </div>
 </nav>
@@ -662,22 +1056,40 @@ button {
     </section>
 
     <section class="card search-card">
-        <h2 class="section-title">Check Your Farm Weather</h2>
-        <p class="section-subtitle">
-            Enter your village, town, or city to fetch current weather information.
-        </p>
+        <div class="search-header-row">
+            <div>
+                <h2 class="section-title">Check Your Farm Weather</h2>
+                <p class="section-subtitle">
+                    Enter your village, town, or city to fetch live weather & farming intelligence.
+                </p>
+            </div>
 
+            <!-- In-Section Dark / Light Mode Switcher -->
+            <div class="weather-theme-switch-wrap">
+                <span class="theme-switch-label">🌓 Mode:</span>
+                <div class="theme-segmented-ctrl" role="group" aria-label="Weather Display Mode">
+                    <button type="button" class="theme-seg-btn active" id="secLightBtn" onclick="setWeatherTheme('light')" title="Switch to Light Theme">
+                        <span>☀️</span> Light
+                    </button>
+                    <button type="button" class="theme-seg-btn" id="secDarkBtn" onclick="setWeatherTheme('dark')" title="Switch to Dark Theme">
+                        <span>🌙</span> Dark
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        
         <div class="search-row">
             <input
                 type="text"
                 id="cityInput"
                 class="search-input"
-                placeholder="Enter city or village (e.g. Hardoi)"
+                placeholder="Enter city or village (e.g. Hardoi, Bhopal, Varanasi)"
                 autocomplete="off"
             >
 
-            <button class="primary-btn" id="searchBtn" type="button">
-                Check Weather
+            <button class="primary-btn" id="searchBtn" type="button" style="display:flex; align-items:center; gap:8px;">
+                <span>🔍</span> Check Weather
             </button>
 
             <button
@@ -685,8 +1097,23 @@ button {
                 id="locationBtn"
                 type="button"
                 title="Use my current location"
-            >⌖</button>
+                style="display:flex; align-items:center; gap:6px; padding: 13px 18px; width:auto; border-radius:12px; font-weight:700;"
+            >📍 Auto-Detect</button>
         </div>
+
+        <!-- Quick Select Popular Agricultural Hubs -->
+        <div class="quick-cities" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; align-items:center;">
+            <span style="font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px;">⚡ त्वरित चयन (Quick Select):</span>
+            <button type="button" class="city-chip" onclick="quickSelectCity('Delhi')">Delhi</button>
+            <button type="button" class="city-chip" onclick="quickSelectCity('Bhopal')">Bhopal</button>
+            <button type="button" class="city-chip" onclick="quickSelectCity('Indore')">Indore</button>
+            <button type="button" class="city-chip" onclick="quickSelectCity('Lucknow')">Lucknow</button>
+            <button type="button" class="city-chip" onclick="quickSelectCity('Varanasi')">Varanasi</button>
+            <button type="button" class="city-chip" onclick="quickSelectCity('Patna')">Patna</button>
+            <button type="button" class="city-chip" onclick="quickSelectCity('Jaipur')">Jaipur</button>
+            <button type="button" class="city-chip" onclick="quickSelectCity('Chandigarh')">Chandigarh</button>
+        </div>
+
 
         <div class="profile-grid">
 
@@ -794,6 +1221,35 @@ button {
 
             </div>
         </div>
+
+        <!-- AGRICULTURAL DECISION MATRIX: KARNA CHAHIYE YA NAHI -->
+        <section class="card decisions-card" id="decisionsSection" style="margin-bottom: 22px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+                <div>
+                    <h2 class="section-title" style="display: flex; align-items: center; gap: 8px; font-size: 21px;">
+                        <span>🎯</span> आज खेत में क्या करें और क्या न करें? (Agricultural Action Decisions)
+                    </h2>
+                    <p class="section-subtitle" style="margin-top: 4px;">
+                        लाइव मौसम, आगामी वर्षा व फसल अवस्था अनुसार आज के कार्यों का स्पष्ट निर्णय (Real-time Do's & Don'ts)
+                    </p>
+                </div>
+                <div class="overall-badge" id="overallScoreBadge" style="display: none; padding: 7px 16px; border-radius: 20px; font-weight: 800; font-size: 13.5px; background: #e8f8ed; color: #168044; border: 1px solid #bce6c7;">
+                    कृषि अनुकूलता सूचकांक: <span id="overallScoreVal">--</span>/100
+                </div>
+            </div>
+
+            <div class="decisions-grid" id="decisionsGrid">
+                <!-- Dynamically populated 5 operation cards -->
+            </div>
+
+            <!-- Microclimate indicators bar -->
+            <div class="microclimate-bar" id="microclimateBar" style="display: none;">
+                <div>💧 <strong>ओस बिंदु (Dew Point):</strong> <span id="mcDew" style="color:#168044; font-weight:700;">--</span></div>
+                <div>🌿 <strong>पत्ती तनाव (VPD):</strong> <span id="mcVpd" style="color:#168044; font-weight:700;">--</span></div>
+                <div>🌱 <strong>ताप संचय (GDD Today):</strong> <span id="mcGdd" style="color:#168044; font-weight:700;">--</span></div>
+                <div>☀️ <strong>दैनिक जल वाष्पोत्सर्जन (ET₀):</strong> <span id="mcEt0" style="color:#168044; font-weight:700;">--</span></div>
+            </div>
+        </section>
 
         <div class="content-grid">
 
@@ -987,8 +1443,12 @@ function renderWeatherIntelligence(data) {
 
     if (days.length) {
         forecastPanel.classList.remove("hidden-panel");
+        const panelTitle = document.querySelector('#forecastPanel .section-title');
+        if (panelTitle) {
+            panelTitle.textContent = `📅 ${days.length}-Day Agricultural Weather Forecast`;
+        }
 
-        days.slice(0, 5).forEach((day, index) => {
+        days.forEach((day, index) => {
             const description =
                 day.description || day.summary || day.weather || "Forecast";
 
@@ -1006,7 +1466,10 @@ function renderWeatherIntelligence(data) {
             const rain =
                 day.rainfall ??
                 day.rain ??
-                day.precipitation;
+                day.precipitation ??
+                day.rainfall_mm;
+
+            const rainProb = day.rain_probability ?? day.precipitation_probability;
 
             const card = document.createElement("article");
             card.className = "forecast-day";
@@ -1027,8 +1490,10 @@ function renderWeatherIntelligence(data) {
                     : "Temperature n/a";
 
             const details = document.createElement("p");
-            details.textContent =
-                `${description}${rain != null ? ` · Rain ${rain} mm` : ""}`;
+            let extra = [];
+            if (rain != null && rain > 0) extra.push(`💧 ${rain} mm`);
+            if (rainProb != null && rainProb > 0) extra.push(`🌧️ ${rainProb}%`);
+            details.textContent = `${description}${extra.length ? " · " + extra.join(" ") : ""}`;
 
             card.append(date, icon, temperature, details);
             forecastGrid.appendChild(card);
@@ -1054,7 +1519,7 @@ function renderWeatherIntelligence(data) {
     } else {
         alerts.forEach(alert => {
             const item = document.createElement("div");
-            item.className = "alert-item";
+            item.className = "alert-item" + (alert.level ? " " + alert.level : "");
 
             item.textContent =
                 typeof alert === "string"
@@ -1079,6 +1544,30 @@ function renderWeatherIntelligence(data) {
     if (advice) {
         if (typeof advice === "string") {
             document.getElementById("adviceText").textContent = advice;
+        } else if (Array.isArray(advice)) {
+            const irr = advice.find(a => a.type === 'irrigation');
+            const dis = advice.find(a => a.type === 'disease');
+            const fld = advice.find(a => a.type === 'fieldwork');
+            const spr = advice.find(a => a.type === 'spraying');
+
+            if (spr) {
+                document.getElementById("adviceTitle").textContent = spr.title || "Weather-based field insights";
+                document.getElementById("adviceText").textContent = `${spr.reason || ''} ${spr.action ? '💡 ' + spr.action : ''}`;
+            } else if (advice[0]) {
+                document.getElementById("adviceTitle").textContent = advice[0].title || "Weather-based field insights";
+                document.getElementById("adviceText").textContent = `${advice[0].reason || ''} ${advice[0].action ? '💡 ' + advice[0].action : ''}`;
+            }
+
+            if (irr) {
+                document.getElementById("irrigationAdvice").textContent = `${irr.title ? irr.title + ': ' : ''}${irr.reason || ''} ${irr.action ? '💡 ' + irr.action : ''}`;
+            }
+            if (dis) {
+                document.getElementById("diseaseAdvice").textContent = `${dis.title ? dis.title + ': ' : ''}${dis.reason || ''} ${dis.action ? '💡 ' + dis.action : ''}`;
+            }
+            if (fld) {
+                document.getElementById("fieldAdvice").textContent = `${fld.title ? fld.title + ': ' : ''}${fld.reason || ''} ${fld.action ? '💡 ' + fld.action : ''}`;
+            }
+            document.getElementById("adviceBadge").textContent = "AI Screening Active";
         } else {
             if (advice.title) {
                 document.getElementById("adviceTitle").textContent = advice.title;
@@ -1110,19 +1599,80 @@ function renderWeatherIntelligence(data) {
             }
         }
     }
+
+    // ── Render Agricultural Decision Matrix ("Karna Chahiye Ki Nahi")
+    const decisionsGrid = document.getElementById("decisionsGrid");
+    const decisions = data.decisions || (data.intelligence && data.intelligence.decisions) || [];
+
+    if (decisions.length && decisionsGrid) {
+        decisionsGrid.innerHTML = decisions.map(d => {
+            const cardClass = d.action === 'DO' ? 'do' : (d.action === 'DONT' ? 'dont' : 'caution');
+            return `
+                <div class="decision-card ${cardClass}">
+                    <div>
+                        <div class="dec-header">
+                            <span class="dec-title">${d.icon || '📌'} ${d.title_hi || d.title || ''}</span>
+                            <span class="dec-badge ${d.badge_class || 'badge-warning'}">${d.badge || ''}</span>
+                        </div>
+                        <div class="dec-verdict">${d.verdict || ''}</div>
+                    </div>
+                    ${d.tip ? `<div class="dec-tip">💡 <strong>सुझाव:</strong> ${d.tip}</div>` : ''}
+                </div>
+            `;
+        }).join('');
+    }
+
+    // ── Microclimate Indicators Bar
+    const intel = data.intelligence || {};
+    const mcBar = document.getElementById("microclimateBar");
+    if (mcBar) {
+        mcBar.style.display = "flex";
+        const dewEl = document.getElementById("mcDew");
+        const vpdEl = document.getElementById("mcVpd");
+        const gddEl = document.getElementById("mcGdd");
+        const et0El = document.getElementById("mcEt0");
+
+        if (dewEl) dewEl.textContent = intel.dew_point != null ? `${intel.dew_point} °C` : '—';
+        if (vpdEl) vpdEl.textContent = intel.vpd_kpa != null ? `${intel.vpd_kpa} kPa` : '—';
+        if (gddEl) gddEl.textContent = intel.gdd_today != null ? `+${intel.gdd_today} GDD` : '—';
+        if (et0El) et0El.textContent = intel.est_et0 != null ? `${intel.est_et0} mm/दिन` : '—';
+    }
+
+    // ── Overall Suitability Badge
+    const overallBadge = document.getElementById("overallScoreBadge");
+    const overallScore = intel.overall_health_score;
+    if (overallBadge && overallScore != null) {
+        overallBadge.style.display = "inline-block";
+        const scoreVal = document.getElementById("overallScoreVal");
+        if (scoreVal) scoreVal.textContent = overallScore;
+        if (overallScore >= 75) {
+            overallBadge.style.background = "#e8f8ed";
+            overallBadge.style.color = "#168044";
+            overallBadge.style.borderColor = "#bce6c7";
+        } else if (overallScore >= 45) {
+            overallBadge.style.background = "#fef3c7";
+            overallBadge.style.color = "#b45309";
+            overallBadge.style.borderColor = "#fde68a";
+        } else {
+            overallBadge.style.background = "#fee2e2";
+            overallBadge.style.color = "#b91c1c";
+            overallBadge.style.borderColor = "#fca5a5";
+        }
+    }
 }
 
-async function getWeather() {
+async function getWeather(lat = null, lon = null) {
     const city = cityInput.value.trim();
 
-    if (!city) {
+    if (!city && (!lat || !lon)) {
         showMessage("Please enter your city or village.", "error");
         return;
     }
 
     if (
-        city === lastCity &&
-        weatherSection.classList.contains("active")
+        city && city === lastCity &&
+        weatherSection.classList.contains("active") &&
+        !lat
     ) {
         return;
     }
@@ -1143,12 +1693,17 @@ async function getWeather() {
     document.getElementById("profileIrrigation").textContent = irrigationType || "Not specified";
 
     const params = new URLSearchParams({
-        city: city,
+        city: city || "",
         crop: crop,
         crop_stage: cropStage,
         soil_type: soilType,
         irrigation_type: irrigationType
     });
+
+    if (lat && lon) {
+        params.set("lat", lat);
+        params.set("lon", lon);
+    }
 
     try {
         const response = await fetch(`/weather/api/?${params.toString()}`, {
@@ -1171,7 +1726,12 @@ async function getWeather() {
         const weather = data.weather;
 
         document.getElementById("location").textContent =
-            `${weather.city}, ${weather.country}`;
+            `${weather.city || city}, ${weather.country || ''}`.replace(/,\s*$/, '');
+
+        if (!city && weather.city) {
+            cityInput.value = weather.city;
+            lastCity = weather.city;
+        }
 
         document.getElementById("description").textContent =
             weather.description;
@@ -1249,21 +1809,19 @@ function useCurrentLocation() {
                     address.city ||
                     address.town ||
                     address.village ||
-                    address.county;
+                    address.county ||
+                    address.state_district;
 
-                if (!city) {
-                    throw new Error("Location not found.");
+                if (city) {
+                    cityInput.value = city;
                 }
-
-                cityInput.value = city;
                 lastCity = "";
-                getWeather();
+                getWeather(lat, lon);
 
             } catch (error) {
-                showMessage(
-                    "Could not detect your city. Please enter it manually.",
-                    "error"
-                );
+                // If geocoding lookup fails, directly query backend with lat/lon!
+                lastCity = "";
+                getWeather(lat, lon);
             }
         },
 
@@ -1295,6 +1853,54 @@ cityInput.addEventListener("keydown", event => {
         getWeather();
     }
 });
+
+// Quick City Selection
+function quickSelectCity(cityName) {
+    cityInput.value = cityName;
+    lastCity = "";
+    getWeather();
+}
+
+// Weather Theme Switcher (Synchronized Section Controls + Navbar)
+function setWeatherTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    try {
+        localStorage.setItem('ks-theme', theme);
+    } catch(e) {}
+
+    const lightBtn = document.getElementById('secLightBtn');
+    const darkBtn = document.getElementById('secDarkBtn');
+    const navBtn = document.getElementById('themeToggleBtn');
+
+    if (lightBtn && darkBtn) {
+        if (theme === 'dark') {
+            lightBtn.classList.remove('active');
+            darkBtn.classList.add('active');
+        } else {
+            darkBtn.classList.remove('active');
+            lightBtn.classList.add('active');
+        }
+    }
+
+    if (navBtn) {
+        navBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+        navBtn.setAttribute('title', theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode');
+    }
+}
+
+(function() {
+    const savedTheme = localStorage.getItem('ks-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    setWeatherTheme(savedTheme);
+
+    const navBtn = document.getElementById('themeToggleBtn');
+    if (navBtn) {
+        navBtn.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme') || 'light';
+            setWeatherTheme(current === 'dark' ? 'light' : 'dark');
+        });
+    }
+})();
+
 </script>
 
 </body>

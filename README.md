@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-# AgriVisionAi
-=======
-# KisanSathi-Ai
->>>>>>> 66d76b9919376267f2d57cf1e338413bd02b20e8
+# KisanSathi AI (AgriVision AI)
+
+A smart farming and crop analysis platform powered by AI.
+

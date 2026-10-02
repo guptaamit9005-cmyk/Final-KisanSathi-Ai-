@@ -27,32 +27,43 @@ Here is the upgraded, modern, and farmer-friendly UI code for your **Crop Analys
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
+        
         :root {
-            --primary: #15803d;
-            --primary-dark: #14532d;
-            --primary-light: #22c55e;
-            --primary-soft: #f0fdf4;
-            --primary-border: #bbf7d0;
-            --amber: #d97706;
-            --amber-soft: #fffbeb;
-            --amber-border: #fde68a;
-            --rose: #e11d48;
-            --rose-soft: #fff1f2;
-            --sky: #0284c7;
-            --sky-soft: #f0f9ff;
-            --text-title: #0f172a;
-            --text-body: #334155;
-            --text-muted: #64748b;
-            --bg-page: #f8fafc;
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --bg-color: #fafafa;
             --card-bg: #ffffff;
-            --border: #e2e8f0;
-            --radius-xl: 22px;
-            --radius-lg: 16px;
-            --radius-md: 12px;
-            --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.04);
-            --shadow-md: 0 10px 25px -5px rgba(22, 101, 52, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-            --shadow-lg: 0 20px 30px -10px rgba(15, 23, 42, 0.1);
+            --text-main: #334155;
+            --text-muted: #94a3b8;
+            --border-color: #f1f5f9;
+            --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 40px rgba(16, 185, 129, 0.08);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --green: var(--primary);
+            --green-dark: var(--primary-dark);
+            --green-deep: #06472d;
+            --green-soft: #ecfdf5;
+            --green-light: #f0fdf4;
+            --background: var(--bg-color);
+            --white: #ffffff;
+            --text: var(--text-main);
+            --muted: var(--text-muted);
+            --border: var(--border-color);
+            --yellow: var(--accent);
+            --yellow-soft: #fffbeb;
+            --blue: #3b82f6;
+            --blue-soft: #eff6ff;
+            --orange: #f97316;
+            --orange-soft: #fff7ed;
+            --red: #ef4444;
+            --red-soft: #fef2f2;
         }
+    
 
         * {
             box-sizing: border-box;
@@ -61,7 +72,7 @@ Here is the upgraded, modern, and farmer-friendly UI code for your **Crop Analys
             -webkit-tap-highlight-color: transparent;
         }
 
-        body {
+        body {\n            letter-spacing: -0.01em;\n            line-height: 1.6;\n
             font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', system-ui, sans-serif;
             background-color: var(--bg-page);
             color: var(--text-body);
@@ -586,7 +597,7 @@ Here is the upgraded, modern, and farmer-friendly UI code for your **Crop Analys
         .fertilizer-theme .t-badge-icon { background: var(--amber-soft); color: var(--amber); }
         .prevention-theme .t-badge-icon { background: var(--sky-soft); color: var(--sky); }
 
-        .treatment-body {
+        .treatment-body {\n            letter-spacing: -0.01em;\n            line-height: 1.6;\n
             font-size: 0.92rem;
             color: var(--text-body);
             line-height: 1.7;
@@ -702,7 +713,7 @@ Here is the upgraded, modern, and farmer-friendly UI code for your **Crop Analys
            PRINT STYLESHEET (CLEAN PRESCRIPTION PRINTOUT)
         ======================================================== */
         @media print {
-            body { background: white; font-size: 12pt; }
+            body {\n            letter-spacing: -0.01em;\n            line-height: 1.6;\n background: white; font-size: 12pt; }
             .container { padding: 0; max-width: 100%; }
             .voice-station, .btn-card-audio, .action-bar-card, .soundwave { display: none !important; }
             .hero-header { background: #15803d !important; color: white !important; -webkit-print-color-adjust: exact; }
@@ -752,7 +763,7 @@ Here is the upgraded, modern, and farmer-friendly UI code for your **Crop Analys
     </div>
 
     <!-- ========================================================
-         VOICE ASSISTANT STATION (AUDIO CONTROLLER)
+         MULTILINGUAL VOICE ASSISTANT STATION
     ======================================================== -->
     <section class="voice-station">
         <div class="voice-station-header">
@@ -761,11 +772,22 @@ Here is the upgraded, modern, and farmer-friendly UI code for your **Crop Analys
                     🎙️
                 </div>
                 <div>
-                    <h2>किसान साथी AI - हिंदी वॉइस असिस्टेंट</h2>
-                    <p>पूरी रिपोर्ट और दवाओं की जानकारी साफ हिंदी में सुनें</p>
+                    <h2 id="voiceTitle" data-i18n="voice_title">Voice Assistant</h2>
+                    <p id="voiceSubtitle" data-i18n="voice_subtitle">Listen to the full crop analysis report in your language.</p>
                 </div>
             </div>
-
+            <!-- Language Picker -->
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <label style="font-size: 18px;font-weight:700;color:#166534;" for="voiceLangSelect" data-i18n="voice_select_lang">Voice Language</label>
+                <select id="voiceLangSelect" class="ks-voice-lang-select">
+                    <option value="hi">Hindi</option>
+                    <option value="bn">Bengali</option>
+                    <option value="mr">Marathi</option>
+                    <option value="te">Telugu</option>
+                    <option value="ta">Tamil</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
             <!-- Animated Soundwave Visualizer -->
             <div class="soundwave" id="soundWaveBars" aria-hidden="true">
                 <div class="bar"></div>
@@ -777,25 +799,25 @@ Here is the upgraded, modern, and farmer-friendly UI code for your **Crop Analys
         </div>
 
         <div class="voice-controls-bar">
-            <button type="button" class="v-btn v-btn-play" id="speakReport">
-                🔊 पूरी रिपोर्ट सुनें (Listen All)
+            <button type="button" class="v-btn v-btn-play" id="speakReport" data-i18n="voice_speak_all">
+                Listen Full Report
             </button>
 
-            <button type="button" class="v-btn v-btn-secondary" id="pauseVoice">
-                ⏸ रोकें (Pause)
+            <button type="button" class="v-btn v-btn-secondary" id="pauseVoice" data-i18n="voice_pause">
+                Pause
             </button>
 
-            <button type="button" class="v-btn v-btn-secondary" id="resumeVoice">
-                ▶ दोबारा शुरू (Resume)
+            <button type="button" class="v-btn v-btn-secondary" id="resumeVoice" data-i18n="voice_resume">
+                Resume
             </button>
 
-            <button type="button" class="v-btn v-btn-stop" id="stopVoice">
-                ⏹ बंद करें (Stop)
+            <button type="button" class="v-btn v-btn-stop" id="stopVoice" data-i18n="voice_stop">
+                Stop
             </button>
         </div>
 
         <div class="voice-status-ticker" id="voiceStatus" role="status" aria-live="polite">
-            <span>⚡ हिंदी वॉइस असिस्टेंट तैयार है। रिपोर्ट सुनने के लिए ऊपर दिए गए बटन को दबाएं।</span>
+            <span data-i18n="voice_ready">Voice ready. Press the button to listen.</span>
         </div>
     </section>
 
@@ -967,6 +989,9 @@ Here is the upgraded, modern, and farmer-friendly UI code for your **Crop Analys
             <button type="button" class="action-btn action-btn-secondary" onclick="window.print();">
                 🖨️ पर्ची प्रिंट करें (Print Report)
             </button>
+            <button type="button" class="action-btn action-btn-primary" onclick="downloadColorPDF();" style="background: var(--sky); box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);">
+                📄 Download PDF (Color)
+            </button>
 
             <a href="{% url 'prediction:history' %}" class="action-btn action-btn-secondary">
                 📜 पुराना रिकॉर्ड (History)
@@ -981,195 +1006,222 @@ Here is the upgraded, modern, and farmer-friendly UI code for your **Crop Analys
 </div>
 
 <!-- ========================================================
-     ENHANCED HINDI SPEECH SYNTHESIS CONTROLLER
+     MULTILINGUAL SPEECH SYNTHESIS CONTROLLER
 ======================================================== -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    const synth = window.speechSynthesis;
-    const statusElement = document.getElementById("voiceStatus");
-    const speakButton = document.getElementById("speakReport");
-    const pauseButton = document.getElementById("pauseVoice");
-    const resumeButton = document.getElementById("resumeVoice");
-    const stopButton = document.getElementById("stopVoice");
-    const soundWave = document.getElementById("soundWaveBars");
-    const sectionButtons = document.querySelectorAll("[data-voice-section]");
-    const allCards = document.querySelectorAll(".treatment-card");
+    var synth       = window.speechSynthesis;
+    var statusEl    = document.getElementById("voiceStatus");
+    var speakBtn    = document.getElementById("speakReport");
+    var pauseBtn    = document.getElementById("pauseVoice");
+    var resumeBtn   = document.getElementById("resumeVoice");
+    var stopBtn     = document.getElementById("stopVoice");
+    var soundWave   = document.getElementById("soundWaveBars");
+    var langSelect  = document.getElementById("voiceLangSelect");
+    var sectionBtns = document.querySelectorAll("[data-voice-section]");
+    var allCards    = document.querySelectorAll(".treatment-card");
 
-    let hindiVoice = null;
-    const HINDI_LANGUAGE = "hi-IN";
+    var i18n = window.KsI18n;
 
-    // 1. Browser Capability Check
+    /* ── Set selector to current app language ── */
+    function getSelectedLang() {
+        return langSelect ? langSelect.value : (i18n ? i18n.getCurrentLang() : "hi");
+    }
+
+    if (langSelect && i18n) {
+        langSelect.value = i18n.getCurrentLang();
+        document.addEventListener("ks:langchange", function(e) {
+            langSelect.value = e.detail.lang;
+        });
+    }
+
+    /* ── Voice Lang for Web Speech API ── */
+    var VOICE_LANGS = {
+        en: "en-US", hi: "hi-IN", bn: "bn-IN", mr: "mr-IN", te: "te-IN", ta: "ta-IN"
+    };
+
+    /* ── Browser capability check ── */
     if (!synth || !("SpeechSynthesisUtterance" in window)) {
-        statusElement.innerHTML = "<span>⚠️ आपका ब्राउज़र वॉइस सुविधा को सपोर्ट नहीं करता।</span>";
-        speakButton.disabled = true;
-        sectionButtons.forEach(btn => btn.disabled = true);
+        if (statusEl) statusEl.innerHTML = "<span>" + (i18n ? i18n.t("voice_no_support") : "Browser does not support voice.") + "</span>";
+        if (speakBtn) speakBtn.disabled = true;
+        sectionBtns.forEach(function(b){ b.disabled = true; });
         return;
     }
 
-    // 2. Load Hindi Voice
-    function loadHindiVoice() {
-        const voices = synth.getVoices();
-        hindiVoice = voices.find(v => v.lang.toLowerCase() === "hi-in") || 
-                     voices.find(v => v.lang.toLowerCase().startsWith("hi"));
-
-        if (hindiVoice) {
-            statusElement.innerHTML = `<span>✅ स्पष्ट हिंदी आवाज उपलब्ध है (${hindiVoice.name})। रिपोर्ट सुनने के लिए बटन दबाएं।</span>`;
-        } else {
-            statusElement.innerHTML = "<span>ℹ️ डिवाइस डिफॉल्ट आवाज से हिंदी सुनाई जाएगी।</span>";
-        }
+    /* ── Helper: find best voice for language ── */
+    function getVoiceForLang(lang) {
+        var target = VOICE_LANGS[lang] || "hi-IN";
+        var voices = synth.getVoices();
+        return voices.find(function(v){ return v.lang.toLowerCase() === target.toLowerCase(); }) ||
+               voices.find(function(v){ return v.lang.toLowerCase().startsWith(target.split("-")[0]); }) ||
+               null;
     }
 
-    loadHindiVoice();
-    if ("onvoiceschanged" in synth) {
-        synth.onvoiceschanged = loadHindiVoice;
-    }
-
-    // Helper: Extract Clean Text
+    /* ── Helper: extract text from element ── */
     function getText(id) {
-        const el = document.getElementById(id);
+        var el = document.getElementById(id);
         return el ? el.innerText.replace(/\s+/g, " ").trim() : "";
     }
 
-    function cleanForSpeech(text) {
-        return text
-            .replace(/%/g, " प्रतिशत ")
-            .replace(/\//g, " या ")
-            .replace(/\s+/g, " ")
-            .trim();
+    function cleanText(text) {
+        return text.replace(/%/g, " percent ").replace(/\//g, " or ").replace(/\s+/g, " ").trim();
     }
 
-    function clearActiveCardHighlight() {
-        allCards.forEach(c => c.classList.remove("audio-active"));
+    /* ── Multilingual report texts ── */
+    function buildReport(lang) {
+        var disease    = cleanText(getText("diseaseName"));
+        var confidence = cleanText(getText("confidenceValue"));
+        var severity   = cleanText(getText("severityText"));
+        var organic    = cleanText(getText("organicText"));
+        var chemical   = cleanText(getText("chemicalText"));
+        var fertilizer = cleanText(getText("fertilizerText"));
+        var prevention = cleanText(getText("preventionText"));
+
+        var intros = {
+            hi: "नमस्कार किसान भाई। किसान साथी एआई रिपोर्ट: बीमारी: " + disease + "। गंभीरता: " + severity + "। विश्वास स्तर: " + confidence + "। जैविक उपचार: " + organic + "। रासायनिक उपचार: " + chemical + "। खाद सलाह: " + fertilizer + "। बचाव उपाय: " + prevention + "। धन्यवाद।",
+            bn: "নমস্কার কৃষক ভাই। কিষান সাথী এআই রিপোর্ট: রোগ: " + disease + "। তীব্রতা: " + severity + "। আস্থা স্তর: " + confidence + "। জৈব চিকিৎসা: " + organic + "। রাসায়নিক চিকিৎসা: " + chemical + "। সার পরামর্শ: " + fertilizer + "। প্রতিরোধ: " + prevention + "। ধন্যবাদ।",
+            mr: "नमस्कार शेतकरी बंधू। किसान साथी एआय अहवाल: रोग: " + disease + "। तीव्रता: " + severity + "। आत्मविश्वास: " + confidence + "। सेंद्रिय उपचार: " + organic + "। रासायनिक उपचार: " + chemical + "। खत सल्ला: " + fertilizer + "। प्रतिबंध: " + prevention + "। धन्यवाद।",
+            te: "నమస్కారం రైతు అన్న. కిసాన్ సాథి AI నివేదిక: వ్యాధి: " + disease + ". తీవ్రత: " + severity + ". నమ్మకం స్థాయి: " + confidence + ". సేంద్రియ చికిత్స: " + organic + ". రసాయన చికిత్స: " + chemical + ". ఎరువు సలహా: " + fertilizer + ". నివారణ: " + prevention + ". ధన్యవాదాలు.",
+            ta: "வணக்கம் விவசாயி. கிசான் சாதி AI அறிக்கை: நோய்: " + disease + ". தீவிரம்: " + severity + ". நம்பகத்தன்மை: " + confidence + ". இயற்கை சிகிச்சை: " + organic + ". இரசாயன சிகிச்சை: " + chemical + ". உர ஆலோசனை: " + fertilizer + ". தடுப்பு: " + prevention + ". நன்றி.",
+            en: "Hello farmer. KisanSathi AI Report: Disease: " + disease + ". Severity: " + severity + ". Confidence: " + confidence + ". Organic treatment: " + organic + ". Chemical treatment: " + chemical + ". Fertilizer advice: " + fertilizer + ". Prevention: " + prevention + ". Thank you."
+        };
+        return intros[lang] || intros["hi"];
     }
 
-    function setVisualSpeaking(active, cardId = null) {
+    /* ── Visual helpers ── */
+    function clearHighlight() {
+        allCards.forEach(function(c){ c.classList.remove("audio-active"); });
+    }
+
+    function setVisualSpeaking(active, cardId) {
         if (active) {
             soundWave.classList.add("speaking");
             if (cardId) {
-                clearActiveCardHighlight();
-                const card = document.getElementById(cardId);
-                if (card) {
-                    card.classList.add("audio-active");
-                    card.scrollIntoView({ behavior: "smooth", block: "nearest" });
-                }
+                clearHighlight();
+                var card = document.getElementById(cardId);
+                if (card) { card.classList.add("audio-active"); card.scrollIntoView({ behavior: "smooth", block: "nearest" }); }
             }
         } else {
             soundWave.classList.remove("speaking");
-            clearActiveCardHighlight();
+            clearHighlight();
         }
     }
 
-    // 3. Build Full Natural Hindi Prescription
-    function buildHindiReport() {
-        const disease = cleanForSpeech(getText("diseaseName"));
-        const confidence = cleanForSpeech(getText("confidenceValue"));
-        const severity = cleanForSpeech(getText("severityText"));
-        const organic = cleanForSpeech(getText("organicText"));
-        const chemical = cleanForSpeech(getText("chemicalText"));
-        const fertilizer = cleanForSpeech(getText("fertilizerText"));
-        const prevention = cleanForSpeech(getText("preventionText"));
-
-        return `
-            नमस्कार किसान भाई। किसान साथी एआई में आपका स्वागत है।
-            आपकी फसल की जांच रिपोर्ट इस प्रकार है:
-            पहचानी गई बीमारी: ${disease}।
-            इसकी गंभीरता: ${severity} है, और विश्वास स्तर: ${confidence} है।
-            
-            अब मुख्य उपचार ध्यान से सुनें:
-            जैविक उपचार: ${organic}।
-            रासायनिक उपचार: ${chemical}।
-            खाद और पोषण सलाह: ${fertilizer}।
-            भविष्य में बचाव के उपाय: ${prevention}।
-            
-            कृपया कीटनाशक का प्रयोग करते समय सुरक्षा नियमों का पालन करें। धन्यवाद!
-        `;
-    }
-
-    // 4. Play Speech Function
-    function speakHindi(text, title, cardId = null) {
+    /* ── Core speak function ── */
+    function speakText(text, cardId) {
         if (!text || !text.trim()) {
-            statusElement.innerHTML = "<span>⚠️ सुनाने के लिए कोई जानकारी उपलब्ध नहीं है।</span>";
+            if (statusEl) statusEl.innerHTML = "<span>No content to speak.</span>";
             return;
         }
+        var lang  = getSelectedLang();
+        var voice = getVoiceForLang(lang);
 
         synth.cancel();
-        loadHindiVoice();
 
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = HINDI_LANGUAGE;
-        utterance.rate = 0.88; // Slightly relaxed pace for easy understanding
-        utterance.pitch = 1.0;
-        utterance.volume = 1.0;
+        var utt  = new SpeechSynthesisUtterance(text);
+        utt.lang   = VOICE_LANGS[lang] || "hi-IN";
+        utt.rate   = 0.88;
+        utt.pitch  = 1.0;
+        utt.volume = 1.0;
+        if (voice) utt.voice = voice;
 
-        if (hindiVoice) {
-            utterance.voice = hindiVoice;
-        }
-
-        utterance.onstart = function () {
+        utt.onstart = function() {
             setVisualSpeaking(true, cardId);
-            statusElement.innerHTML = `<span>🔊 सुनाया जा रहा है: <strong>${title}</strong>...</span>`;
+            if (statusEl) statusEl.innerHTML = "<span>" + (i18n ? i18n.t("voice_speaking") : "Speaking...") + "</span>";
         };
-
-        utterance.onend = function () {
+        utt.onend = function() {
             setVisualSpeaking(false);
-            statusElement.innerHTML = "<span>✅ रिपोर्ट पूरी सुनाई जा चुकी है।</span>";
+            if (statusEl) statusEl.innerHTML = "<span>" + (i18n ? i18n.t("voice_done") : "Done.") + "</span>";
         };
-
-        utterance.onerror = function (e) {
+        utt.onerror = function(e) {
             if (e.error !== "canceled" && e.error !== "interrupted") {
                 setVisualSpeaking(false);
-                statusElement.innerHTML = "<span>⚠️ आवाज चलाने में समस्या हुई। कृपया पुनः प्रयास करें।</span>";
+                if (statusEl) statusEl.innerHTML = "<span>Error playing voice. Try again.</span>";
             }
         };
-
-        synth.speak(utterance);
+        synth.speak(utt);
     }
 
-    // 5. Button Listeners
-    speakButton.addEventListener("click", function () {
-        speakHindi(buildHindiReport(), "पूरी फसल रिपोर्ट", null);
-    });
-
-    pauseButton.addEventListener("click", function () {
+    /* ── Button listeners ── */
+    if (speakBtn) speakBtn.addEventListener("click", function() { speakText(buildReport(getSelectedLang()), null); });
+    if (pauseBtn) pauseBtn.addEventListener("click", function() {
         if (synth.speaking && !synth.paused) {
-            synth.pause();
-            soundWave.classList.remove("speaking");
-            statusElement.innerHTML = "<span>⏸ आवाज रोक दी गई है (Paused)।</span>";
+            synth.pause(); soundWave.classList.remove("speaking");
+            if (statusEl) statusEl.innerHTML = "<span>" + (i18n ? i18n.t("voice_paused") : "Paused.") + "</span>";
         }
     });
-
-    resumeButton.addEventListener("click", function () {
+    if (resumeBtn) resumeBtn.addEventListener("click", function() {
         if (synth.paused) {
-            synth.resume();
-            soundWave.classList.add("speaking");
-            statusElement.innerHTML = "<span>▶ आवाज पुनः शुरू हो गई है।</span>";
+            synth.resume(); soundWave.classList.add("speaking");
+            if (statusEl) statusEl.innerHTML = "<span>" + (i18n ? i18n.t("voice_speaking") : "Speaking...") + "</span>";
         }
     });
-
-    stopButton.addEventListener("click", function () {
-        synth.cancel();
-        setVisualSpeaking(false);
-        statusElement.innerHTML = "<span>⏹ आवाज बंद कर दी गई है।</span>";
+    if (stopBtn) stopBtn.addEventListener("click", function() {
+        synth.cancel(); setVisualSpeaking(false);
+        if (statusEl) statusEl.innerHTML = "<span>" + (i18n ? i18n.t("voice_stopped") : "Stopped.") + "</span>";
     });
 
-    // Individual Section Buttons
-    sectionButtons.forEach(button => {
-        button.addEventListener("click", function () {
-            const sectionId = button.dataset.voiceSection;
-            const cardId = button.dataset.voiceCard;
-            const title = button.dataset.voiceTitle;
-            const text = getText(sectionId);
-
-            speakHindi(text, title, cardId);
+    /* ── Individual section buttons ── */
+    sectionBtns.forEach(function(button) {
+        button.addEventListener("click", function() {
+            var sectionId = button.dataset.voiceSection;
+            var cardId    = button.dataset.voiceCard;
+            speakText(cleanText(getText(sectionId)), cardId);
         });
     });
 
-    // Cleanup when navigating away
-    window.addEventListener("pagehide", function () {
-        synth.cancel();
+    /* ── Re-apply i18n on lang change ── */
+    document.addEventListener("ks:langchange", function(e) {
+        if (langSelect) langSelect.value = e.detail.lang;
+        if (i18n) i18n.applyLang(e.detail.lang);
     });
+
+    /* ── Cleanup ── */
+    window.addEventListener("pagehide", function() { synth.cancel(); });
 });
 </script>
 
+
+<!-- HTML2PDF Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+function downloadColorPDF() {
+    var element = document.querySelector('.container');
+    
+    // Temporarily hide elements not meant for PDF
+    var actionBar = document.querySelector('.action-bar-card');
+    var voiceStation = document.querySelector('.voice-station');
+    var audioBtns = document.querySelectorAll('.btn-card-audio');
+    
+    var originalActionBarDisplay = actionBar ? actionBar.style.display : '';
+    var originalVoiceStationDisplay = voiceStation ? voiceStation.style.display : '';
+    var originalAudioBtnsDisplay = [];
+    
+    if (actionBar) actionBar.style.display = 'none';
+    if (voiceStation) voiceStation.style.display = 'none';
+    audioBtns.forEach((btn, i) => {
+        originalAudioBtnsDisplay[i] = btn.style.display;
+        btn.style.display = 'none';
+    });
+    
+    var opt = {
+      margin:       0.3,
+      filename:     'KisanSathi_Crop_Report.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true },
+      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+    
+    html2pdf().set(opt).from(element).save().then(() => {
+        // Restore elements
+        if (actionBar) actionBar.style.display = originalActionBarDisplay;
+        if (voiceStation) voiceStation.style.display = originalVoiceStationDisplay;
+        audioBtns.forEach((btn, i) => {
+            btn.style.display = originalAudioBtnsDisplay[i];
+        });
+    });
+}
+</script>
 </body>
+
 </html>

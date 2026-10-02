@@ -31,3 +31,14 @@ Thumbs.db
 # Python tools
 .pytest_cache/
 .mypy_cache/
+
+# Temporary / Scratch automation scripts
+add_dark_mode.py
+add_pwa_btn.py
+add_reviews.py
+enhance_dark_mode.py
+fix_ui.py
+update_pwa.py
+update_ui.py
+update_voice.py
+dummy.wav

@@ -6,17 +6,43 @@
     <title>KisanSathi AI | Dashboard</title>
 
     <style>
+        
         :root {
-            --green: #168044;
-            --green-dark: #0e542f;
-            --green-light: #eaf7ee;
-            --bg: #f5f8f5;
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --bg-color: #fafafa;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #94a3b8;
+            --border-color: #f1f5f9;
+            --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 40px rgba(16, 185, 129, 0.08);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --green: var(--primary);
+            --green-dark: var(--primary-dark);
+            --green-deep: #06472d;
+            --green-soft: #ecfdf5;
+            --green-light: #f0fdf4;
+            --background: var(--bg-color);
             --white: #ffffff;
-            --text: #173624;
-            --muted: #78877d;
-            --border: #e4ece5;
-            --sidebar-width: 250px;
+            --text: var(--text-main);
+            --muted: var(--text-muted);
+            --border: var(--border-color);
+            --yellow: var(--accent);
+            --yellow-soft: #fffbeb;
+            --blue: #3b82f6;
+            --blue-soft: #eff6ff;
+            --orange: #f97316;
+            --orange-soft: #fff7ed;
+            --red: #ef4444;
+            --red-soft: #fef2f2;
         }
+    
 
         * {
             box-sizing: border-box;
@@ -24,7 +50,7 @@
             padding: 0;
         }
 
-        body {
+        body {\n            letter-spacing: -0.01em;\n            line-height: 1.6;\n
             font-family: Inter, "Segoe UI", Arial, sans-serif;
             background: var(--bg);
             color: var(--text);
@@ -80,7 +106,7 @@
         .brand small {
             display: block;
             color: var(--muted);
-            font-size: 10px;
+            font-size: 24px;
             letter-spacing: 1px;
             margin-top: 3px;
         }
@@ -89,7 +115,7 @@
             margin: 32px 0 12px;
             padding: 0 13px;
             color: #9aa69d;
-            font-size: 10px;
+            font-size: 24px;
             font-weight: 800;
             letter-spacing: 1.2px;
         }
@@ -106,7 +132,7 @@
             padding: 12px 13px;
             border-radius: 11px;
             color: #627268;
-            font-size: 13px;
+            font-size: 20px;
             font-weight: 650;
             transition: .2s;
         }
@@ -124,7 +150,7 @@
         .nav-icon {
             width: 23px;
             text-align: center;
-            font-size: 17px;
+            font-size: 28px;
         }
 
         .sidebar-bottom {
@@ -143,13 +169,13 @@
             display: block;
             margin-top: 10px;
             color: var(--green-dark);
-            font-size: 13px;
+            font-size: 20px;
         }
 
         .help-card p {
             margin-top: 6px;
             color: #6b7d70;
-            font-size: 11px;
+            font-size: 26px;
             line-height: 1.6;
         }
 
@@ -157,7 +183,7 @@
             display: inline-block;
             margin-top: 12px;
             color: var(--green);
-            font-size: 11px;
+            font-size: 26px;
             font-weight: 800;
         }
 
@@ -183,14 +209,14 @@
 
         .profile-mini strong {
             display: block;
-            font-size: 12px;
+            font-size: 18px;
         }
 
         .profile-mini small {
             display: block;
             margin-top: 4px;
             color: var(--muted);
-            font-size: 10px;
+            font-size: 24px;
         }
 
         .main {
@@ -222,7 +248,7 @@
 
         .breadcrumb {
             color: var(--muted);
-            font-size: 12px;
+            font-size: 18px;
         }
 
         .breadcrumb strong {
@@ -252,7 +278,7 @@
             border: 0;
             outline: 0;
             color: var(--text);
-            font-size: 12px;
+            font-size: 18px;
         }
 
         .icon-button {
@@ -262,7 +288,7 @@
             border: 1px solid var(--border);
             border-radius: 11px;
             background: white;
-            font-size: 17px;
+            font-size: 28px;
         }
 
         .page-heading {
@@ -282,7 +308,7 @@
         .page-heading p {
             margin-top: 7px;
             color: var(--muted);
-            font-size: 13px;
+            font-size: 20px;
         }
 
         .date-chip {
@@ -291,7 +317,7 @@
             border-radius: 11px;
             background: white;
             color: #64766a;
-            font-size: 12px;
+            font-size: 18px;
             font-weight: 650;
         }
 
@@ -327,7 +353,7 @@
 
         .welcome-tag {
             color: #d5f5de;
-            font-size: 10px;
+            font-size: 24px;
             font-weight: 800;
             letter-spacing: 1px;
             text-transform: uppercase;
@@ -341,7 +367,7 @@
         .welcome-banner p {
             margin-top: 9px;
             color: #d7eee0;
-            font-size: 12px;
+            font-size: 18px;
             line-height: 1.6;
         }
 
@@ -352,7 +378,7 @@
             border-radius: 11px;
             background: white;
             color: var(--green-dark);
-            font-size: 12px;
+            font-size: 18px;
             font-weight: 800;
             white-space: nowrap;
         }
@@ -403,7 +429,7 @@
         .stat-label {
             margin-top: 17px;
             color: #829087;
-            font-size: 11px;
+            font-size: 26px;
             font-weight: 700;
         }
 
@@ -417,7 +443,7 @@
         .stat-foot {
             margin-top: 8px;
             color: #7a8b80;
-            font-size: 10px;
+            font-size: 24px;
         }
 
         .dashboard-grid {
@@ -427,7 +453,7 @@
             margin-bottom: 18px;
         }
 
-        .card-body {
+        .card-body {\n            letter-spacing: -0.01em;\n            line-height: 1.6;\n
             padding: 20px;
         }
 
@@ -440,18 +466,18 @@
 
         .card-heading h2 {
             color: #21442e;
-            font-size: 15px;
+            font-size: 24px;
         }
 
         .card-heading p {
             margin-top: 5px;
             color: var(--muted);
-            font-size: 11px;
+            font-size: 26px;
         }
 
         .text-link {
             color: var(--green);
-            font-size: 11px;
+            font-size: 26px;
             font-weight: 800;
         }
 
@@ -470,7 +496,7 @@
         .weather-location,
         .weather-desc {
             color: #75857a;
-            font-size: 12px;
+            font-size: 18px;
         }
 
         .weather-temp {
@@ -506,14 +532,14 @@
         .weather-detail span {
             display: block;
             color: #859389;
-            font-size: 10px;
+            font-size: 24px;
         }
 
         .weather-detail strong {
             display: block;
             margin-top: 6px;
             color: #254b32;
-            font-size: 13px;
+            font-size: 20px;
         }
 
         .quick-actions {
@@ -551,14 +577,14 @@
 
         .quick-action strong {
             display: block;
-            font-size: 12px;
+            font-size: 18px;
         }
 
         .quick-action small {
             display: block;
             margin-top: 4px;
             color: var(--muted);
-            font-size: 10px;
+            font-size: 24px;
         }
 
         .activity-list {
@@ -581,7 +607,7 @@
             place-items: center;
             border-radius: 12px;
             background: #f0f7f1;
-            font-size: 17px;
+            font-size: 28px;
         }
 
         .activity-text {
@@ -590,18 +616,18 @@
 
         .activity-text strong {
             display: block;
-            font-size: 12px;
+            font-size: 18px;
         }
 
         .activity-text p {
             margin-top: 4px;
             color: var(--muted);
-            font-size: 11px;
+            font-size: 26px;
         }
 
         .activity-time {
             color: var(--green);
-            font-size: 10px;
+            font-size: 24px;
             font-weight: 700;
         }
 
@@ -623,20 +649,20 @@
 
         .advisory-item strong {
             display: block;
-            font-size: 12px;
+            font-size: 18px;
         }
 
         .advisory-item p {
             margin-top: 4px;
             color: var(--muted);
-            font-size: 11px;
+            font-size: 26px;
             line-height: 1.5;
         }
 
         .footer-note {
             margin-top: 25px;
             color: #9aa69d;
-            font-size: 10px;
+            font-size: 24px;
             text-align: center;
         }
 
@@ -694,14 +720,14 @@
 
         .karran-head strong {
             display: block;
-            font-size: 15px;
+            font-size: 24px;
         }
 
         .karran-head small {
             display: block;
             margin-top: 4px;
             color: #d5f5de;
-            font-size: 11px;
+            font-size: 26px;
         }
 
         #karran-close {
@@ -725,7 +751,7 @@
             max-width: 85%;
             padding: 11px 13px;
             border-radius: 14px;
-            font-size: 13px;
+            font-size: 20px;
             line-height: 1.55;
             overflow-wrap: anywhere;
             white-space: pre-wrap;
@@ -761,7 +787,7 @@
             border: 1px solid #dce7de;
             border-radius: 10px;
             outline: none;
-            font-size: 12px;
+            font-size: 18px;
         }
 
         #karran-input:focus {
@@ -774,7 +800,7 @@
             border-radius: 10px;
             background: var(--green);
             color: white;
-            font-size: 12px;
+            font-size: 18px;
             font-weight: 700;
         }
 
@@ -787,7 +813,7 @@
             padding: 0 12px 11px;
             background: white;
             color: #849187;
-            font-size: 10px;
+            font-size: 24px;
             line-height: 1.4;
             text-align: center;
         }
@@ -1549,7 +1575,7 @@ To enable automatic weather data, uncomment and set your city:
     color: white;
     padding: 18px 22px;
     border-radius: 50px;
-    font-size: 16px;
+    font-size: 26px;
     font-weight: bold;
     box-shadow: 0 5px 20px #0003;
 ">

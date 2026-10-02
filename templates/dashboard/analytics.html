@@ -1,0 +1,701 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analytics Dashboard | KisanSathi AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --bg-color: #fafafa;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #94a3b8;
+            --border-color: #f1f5f9;
+            --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 40px rgba(16, 185, 129, 0.08);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --green: var(--primary);
+            --green-dark: var(--primary-dark);
+            --green-deep: #06472d;
+            --green-soft: #ecfdf5;
+            --green-light: #f0fdf4;
+            --background: var(--bg-color);
+            --white: #ffffff;
+            --text: var(--text-main);
+            --muted: var(--text-muted);
+            --border: var(--border-color);
+            --yellow: var(--accent);
+            --yellow-soft: #fffbeb;
+            --blue: #3b82f6;
+            --blue-soft: #eff6ff;
+            --orange: #f97316;
+            --orange-soft: #fff7ed;
+            --red: #ef4444;
+            --red-soft: #fef2f2;
+        }
+    
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar-w);min-height:100vh;background:var(--white);
+  border-right:1px solid var(--border);display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;z-index:100;
+}
+.sidebar-brand{display:flex;align-items:center;gap:10px;padding:22px 20px;border-bottom:1px solid var(--border);}
+.brand-circle{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--green-light));
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+.brand-name{font-weight:800;font-size:1rem;color:var(--text);}
+.nav{flex:1;padding:16px 12px;display:flex;flex-direction:column;gap:4px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);
+  text-decoration:none;color:var(--muted);font-size:.88rem;font-weight:500;transition:all .15s;}
+.nav-item:hover{background:var(--green-pale);color:var(--green);}
+.nav-item.active{background:var(--green-soft);color:var(--green);font-weight:700;}
+.nav-icon{font-size:1rem;width:20px;text-align:center;}
+.sidebar-footer{padding:16px 20px;border-top:1px solid var(--border);}
+.user-chip{display:flex;align-items:center;gap:10px;}
+.user-avatar{width:34px;height:34px;border-radius:50%;background:var(--green);
+  color:#fff;font-weight:800;font-size:.95rem;display:flex;align-items:center;justify-content:center;}
+.user-info{flex:1;overflow:hidden;}
+.user-name{font-size:.84rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.user-role{font-size:.72rem;color:var(--muted);}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;}
+.topbar{
+  background:var(--white);border-bottom:1px solid var(--border);
+  padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;
+}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.topbar-title{font-size:1.1rem;font-weight:800;color:var(--text);}
+.topbar-subtitle{font-size:.78rem;color:var(--muted);font-weight:500;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;padding:8px 16px;
+  background:var(--green-pale);color:var(--green);border:1px solid var(--border);
+  border-radius:var(--radius-sm);font-size:.82rem;font-weight:700;text-decoration:none;
+  transition:all .15s;
+}
+.back-btn:hover{background:var(--green-soft);}
+.export-btn{
+  display:inline-flex;align-items:center;gap:6px;padding:8px 18px;
+  background:var(--green);color:#fff;border:none;
+  border-radius:var(--radius-sm);font-size:.82rem;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:background .15s;
+}
+.export-btn:hover{background:var(--green-dark);}
+
+/* ── CONTENT ── */
+.content{padding:24px 28px;flex:1;}
+
+/* ── KPI CARDS ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px;}
+.kpi-card{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px 18px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  transition:transform .15s;
+}
+.kpi-card:hover{transform:translateY(-2px);}
+.kpi-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--green),var(--green-light));
+}
+.kpi-card.yellow::before{background:linear-gradient(90deg,#d99b43,var(--yellow));}
+.kpi-card.blue::before{background:linear-gradient(90deg,#4a90c4,var(--blue));}
+.kpi-card.red::before{background:linear-gradient(90deg,#c0392b,var(--red));}
+.kpi-card.purple::before{background:linear-gradient(90deg,#7c5cbf,#a78bfa);}
+.kpi-icon{font-size:1.6rem;margin-bottom:10px;}
+.kpi-value{font-size:2.2rem;font-weight:900;color:var(--text);line-height:1;}
+.kpi-label{font-size:.75rem;font-weight:600;color:var(--muted);margin-top:6px;}
+.kpi-trend{font-size:.72rem;margin-top:8px;font-weight:600;}
+.kpi-trend.up{color:var(--green);}
+.kpi-trend.neutral{color:var(--blue);}
+.kpi-trend.down{color:var(--red);}
+
+/* ── SECTION TITLE ── */
+.section-title{font-size:.92rem;font-weight:800;color:var(--text);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;}
+.section-title span{font-size:.75rem;font-weight:600;color:var(--muted);margin-left:auto;}
+
+/* ── CHART GRIDS ── */
+.charts-row-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;margin-bottom:20px;}
+.charts-row-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.charts-row-full{margin-bottom:20px;}
+.chart-card{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px;box-shadow:var(--shadow);
+}
+.chart-wrap{position:relative;width:100%;}
+.chart-wrap canvas{width:100%!important;}
+
+/* ── DISEASE RANK LIST ── */
+.disease-list{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
+.disease-row{display:flex;align-items:center;gap:10px;}
+.disease-rank{
+  width:22px;height:22px;border-radius:50%;background:var(--green);
+  color:#fff;font-size:.68rem;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.disease-rank.r2{background:#22a75a;}
+.disease-rank.r3{background:#d99b43;}
+.disease-rank.r4{background:var(--blue);}
+.disease-rank.r5{background:var(--red);}
+.disease-meta{flex:1;}
+.disease-name{font-size:.82rem;font-weight:700;color:var(--text);margin-bottom:3px;}
+.disease-bar-wrap{background:var(--green-pale);border-radius:999px;height:6px;}
+.disease-bar{height:6px;border-radius:999px;background:linear-gradient(90deg,var(--green),var(--green-light));}
+.disease-count{font-size:.75rem;font-weight:800;color:var(--green);min-width:28px;text-align:right;}
+
+/* ── WEEKDAY HEATMAP ── */
+.heatmap-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:6px;}
+.heatmap-cell{
+  aspect-ratio:1;border-radius:8px;background:var(--green-pale);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  font-size:.7rem;font-weight:700;color:var(--muted);transition:all .2s;
+}
+.heatmap-cell.hot1{background:#d4edda;color:#18372a;}
+.heatmap-cell.hot2{background:#7dbd9a;color:#fff;}
+.heatmap-cell.hot3{background:#087443;color:#fff;}
+.heatmap-day{font-size:.62rem;font-weight:600;opacity:.75;}
+
+/* ── HISTORY TABLE ── */
+.table-card{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--radius);
+  padding:20px;box-shadow:var(--shadow);margin-bottom:32px;
+}
+.table-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+.filter-pills{display:flex;gap:8px;flex-wrap:wrap;}
+.pill{
+  font-size:.73rem;font-weight:700;padding:5px 14px;border-radius:999px;
+  border:1px solid var(--border);background:var(--white);color:var(--muted);
+  cursor:pointer;transition:all .15s;
+}
+.pill.active,.pill:hover{background:var(--green-soft);color:var(--green);border-color:#b6d9c0;}
+.search-box{
+  padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);
+  font-size:.82rem;font-family:inherit;color:var(--text);outline:none;
+  transition:border-color .15s;
+}
+.search-box:focus{border-color:var(--green);}
+.history-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+.history-table thead tr{background:var(--green-pale);}
+.history-table th{padding:10px 14px;text-align:left;color:var(--muted);font-weight:700;font-size:.74rem;text-transform:uppercase;letter-spacing:.03em;}
+.history-table tbody tr{border-bottom:1px solid var(--green-pale);transition:background .12s;}
+.history-table tbody tr:hover{background:var(--green-pale);}
+.history-table td{padding:11px 14px;color:var(--text);vertical-align:middle;}
+.pill-status{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:999px;font-size:.72rem;font-weight:700;}
+.pill-verified{background:#d4edda;color:#15803d;}
+.pill-pending{background:#fef9c3;color:#854d0e;}
+.pill-rejected{background:#fee2e2;color:#b91c1c;}
+.action-btn{
+  display:inline-flex;align-items:center;gap:4px;padding:4px 11px;
+  border-radius:8px;font-size:.72rem;font-weight:700;text-decoration:none;
+  transition:opacity .12s;margin-right:4px;
+}
+.action-btn:hover{opacity:.8;}
+.btn-pdf{background:var(--green-pale);color:var(--green);border:1px solid #b6d9c0;}
+.btn-view{background:var(--blue-soft);color:var(--blue);border:1px solid #c3dff0;}
+.empty-state{text-align:center;padding:48px 0;color:var(--muted);}
+.empty-state .empty-icon{font-size:3rem;margin-bottom:12px;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .sidebar{display:none;}
+  .main{margin-left:0;}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .charts-row-3{grid-template-columns:1fr;}
+  .charts-row-2{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ====================== SIDEBAR ====================== -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-circle">🌱</div>
+    <div class="brand-name">KisanSathi AI</div>
+  </div>
+  <nav class="nav">
+    <a href="/dashboard/" class="nav-item"><span class="nav-icon">⌂</span>Home</a>
+    <a href="/dashboard/analytics/" class="nav-item active"><span class="nav-icon">📊</span>Analytics</a>
+    <a href="/prediction/" class="nav-item"><span class="nav-icon">✦</span>Crop Analysis</a>
+    <a href="/weather/" class="nav-item"><span class="nav-icon">☁</span>Weather</a>
+    <a href="/soil-prediction/" class="nav-item"><span class="nav-icon">◈</span>Soil</a>
+    <a href="/mandi/" class="nav-item"><span class="nav-icon">₹</span>Market</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <div class="user-avatar">{{ user_initial }}</div>
+      <div class="user-info">
+        <div class="user-name">{{ username }}</div>
+        <div class="user-role">Farmer</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ====================== MAIN ====================== -->
+<main class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div>
+        <div class="topbar-title">📊 Analytics Dashboard</div>
+        <div class="topbar-subtitle">Your personal crop disease prediction insights</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <a href="/dashboard/" class="back-btn">← Back to Dashboard</a>
+      <button class="export-btn" onclick="window.print()">⬇ Export</button>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ──────────────────────────────────────────────
+         KPI CARDS
+    ────────────────────────────────────────────── -->
+    <div class="kpi-grid">
+
+      <div class="kpi-card">
+        <div class="kpi-icon">🔬</div>
+        <div class="kpi-value">{{ total }}</div>
+        <div class="kpi-label">Total Predictions</div>
+        <div class="kpi-trend neutral">All time analyses</div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon">✅</div>
+        <div class="kpi-value">{{ verified }}</div>
+        <div class="kpi-label">Expert Verified</div>
+        <div class="kpi-trend up">Confirmed by agronomists</div>
+      </div>
+
+      <div class="kpi-card yellow">
+        <div class="kpi-icon">⏳</div>
+        <div class="kpi-value">{{ pending }}</div>
+        <div class="kpi-label">Pending Review</div>
+        <div class="kpi-trend neutral">Awaiting expert</div>
+      </div>
+
+      <div class="kpi-card red">
+        <div class="kpi-icon">✗</div>
+        <div class="kpi-value">{{ rejected }}</div>
+        <div class="kpi-label">Rejected</div>
+        <div class="kpi-trend down">Needs re-analysis</div>
+      </div>
+
+      <div class="kpi-card purple">
+        <div class="kpi-icon">🎯</div>
+        <div class="kpi-value">{{ accuracy }}%</div>
+        <div class="kpi-label">Verification Rate</div>
+        <div class="kpi-trend up">Verified / Total</div>
+      </div>
+
+    </div>
+
+
+    <!-- ──────────────────────────────────────────────
+         ROW 1: Monthly Bar + Disease Doughnut + Status Donut
+    ────────────────────────────────────────────── -->
+    <div class="charts-row-3">
+
+      <!-- Monthly Activity Bar Chart -->
+      <div class="chart-card">
+        <div class="section-title">📅 Monthly Predictions <span>Last 12 months</span></div>
+        <div class="chart-wrap" style="height:220px;">
+          <canvas id="monthlyChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Disease Doughnut -->
+      <div class="chart-card">
+        <div class="section-title">🦠 Disease Mix</div>
+        <div class="chart-wrap" style="height:220px;">
+          <canvas id="diseasePieChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Status Donut -->
+      <div class="chart-card">
+        <div class="section-title">📋 Status Split</div>
+        <div class="chart-wrap" style="height:220px;">
+          <canvas id="statusDonutChart"></canvas>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ──────────────────────────────────────────────
+         ROW 2: Weekly Line + Crop Horizontal Bar
+    ────────────────────────────────────────────── -->
+    <div class="charts-row-2">
+
+      <!-- Weekly Line Chart -->
+      <div class="chart-card">
+        <div class="section-title">📈 Weekly Submission Trend <span>Last 8 weeks</span></div>
+        <div class="chart-wrap" style="height:200px;">
+          <canvas id="weeklyLineChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Crop Distribution Bar -->
+      <div class="chart-card">
+        <div class="section-title">🌾 Crops Analysed</div>
+        <div class="chart-wrap" style="height:200px;">
+          <canvas id="cropBarChart"></canvas>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ──────────────────────────────────────────────
+         ROW 3: Stacked Trend + Weekday Heatmap + Top Diseases
+    ────────────────────────────────────────────── -->
+    <div class="charts-row-3">
+
+      <!-- Verified vs Rejected Stacked Bar -->
+      <div class="chart-card">
+        <div class="section-title">📊 Verified vs Rejected Trend <span>Last 6 months</span></div>
+        <div class="chart-wrap" style="height:210px;">
+          <canvas id="trendStackedChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Weekday Heatmap -->
+      <div class="chart-card">
+        <div class="section-title">📆 Activity by Day of Week</div>
+        <div class="heatmap-grid" id="heatmapGrid">
+          <!-- Rendered by JS below -->
+        </div>
+      </div>
+
+      <!-- Top Diseases Rank -->
+      <div class="chart-card">
+        <div class="section-title">🏆 Top Diseases Detected</div>
+        {% if top_diseases %}
+        <div class="disease-list">
+          {% for d in top_diseases %}
+          <div class="disease-row">
+            <div class="disease-rank r{{ forloop.counter }}">{{ forloop.counter }}</div>
+            <div class="disease-meta">
+              <div class="disease-name">{{ d.name }}</div>
+              <div class="disease-bar-wrap">
+                <div class="disease-bar" style="width:{{ d.pct }}%;"></div>
+              </div>
+            </div>
+            <div class="disease-count">{{ d.count }}×</div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div style="color:var(--muted);font-size:.85rem;margin-top:12px;">No disease data yet.</div>
+        {% endif %}
+      </div>
+
+    </div>
+
+
+    <!-- ──────────────────────────────────────────────
+         FULL HISTORY TABLE
+    ────────────────────────────────────────────── -->
+    <div class="table-card">
+      <div class="table-toolbar">
+        <div>
+          <div class="section-title" style="margin-bottom:0;">📋 Complete Analysis History</div>
+          <div style="font-size:.76rem;color:var(--muted);margin-top:3px;">All your crop disease prediction reports</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div class="filter-pills">
+            <button class="pill active" onclick="filterTable('all',this)">All ({{ total }})</button>
+            <button class="pill" onclick="filterTable('verified',this)">✔ Verified</button>
+            <button class="pill" onclick="filterTable('sent_to_expert',this)">⏳ Pending</button>
+            <button class="pill" onclick="filterTable('rejected',this)">✗ Rejected</button>
+          </div>
+          <input type="text" class="search-box" id="tableSearch" placeholder="🔍 Search disease…" oninput="searchTable(this.value)">
+        </div>
+      </div>
+
+      {% if history %}
+      <div style="overflow-x:auto;">
+      <table class="history-table" id="historyTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Date</th>
+            <th>Crop</th>
+            <th>Disease Detected</th>
+            <th>AI Confidence</th>
+            <th>Status</th>
+            <th>Expert</th>
+            <th style="text-align:right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody">
+          {% for a in history %}
+          <tr class="trow" data-status="{{ a.status }}" data-disease="{{ a.final_disease|lower }}">
+            <td style="color:var(--muted);font-weight:600;">#{{ a.pk }}</td>
+            <td style="font-weight:500;">{{ a.created_at|date:"d M Y" }}</td>
+            <td>{{ a.ai_crop|default:"—" }}</td>
+            <td style="font-weight:700;">
+              {% if a.final_disease %}{{ a.final_disease }}{% else %}<span style="color:var(--muted);">—</span>{% endif %}
+            </td>
+            <td>
+              {% if a.ai_confidence %}
+              <span style="font-weight:800;color:var(--green);">{{ a.ai_confidence }}</span>
+              {% else %}<span style="color:var(--muted);">—</span>{% endif %}
+            </td>
+            <td>
+              {% if a.status == "verified" %}
+              <span class="pill-status pill-verified">● Verified</span>
+              {% elif a.status == "sent_to_expert" %}
+              <span class="pill-status pill-pending">● Pending</span>
+              {% else %}
+              <span class="pill-status pill-rejected">● Rejected</span>
+              {% endif %}
+            </td>
+            <td style="font-size:.75rem;color:var(--muted);">
+              {% if a.expert %}{{ a.expert.get_full_name|default:a.expert.username }}{% else %}—{% endif %}
+            </td>
+            <td style="text-align:right;">
+              <a href="{% url 'prediction:download_pdf' a.pk %}" class="action-btn btn-pdf" title="Download PDF">📄 PDF</a>
+              <a href="{% url 'prediction:analysis_status' a.pk %}" class="action-btn btn-view" title="View Details">👁 View</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">🌿</div>
+        <div style="font-weight:700;font-size:1rem;color:var(--text);">No analyses yet</div>
+        <div style="font-size:.84rem;margin-top:6px;">Upload a crop leaf photo to get your first prediction!</div>
+        <a href="/prediction/"
+           style="display:inline-block;margin-top:16px;padding:10px 24px;background:var(--green);color:#fff;
+                  border-radius:var(--radius-sm);font-size:.88rem;font-weight:700;text-decoration:none;">
+          Start Analysis →
+        </a>
+      </div>
+      {% endif %}
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+
+<!-- ====================== CHART.JS SCRIPTS ====================== -->
+<script>
+// ── Data from Django ──
+const monthlyLabels  = {{ monthly_labels_json|safe }};
+const monthlyData    = {{ monthly_data_json|safe }};
+const diseaseLabels  = {{ disease_labels_json|safe }};
+const diseaseData    = {{ disease_data_json|safe }};
+const statusLabels   = {{ status_labels_json|safe }};
+const statusData     = {{ status_data_json|safe }};
+const cropLabels     = {{ crop_labels_json|safe }};
+const cropData       = {{ crop_data_json|safe }};
+const weekLabels     = {{ week_labels_json|safe }};
+const weekData       = {{ week_data_json|safe }};
+const trendLabels    = {{ trend_labels_json|safe }};
+const trendVerified  = {{ trend_verified_json|safe }};
+const trendRejected  = {{ trend_rejected_json|safe }};
+const weekdayNames   = {{ weekday_names_json|safe }};
+const weekdayData    = {{ weekday_data_json|safe }};
+
+// ── Colour Palettes ──
+const GREEN  = '#087443';
+const GREEN2 = '#22a75a';
+const YELLOW = '#d99b43';
+const BLUE   = '#6b9fc3';
+const RED    = '#e05252';
+const PIE_COLORS = ['#087443','#22a75a','#f4cf68','#6b9fc3','#e05252','#a78bfa','#fb923c','#34d399'];
+
+const sharedOptions = {
+  responsive:true, maintainAspectRatio:false,
+  plugins:{legend:{display:false}},
+};
+
+// ── 1. Monthly Bar ──
+new Chart(document.getElementById('monthlyChart'), {
+  type: 'bar',
+  data: {
+    labels: monthlyLabels,
+    datasets:[{
+      label:'Predictions',
+      data: monthlyData,
+      backgroundColor: ctx => {
+        const g = ctx.chart.ctx.createLinearGradient(0,0,0,200);
+        g.addColorStop(0,'#087443'); g.addColorStop(1,'#22a75a80');
+        return g;
+      },
+      borderRadius:8, borderSkipped:false,
+    }]
+  },
+  options:{
+    ...sharedOptions,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:v=>`${v.raw} prediction${v.raw!==1?'s':''}`}}},
+    scales:{
+      x:{grid:{display:false},ticks:{color:'#738078',font:{size:11,weight:'600'}}},
+      y:{grid:{color:'#dce7df'},ticks:{color:'#738078',font:{size:11}},beginAtZero:true,
+         stepSize:1,precision:0},
+    }
+  }
+});
+
+// ── 2. Disease Doughnut ──
+new Chart(document.getElementById('diseasePieChart'), {
+  type:'doughnut',
+  data:{labels:diseaseLabels, datasets:[{data:diseaseData,backgroundColor:PIE_COLORS,borderWidth:2,borderColor:'#fff'}]},
+  options:{
+    ...sharedOptions,
+    cutout:'65%',
+    plugins:{
+      legend:{display:true,position:'bottom',labels:{font:{size:10,weight:'600'},color:'#738078',padding:6,boxWidth:10}},
+      tooltip:{callbacks:{label:v=>`${v.label}: ${v.raw}×`}},
+    }
+  }
+});
+
+// ── 3. Status Donut ──
+new Chart(document.getElementById('statusDonutChart'), {
+  type:'doughnut',
+  data:{
+    labels:statusLabels,
+    datasets:[{data:statusData,backgroundColor:[GREEN,YELLOW,RED],borderWidth:2,borderColor:'#fff'}]
+  },
+  options:{
+    ...sharedOptions,
+    cutout:'65%',
+    plugins:{
+      legend:{display:true,position:'bottom',labels:{font:{size:10,weight:'600'},color:'#738078',padding:6,boxWidth:10}},
+    }
+  }
+});
+
+// ── 4. Weekly Line ──
+new Chart(document.getElementById('weeklyLineChart'), {
+  type:'line',
+  data:{
+    labels:weekLabels,
+    datasets:[{
+      label:'Weekly Submissions',
+      data:weekData,
+      borderColor:GREEN, backgroundColor:'rgba(8,116,67,.12)',
+      borderWidth:2.5, tension:.4, fill:true,
+      pointBackgroundColor:GREEN, pointRadius:5, pointHoverRadius:7,
+    }]
+  },
+  options:{
+    ...sharedOptions,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:v=>`${v.raw} analyses`}}},
+    scales:{
+      x:{grid:{display:false},ticks:{color:'#738078',font:{size:11,weight:'600'}}},
+      y:{grid:{color:'#dce7df'},ticks:{color:'#738078',font:{size:11}},beginAtZero:true,precision:0},
+    }
+  }
+});
+
+// ── 5. Crop Horizontal Bar ──
+new Chart(document.getElementById('cropBarChart'), {
+  type:'bar',
+  data:{
+    labels:cropLabels,
+    datasets:[{
+      label:'Count',
+      data:cropData,
+      backgroundColor:PIE_COLORS.slice(0,cropData.length),
+      borderRadius:6, borderSkipped:false,
+    }]
+  },
+  options:{
+    ...sharedOptions,
+    indexAxis:'y',
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{grid:{color:'#dce7df'},ticks:{color:'#738078',font:{size:11}},beginAtZero:true,precision:0},
+      y:{grid:{display:false},ticks:{color:'#738078',font:{size:11,weight:'600'}}},
+    }
+  }
+});
+
+// ── 6. Stacked Trend ──
+new Chart(document.getElementById('trendStackedChart'), {
+  type:'bar',
+  data:{
+    labels:trendLabels,
+    datasets:[
+      {label:'Verified',data:trendVerified,backgroundColor:GREEN,borderRadius:{topLeft:4,topRight:4},stack:'s'},
+      {label:'Rejected',data:trendRejected,backgroundColor:RED,borderRadius:{topLeft:4,topRight:4},stack:'s'},
+    ]
+  },
+  options:{
+    ...sharedOptions,
+    plugins:{
+      legend:{display:true,position:'bottom',labels:{font:{size:10,weight:'600'},color:'#738078',padding:8,boxWidth:10}},
+    },
+    scales:{
+      x:{stacked:true,grid:{display:false},ticks:{color:'#738078',font:{size:11}}},
+      y:{stacked:true,grid:{color:'#dce7df'},ticks:{color:'#738078',font:{size:11}},beginAtZero:true,precision:0},
+    }
+  }
+});
+
+// ── 7. Weekday Heatmap (pure JS rendering) ──
+(function(){
+  const grid = document.getElementById('heatmapGrid');
+  const maxVal = Math.max(...weekdayData, 1);
+  weekdayNames.forEach((day, i) => {
+    const val = weekdayData[i];
+    const ratio = val / maxVal;
+    let cls = '';
+    if(ratio > 0.6) cls = 'hot3';
+    else if(ratio > 0.3) cls = 'hot2';
+    else if(ratio > 0) cls = 'hot1';
+    const cell = document.createElement('div');
+    cell.className = `heatmap-cell ${cls}`;
+    cell.innerHTML = `<span>${val}</span><span class="heatmap-day">${day}</span>`;
+    grid.appendChild(cell);
+  });
+})();
+
+// ── Table Filtering ──
+function filterTable(status, btn) {
+  document.querySelectorAll('.trow').forEach(r => {
+    r.style.display = (status === 'all' || r.dataset.status === status) ? '' : 'none';
+  });
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── Table Search ──
+function searchTable(q) {
+  const term = q.toLowerCase();
+  document.querySelectorAll('.trow').forEach(r => {
+    const disease = r.dataset.disease || '';
+    r.style.display = disease.includes(term) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

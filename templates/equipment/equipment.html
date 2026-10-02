@@ -1,494 +1,1024 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Farm Equipment Rental | KisanSathi AI</title>
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f8f4;
-            color: #18372a;
-        }
-
-        .navbar {
-            background: #087443;
-            color: white;
-            padding: 17px 6%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 21px;
-            font-weight: 800;
-        }
-
-        .logo span {
-            color: #9be17e;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 10px;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 13px;
-            padding: 8px 12px;
-            border-radius: 7px;
-        }
-
-        .nav-links a:hover {
-            background: rgba(255,255,255,.12);
-        }
-
-        .hero {
-            padding: 45px 6%;
-            background: linear-gradient(
-                135deg,
-                #dff1df,
-                #f6faf5
-            );
-        }
-
-        .hero h1 {
-            font-size: 35px;
-            margin-bottom: 10px;
-            color: #06472d;
-        }
-
-        .hero p {
-            max-width: 700px;
-            color: #617067;
-            line-height: 1.6;
-        }
-
-        .container {
-            width: 88%;
-            max-width: 1250px;
-            margin: 30px auto;
-        }
-
-        .search-box {
-            background: white;
-            padding: 20px;
-            border-radius: 16px;
-            border: 1px solid #dce7df;
-            margin-bottom: 25px;
-        }
-
-        .search-grid {
-            display: grid;
-            grid-template-columns:
-                2fr 1fr 1fr 1fr auto;
-            gap: 10px;
-        }
-
-        input,
-        select {
-            width: 100%;
-            height: 42px;
-            border: 1px solid #d8e4db;
-            border-radius: 8px;
-            padding: 0 12px;
-            outline: none;
-        }
-
-        input:focus,
-        select:focus {
-            border-color: #087443;
-        }
-
-        .btn {
-            border: none;
-            background: #087443;
-            color: white;
-            padding: 0 18px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            background: #075b37;
-        }
-
-        .equipment-grid {
-            display: grid;
-            grid-template-columns:
-                repeat(3, 1fr);
-            gap: 18px;
-        }
-
-        .equipment-card {
-            background: white;
-            border: 1px solid #dce7df;
-            border-radius: 17px;
-            overflow: hidden;
-            transition: .2s;
-        }
-
-        .equipment-card:hover {
-            transform: translateY(-3px);
-            box-shadow:
-                0 12px 30px
-                rgba(10,70,40,.09);
-        }
-
-        .equipment-image {
-            height: 170px;
-            background: #e9f4e8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 55px;
-            overflow: hidden;
-        }
-
-        .equipment-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .equipment-content {
-            padding: 18px;
-        }
-
-        .type {
-            display: inline-block;
-            background: #e8f4e9;
-            color: #087443;
-            padding: 5px 9px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .equipment-content h2 {
-            font-size: 18px;
-            margin-bottom: 7px;
-        }
-
-        .location {
-            color: #748078;
-            font-size: 12px;
-            margin-bottom: 13px;
-        }
-
-        .equipment-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 14px;
-        }
-
-        .rent {
-            color: #087443;
-            font-weight: 800;
-            font-size: 17px;
-        }
-
-        .rent small {
-            font-size: 10px;
-            color: #77847d;
-            font-weight: normal;
-        }
-
-        .features {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 15px;
-        }
-
-        .feature {
-            background: #f2f6f2;
-            padding: 6px 8px;
-            border-radius: 6px;
-            font-size: 10px;
-            color: #5e6b63;
-        }
-
-        .view-btn {
-            display: block;
-            width: 100%;
-            text-align: center;
-            background: #087443;
-            color: white;
-            text-decoration: none;
-            padding: 11px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .empty {
-            background: white;
-            padding: 60px;
-            text-align: center;
-            border-radius: 15px;
-            color: #6b786f;
-        }
-
-        @media(max-width: 1000px) {
-
-            .equipment-grid {
-                grid-template-columns:
-                    repeat(2, 1fr);
-            }
-
-            .search-grid {
-                grid-template-columns:
-                    1fr 1fr;
-            }
-
-            .btn {
-                height: 42px;
-            }
-
-        }
-
-        @media(max-width: 600px) {
-
-            .equipment-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .search-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .hero h1 {
-                font-size: 27px;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-
-<nav class="navbar">
-
-    <div class="logo">
-        🌱 Kisan<span>Sathi</span> AI
-    </div>
-
-    <div class="nav-links">
-
-        <a href="{% url 'dashboard:home' %}">
-            Dashboard
-        </a>
-
-        <a href="{% url 'equipment:my_bookings' %}">
-            My Bookings
-        </a>
-
-        <a href="{% url 'equipment:add' %}">
-            List Equipment
-        </a>
-
-    </div>
-
-</nav>
-
-
-<section class="hero">
-
-    <h1>
-        🚜 Farm Equipment Rental
-    </h1>
-
-    <p>
-        Find tractors, harvesters, sprayers, seed drills and
-        other agricultural equipment available for rent near
-        your farming location.
-    </p>
-
-</section>
-
-
-<div class="container">
-
-
-    <form
-        method="GET"
-        class="search-box"
-    >
-
-        <div class="search-grid">
-
-            {{ form.q }}
-
-            {{ form.equipment_type }}
-
-            {{ form.district }}
-
-            {{ form.rent_type }}
-
-            <button
-                class="btn"
-                type="submit"
-            >
-                Search
-            </button>
-
-        </div>
-
-    </form>
-
-
-    {% if equipment %}
-
-    <div class="equipment-grid">
-
-        {% for item in equipment %}
-
-        <article class="equipment-card">
-
-            <div class="equipment-image">
-
-                {% if item.image %}
-
-                    <img
-                        src="{{ item.image.url }}"
-                        alt="{{ item.name }}"
-                    >
-
-                {% else %}
-
-                    {% if item.equipment_type == "tractor" %}
-                        🚜
-                    {% elif item.equipment_type == "sprayer" %}
-                        💦
-                    {% elif item.equipment_type == "harvester" %}
-                        🌾
-                    {% elif item.equipment_type == "seed_drill" %}
-                        🌱
-                    {% else %}
-                        🛠️
-                    {% endif %}
-
-                {% endif %}
-
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}🚜 Smart Equipment Rental Hub | KisanSathi — AgriVisionAI{% endblock %}
+
+{% block content %}
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --eq-green: #16a34a;
+        --eq-green-light: #22c55e;
+        --eq-dark: #0f172a;
+        --eq-surface: #f8fafc;
+    }
+
+    body { font-family: 'Inter', sans-serif; }
+
+    /* ── Theme System ── */
+    .eq-root { background: #f1f5f9; color: #1e293b; transition: background 0.3s, color 0.3s; }
+    .eq-root.dark-mode { background: #0c1425; color: #e2e8f0; }
+
+    .dark-mode .eq-card { background: #1e293b; border-color: #334155; }
+    .dark-mode .eq-panel { background: #1e293b; border-color: #334155; }
+    .dark-mode .eq-navbar { background: #0f172a; border-color: #1e293b; }
+    .dark-mode .eq-hero { background: linear-gradient(135deg, #0f172a 0%, #1a2744 50%, #0f2e1a 100%); }
+    .dark-mode .form-input { background: #0f172a; border-color: #334155; color: #e2e8f0; }
+    .dark-mode .stat-badge { background: #1e293b; border-color: #334155; }
+    .dark-mode .calc-box { background: #1e293b; border-color: #334155; }
+    .dark-mode .filter-pill { background: #1e293b; color: #94a3b8; border-color: #334155; }
+    .dark-mode .chip-active { background: #16a34a; color: white; }
+    .dark-mode .map-panel { background: #1e293b; border-color: #334155; }
+    .dark-mode .modal-box { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+
+    /* ── Cards ── */
+    .eq-card {
+        background: #fff;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    .eq-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(22,163,74,0.03) 0%, transparent 60%);
+        pointer-events: none;
+    }
+    .eq-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 24px 48px -8px rgba(15,23,42,0.12), 0 0 0 1px rgba(22,163,74,0.15);
+    }
+
+    /* ── Live Pulse ── */
+    @keyframes livePulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.5; transform: scale(1.2); }
+    }
+    .live-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        animation: livePulse 1.8s ease-in-out infinite;
+    }
+    .live-dot.green { background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,0.25); }
+    .live-dot.red { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.25); }
+    .live-dot.amber { background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,0.25); }
+
+    /* ── Star Rating ── */
+    .stars { color: #f59e0b; letter-spacing: -1px; }
+
+    /* ── Price Tag ── */
+    .price-tag {
+        background: linear-gradient(135deg, #16a34a, #15803d);
+        color: white;
+        padding: 2px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 800;
+    }
+
+    /* ── Map Container ── */
+    #liveMap {
+        height: 420px;
+        border-radius: 16px;
+        z-index: 1;
+    }
+
+    .map-marker-label {
+        background: #16a34a;
+        color: white;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 8px;
+        white-space: nowrap;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+
+    /* ── Modal ── */
+    .modal-backdrop { display: none; }
+    .modal-backdrop.open { display: flex; }
+
+    /* ── Scroll snap filter pills ── */
+    .filter-scroll { scrollbar-width: none; }
+    .filter-scroll::-webkit-scrollbar { display: none; }
+
+    /* ── Animated Stats ── */
+    @keyframes countUp {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    .stat-animate { animation: countUp 0.6s ease forwards; }
+
+    /* ── Progress bar ── */
+    .prog-bar { height: 4px; border-radius: 4px; background: #e2e8f0; overflow: hidden; }
+    .prog-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #16a34a, #22c55e); transition: width 1s ease; }
+
+    /* ── Glassmorphism ── */
+    .glass {
+        background: rgba(255,255,255,0.9);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+    }
+    .dark-mode .glass {
+        background: rgba(15,23,42,0.85);
+    }
+
+    /* ── Ribbon ── */
+    .ribbon {
+        position: absolute;
+        top: 14px; right: -8px;
+        background: #16a34a;
+        color: white;
+        font-size: 10px;
+        font-weight: 800;
+        padding: 3px 12px 3px 8px;
+        clip-path: polygon(0 0, 100% 0, 90% 50%, 100% 100%, 0 100%);
+        letter-spacing: 0.5px;
+    }
+    .ribbon.gold { background: #d97706; }
+    .ribbon.blue { background: #2563eb; }
+
+    /* ── Comparison bar ── */
+    .compare-btn.selected { background: #16a34a; color: white; border-color: #16a34a; }
+
+    /* ── Typing animation ── */
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .blink { animation: blink 1s step-end infinite; }
+</style>
+
+<div class="eq-root min-h-screen pb-20" id="eqRoot">
+
+    <!-- ════ TOP NAV ════ -->
+    <nav class="eq-navbar bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm" id="eqNavbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-green-700 text-white flex items-center justify-center text-xl shadow-sm">🚜</div>
+                <div>
+                    <h1 class="text-sm font-black text-slate-900 leading-tight">Smart Equipment Rental Hub</h1>
+                    <div class="flex items-center gap-1.5">
+                        <div class="live-dot green"></div>
+                        <span class="text-[11px] font-bold text-green-700">LIVE Availability Tracking</span>
+                    </div>
+                </div>
             </div>
 
+            <div class="flex items-center gap-2 flex-wrap">
+                <a href="{% url 'equipment:my_bookings' %}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs transition">
+                    📋 My Bookings
+                </a>
+                <a href="{% url 'equipment:my_equipment' %}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs transition">
+                    ⚙️ My Equipment
+                </a>
+                <a href="{% url 'equipment:owner_bookings' %}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs transition">
+                    🔔 Owner Requests
+                </a>
+                <a href="{% url 'equipment:add' %}" class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-green-600 hover:bg-green-700 text-white font-bold text-xs transition shadow-sm">
+                    + List Equipment
+                </a>
+                <!-- Dark Mode Toggle -->
+                <button id="themeToggle" onclick="toggleTheme()" class="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center text-sm hover:bg-slate-100 transition" title="Toggle Dark/Light Mode">
+                    🌙
+                </button>
+            </div>
+        </div>
+    </nav>
 
-            <div class="equipment-content">
+    <!-- ════ HERO SECTION ════ -->
+    <section class="eq-hero py-10 px-4 sm:px-6 lg:px-8 border-b border-green-100/40" id="eqHero"
+             style="background: radial-gradient(circle at 10% 30%, rgba(22,163,74,0.12), transparent 35%), radial-gradient(circle at 85% 10%, rgba(16,185,129,0.09), transparent 30%), linear-gradient(135deg, #f8fafc 0%, #f0fdf4 100%);">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
 
-                <span class="type">
-                    {{ item.get_equipment_type_display }}
-                </span>
+                <!-- Left: Title + Stats -->
+                <div class="lg:col-span-7">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-800 text-[11px] font-black tracking-widest uppercase mb-3">
+                        <div class="live-dot green"></div> Real-Time Custom Hiring Centre (CHC)
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-tight tracking-tight">
+                        Smart Farm Equipment<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-500">Rental, Live.</span>
+                    </h2>
+                    <p class="mt-3 text-sm sm:text-base text-slate-600 max-w-xl leading-relaxed">
+                        Instantly locate tractors, harvesters, drones & implements near your field. Track live GPS location, view real-time pricing and operator availability.
+                    </p>
 
-                <h2>
-                    {{ item.name }}
-                </h2>
-
-                <div class="location">
-                    📍 {{ item.location }}
-                    {% if item.district %}
-                        , {{ item.district }}
-                    {% endif %}
-                </div>
-
-
-                <div class="equipment-info">
-
-                    <div class="rent">
-
-                        ₹{{ item.rent_amount }}
-
-                        <small>
-                            / {{ item.get_rent_type_display }}
-                        </small>
-
+                    <!-- Live KPI Badges -->
+                    <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div class="stat-badge bg-white border border-slate-200 rounded-2xl p-3 shadow-xs stat-animate" style="animation-delay:0s">
+                            <div class="text-2xl font-black text-slate-900 leading-none" id="stat-total">{{ total_count|default:"0" }}</div>
+                            <div class="text-[11px] text-slate-500 font-semibold mt-0.5">Available Units</div>
+                            <div class="prog-bar mt-2"><div class="prog-fill" style="width:{{ total_count|default:0 }}0%"></div></div>
+                        </div>
+                        <div class="stat-badge bg-white border border-slate-200 rounded-2xl p-3 shadow-xs stat-animate" style="animation-delay:0.1s">
+                            <div class="text-2xl font-black text-slate-900 leading-none" id="stat-tractors">{{ tractors_count|default:"0" }}</div>
+                            <div class="text-[11px] text-slate-500 font-semibold mt-0.5">🚜 Tractors</div>
+                            <div class="prog-bar mt-2"><div class="prog-fill" style="width:60%"></div></div>
+                        </div>
+                        <div class="stat-badge bg-white border border-slate-200 rounded-2xl p-3 shadow-xs stat-animate" style="animation-delay:0.2s">
+                            <div class="text-2xl font-black text-slate-900 leading-none" id="stat-operators">{{ with_operator_count|default:"0" }}</div>
+                            <div class="text-[11px] text-slate-500 font-semibold mt-0.5">👨‍🌾 With Driver</div>
+                            <div class="prog-bar mt-2"><div class="prog-fill" style="width:75%"></div></div>
+                        </div>
+                        <div class="stat-badge bg-white border border-slate-200 rounded-2xl p-3 shadow-xs stat-animate" style="animation-delay:0.3s">
+                            <div class="text-2xl font-black text-slate-900 leading-none" id="stat-verified">{{ verified_count|default:"0" }}</div>
+                            <div class="text-[11px] text-slate-500 font-semibold mt-0.5">✅ Verified</div>
+                            <div class="prog-bar mt-2"><div class="prog-fill" style="width:85%"></div></div>
+                        </div>
                     </div>
 
+                    <!-- Trust Badges -->
+                    <div class="mt-4 flex items-center gap-3 flex-wrap text-xs">
+                        <span class="flex items-center gap-1 font-semibold text-slate-500">🔒 Secure Booking</span>
+                        <span class="flex items-center gap-1 font-semibold text-slate-500">📞 24/7 Support</span>
+                        <span class="flex items-center gap-1 font-semibold text-slate-500">🛡️ Govt. Verified CHC</span>
+                        <span class="flex items-center gap-1 font-semibold text-green-700">⚡ Instant Dispatch</span>
+                    </div>
                 </div>
 
+                <!-- Right: Quick Cost Estimator -->
+                <div class="lg:col-span-5">
+                    <div class="calc-box bg-white rounded-2xl p-5 shadow-lg border border-slate-200">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg">🧮</span>
+                                <h3 class="font-black text-slate-800 text-sm">Live Cost Estimator</h3>
+                            </div>
+                            <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-green-100 text-green-800 uppercase tracking-wider">Real Rates</span>
+                        </div>
 
-                <div class="features">
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Equipment Type</label>
+                                <select id="calcType" class="form-input w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-green-500 transition">
+                                    <option value="600">🚜 Tractor 45HP (₹600/hr market avg)</option>
+                                    <option value="900">🚜 Tractor 75HP (₹900/hr market avg)</option>
+                                    <option value="1400">🌾 Combine Harvester (₹1,400/hr)</option>
+                                    <option value="480">🔄 Rotavator (₹480/hr)</option>
+                                    <option value="380">💦 Boom Sprayer (₹380/hr)</option>
+                                    <option value="1800">🛸 Agri Drone (₹1,800/hr)</option>
+                                    <option value="420">🌱 Super Seeder (₹420/hr)</option>
+                                    <option value="550">⚡ Laser Leveler (₹550/hr)</option>
+                                    <option value="320">⚙️ Multi-Crop Thresher (₹320/hr)</option>
+                                </select>
+                            </div>
 
-                    {% if item.operator_available %}
-                        <span class="feature">
-                            👨‍🌾 Operator available
-                        </span>
-                    {% endif %}
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Quantity / Area</label>
+                                    <input type="number" id="calcQty" value="4" min="1" max="200" class="form-input w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-green-500 transition">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Unit</label>
+                                    <select id="calcUnit" class="form-input w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-green-500 transition">
+                                        <option value="hour">Hours</option>
+                                        <option value="acre">Acres (×1.4h/ac)</option>
+                                        <option value="day">Full Days (8h)</option>
+                                    </select>
+                                </div>
+                            </div>
 
-                    {% if item.delivery_available %}
-                        <span class="feature">
-                            🚚 Delivery available
-                        </span>
-                    {% endif %}
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <label class="flex items-center gap-2 cursor-pointer select-none">
+                                    <input type="checkbox" id="calcOperator" class="rounded text-green-600">
+                                    <span class="text-slate-600 font-medium">+ Operator (₹300)</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer select-none">
+                                    <input type="checkbox" id="calcDelivery" class="rounded text-green-600">
+                                    <span class="text-slate-600 font-medium">+ Delivery (₹200)</span>
+                                </label>
+                            </div>
 
-                    {% if item.is_verified %}
-                        <span class="feature">
-                            ✓ Verified
-                        </span>
-                    {% endif %}
-
+                            <!-- Result -->
+                            <div class="p-4 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="text-xs text-green-700 font-bold">Estimated Cost</div>
+                                    <div class="text-[10px] font-semibold text-slate-500" id="calcSaving">~42% cheaper than ownership</div>
+                                </div>
+                                <div class="text-2xl font-black text-green-900" id="calcResult">₹2,400</div>
+                                <div class="text-[10px] text-slate-500 mt-1">Excl. fuel | GST not applicable for small farmers</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+        </div>
+    </section>
 
-
-                <a
-                    href="{% url 'equipment:detail' item.id %}"
-                    class="view-btn"
-                >
-                    View & Rent
-                </a>
-
+    <!-- ════ LIVE MAP SECTION ════ -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+        <div class="map-panel bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="flex items-center justify-between p-4 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div class="live-dot green"></div>
+                    <div>
+                        <h3 class="font-black text-slate-900 text-sm">Live Equipment GPS Tracker</h3>
+                        <p class="text-[11px] text-slate-500">Tap a marker to see equipment details & live price</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-green-100 text-green-800">📍 Live Locations</span>
+                    <button onclick="locateMe()" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
+                        🎯 My Location
+                    </button>
+                </div>
             </div>
 
-        </article>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-0">
+                <div class="lg:col-span-2 p-3">
+                    <div id="liveMap"></div>
+                </div>
+                <div class="border-l border-slate-100 p-4 flex flex-col gap-3 overflow-y-auto max-h-[450px]" id="mapSidebar">
+                    <div class="text-xs font-black text-slate-500 uppercase tracking-wider">Nearby Equipment</div>
 
-        {% endfor %}
+                    <!-- Equipment list injected by JS -->
+                    {% for item in equipment %}
+                    <div class="map-eq-item p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-green-300 hover:bg-green-50/50 cursor-pointer transition"
+                         data-lat="{{ item.latitude|default:26.8467 }}"
+                         data-lng="{{ item.longitude|default:80.9462 }}"
+                         data-id="{{ item.id }}"
+                         onclick="focusMapMarker({{ item.latitude|default:26.8467 }}, {{ item.longitude|default:80.9462 }}, {{ item.id }})">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-xs font-bold text-slate-800 line-clamp-1">{{ item.name }}</span>
+                            <div class="live-dot {% if item.status == 'available' %}green{% else %}red{% endif %} flex-shrink-0"></div>
+                        </div>
+                        <div class="flex items-center gap-1 text-[11px] text-slate-500 mb-1">
+                            <span>📍</span><span class="line-clamp-1">{{ item.location }}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-black text-green-700">₹{{ item.rent_amount }}/{{ item.get_rent_type_display }}</span>
+                            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded {% if item.status == 'available' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                                {{ item.status|title }}
+                            </span>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-8 text-slate-400 text-sm">
+                        <div class="text-3xl mb-2">🗺️</div>
+                        <p>No equipment listed in map area yet.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
 
+    <!-- ════ SEARCH & FILTER ════ -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+        <div class="eq-panel bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+            <form method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-end">
+                <!-- Search -->
+                <div class="lg:col-span-4">
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">Search Machinery</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-3 flex items-center text-slate-400 pointer-events-none">🔍</span>
+                        <input type="text" name="q" value="{{ request.GET.q|default:'' }}"
+                               placeholder="Mahindra 575, John Deere, Drone..."
+                               class="form-input w-full pl-9 pr-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition">
+                    </div>
+                </div>
+
+                <!-- Category -->
+                <div class="lg:col-span-3">
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">Category</label>
+                    <select name="equipment_type" class="form-input w-full py-2.5 px-3 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 outline-none">
+                        <option value="">All Machinery</option>
+                        <option value="tractor" {% if request.GET.equipment_type == 'tractor' %}selected{% endif %}>🚜 Tractor</option>
+                        <option value="rotavator" {% if request.GET.equipment_type == 'rotavator' %}selected{% endif %}>🔄 Rotavator</option>
+                        <option value="seed_drill" {% if request.GET.equipment_type == 'seed_drill' %}selected{% endif %}>🌱 Seed Drill / Super Seeder</option>
+                        <option value="sprayer" {% if request.GET.equipment_type == 'sprayer' %}selected{% endif %}>💦 Boom Sprayer</option>
+                        <option value="drone" {% if request.GET.equipment_type == 'drone' %}selected{% endif %}>🛸 Agri Drone</option>
+                        <option value="harvester" {% if request.GET.equipment_type == 'harvester' %}selected{% endif %}>🌾 Combine Harvester</option>
+                        <option value="leveler" {% if request.GET.equipment_type == 'leveler' %}selected{% endif %}>⚡ Laser Leveler</option>
+                        <option value="cultivator" {% if request.GET.equipment_type == 'cultivator' %}selected{% endif %}>⛏️ Cultivator</option>
+                        <option value="thresher" {% if request.GET.equipment_type == 'thresher' %}selected{% endif %}>⚙️ Thresher</option>
+                        <option value="pump" {% if request.GET.equipment_type == 'pump' %}selected{% endif %}>💧 Water Pump</option>
+                        <option value="other" {% if request.GET.equipment_type == 'other' %}selected{% endif %}>🛠️ Other</option>
+                    </select>
+                </div>
+
+                <!-- District -->
+                <div class="lg:col-span-3">
+                    <label class="block text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">District / Area</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-3 flex items-center text-slate-400 pointer-events-none">📍</span>
+                        <input type="text" name="district" value="{{ request.GET.district|default:'' }}"
+                               placeholder="Bareilly, Meerut, Lucknow..."
+                               class="form-input w-full pl-9 pr-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-green-500 outline-none transition">
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="lg:col-span-2 flex gap-2">
+                    <button type="submit" class="flex-1 py-2.5 px-3 bg-green-600 hover:bg-green-700 text-white font-bold text-xs rounded-xl transition shadow-sm flex items-center justify-center gap-1">
+                        🔍 Search
+                    </button>
+                    {% if request.GET.q or request.GET.equipment_type or request.GET.district %}
+                    <a href="{% url 'equipment:home' %}" class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold rounded-xl transition flex items-center justify-center" title="Clear">✕</a>
+                    {% endif %}
+                </div>
+            </form>
+
+            <!-- Quick Filter Chips -->
+            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center gap-2 overflow-x-auto filter-scroll pb-1">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider whitespace-nowrap">Quick:</span>
+                <a href="{% url 'equipment:home' %}" class="filter-pill whitespace-nowrap px-3 py-1 rounded-full text-xs font-bold transition {% if not request.GET.equipment_type %}chip-active bg-green-600 text-white{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200{% endif %}">All</a>
+                <a href="?equipment_type=tractor" class="filter-pill whitespace-nowrap px-3 py-1 rounded-full text-xs font-bold transition {% if request.GET.equipment_type == 'tractor' %}chip-active bg-green-600 text-white{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200{% endif %}">🚜 Tractors</a>
+                <a href="?equipment_type=harvester" class="filter-pill whitespace-nowrap px-3 py-1 rounded-full text-xs font-bold transition {% if request.GET.equipment_type == 'harvester' %}chip-active bg-green-600 text-white{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200{% endif %}">🌾 Harvesters</a>
+                <a href="?equipment_type=drone" class="filter-pill whitespace-nowrap px-3 py-1 rounded-full text-xs font-bold transition {% if request.GET.equipment_type == 'drone' %}chip-active bg-green-600 text-white{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200{% endif %}">🛸 Drones</a>
+                <a href="?equipment_type=rotavator" class="filter-pill whitespace-nowrap px-3 py-1 rounded-full text-xs font-bold transition {% if request.GET.equipment_type == 'rotavator' %}chip-active bg-green-600 text-white{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200{% endif %}">🔄 Rotavators</a>
+                <a href="?equipment_type=seed_drill" class="filter-pill whitespace-nowrap px-3 py-1 rounded-full text-xs font-bold transition {% if request.GET.equipment_type == 'seed_drill' %}chip-active bg-green-600 text-white{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200{% endif %}">🌱 Seed Drills</a>
+                <a href="?equipment_type=leveler" class="filter-pill whitespace-nowrap px-3 py-1 rounded-full text-xs font-bold transition {% if request.GET.equipment_type == 'leveler' %}chip-active bg-green-600 text-white{% else %}bg-slate-100 text-slate-600 hover:bg-slate-200{% endif %}">⚡ Laser Leveler</a>
+                <a href="?operator_available=1" class="filter-pill whitespace-nowrap px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">👨‍🌾 With Driver</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ════ EQUIPMENT GRID ════ -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <h3 class="text-lg font-black text-slate-900">Available Farming Machinery</h3>
+                <p class="text-xs text-slate-500 font-medium mt-0.5">
+                    <span class="text-green-700 font-bold">{{ equipment|length }}</span> verified machines ready for dispatch
+                </p>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1.5 text-xs font-semibold text-green-700 bg-green-50 border border-green-200 px-3 py-1.5 rounded-lg">
+                    <div class="live-dot green"></div> Live Prices
+                </div>
+                <!-- View Toggle -->
+                <div class="flex items-center rounded-lg border border-slate-200 overflow-hidden text-xs font-bold">
+                    <button onclick="setView('grid')" id="btnGrid" class="px-3 py-1.5 bg-green-600 text-white transition">⊞ Grid</button>
+                    <button onclick="setView('list')" id="btnList" class="px-3 py-1.5 bg-white text-slate-600 hover:bg-slate-50 transition">☰ List</button>
+                </div>
+            </div>
+        </div>
+
+        {% if equipment %}
+        <!-- GRID VIEW -->
+        <div id="gridView" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for item in equipment %}
+            <article class="eq-card flex flex-col">
+                <!-- Image / Type Zone -->
+                <div class="relative h-52 bg-gradient-to-br from-slate-100 to-green-50 flex items-center justify-center overflow-hidden">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.name }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="text-center">
+                            <span class="text-7xl block transition hover:scale-110 duration-300">
+                                {% if item.equipment_type == "tractor" %}🚜
+                                {% elif item.equipment_type == "harvester" %}🌾
+                                {% elif item.equipment_type == "sprayer" %}💦
+                                {% elif item.equipment_type == "rotavator" %}🔄
+                                {% elif item.equipment_type == "seed_drill" %}🌱
+                                {% elif item.equipment_type == "cultivator" %}⛏️
+                                {% elif item.equipment_type == "thresher" %}⚙️
+                                {% elif item.equipment_type == "drone" %}🛸
+                                {% elif item.equipment_type == "leveler" %}⚡
+                                {% elif item.equipment_type == "pump" %}💧
+                                {% else %}🛠️
+                                {% endif %}
+                            </span>
+                        </div>
+                    {% endif %}
+
+                    <!-- Status Badge TL -->
+                    <div class="absolute top-3 left-3 flex flex-col gap-1.5">
+                        <div class="glass flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-black shadow-sm">
+                            <div class="live-dot {% if item.status == 'available' %}green{% elif item.status == 'booked' %}red{% else %}amber{% endif %}"></div>
+                            <span class="{% if item.status == 'available' %}text-green-800{% elif item.status == 'booked' %}text-red-800{% else %}text-amber-800{% endif %}">
+                                {% if item.status == 'available' %}Available Now{% elif item.status == 'booked' %}Booked{% else %}{{ item.status|title }}{% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Verified + CHC TL -->
+                    <div class="absolute top-3 right-3 flex flex-col items-end gap-1.5">
+                        {% if item.is_verified %}
+                        <div class="ribbon">✓ CHC Verified</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Brand tag bottom -->
+                    {% if item.brand %}
+                    <div class="absolute bottom-2 left-3 bg-slate-900/80 backdrop-blur text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+                        {{ item.brand }}{% if item.model_number %} · {{ item.model_number }}{% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- CHC Hub bottom right -->
+                    {% if item.chc_hub_name %}
+                    <div class="absolute bottom-2 right-3 bg-green-800/80 backdrop-blur text-white text-[10px] font-semibold px-2 py-0.5 rounded-md">
+                        🏢 {{ item.chc_hub_name }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Details -->
+                <div class="p-5 flex-1 flex flex-col">
+                    <!-- Name + Rating -->
+                    <div class="flex items-start justify-between gap-2 mb-1.5">
+                        <h4 class="font-black text-slate-900 text-sm leading-snug line-clamp-1">{{ item.name }}</h4>
+                        <div class="flex-shrink-0 flex items-center gap-1">
+                            <span class="stars text-sm">
+                                {% with rating=item.rating|floatformat:0 %}
+                                {% for i in "12345" %}{% if forloop.counter0 < rating|add:0 %}⭐{% endif %}{% endfor %}
+                                {% endwith %}
+                            </span>
+                            <span class="text-[11px] font-black text-slate-700">{{ item.rating }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Trips + Type badge -->
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-[10px] font-semibold text-slate-400">{{ item.total_trips }}+ trips completed</span>
+                        <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">{{ item.get_equipment_type_display }}</span>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="flex items-center gap-1.5 text-xs text-slate-500 mb-3">
+                        <span class="text-green-600">📍</span>
+                        <span class="line-clamp-1">{{ item.location }}{% if item.district %}, {{ item.district }}{% endif %}</span>
+                    </div>
+
+                    <!-- Availability Note -->
+                    {% if item.availability_note %}
+                    <div class="text-[11px] font-semibold text-green-700 bg-green-50 rounded-lg px-3 py-1.5 mb-3 border border-green-100">
+                        {{ item.availability_note }}
+                    </div>
+                    {% endif %}
+
+                    <!-- Feature Grid -->
+                    <div class="grid grid-cols-3 gap-1.5 mb-4 text-[11px] font-semibold">
+                        <div class="flex flex-col items-center p-2 rounded-xl {% if item.operator_available %}bg-green-50 text-green-800 border border-green-100{% else %}bg-slate-50 text-slate-400 border border-slate-100{% endif %}">
+                            <span class="text-base mb-0.5">👨‍🌾</span>
+                            <span>{% if item.operator_available %}Driver ✓{% else %}No Driver{% endif %}</span>
+                        </div>
+                        <div class="flex flex-col items-center p-2 rounded-xl {% if item.delivery_available %}bg-blue-50 text-blue-800 border border-blue-100{% else %}bg-slate-50 text-slate-400 border border-slate-100{% endif %}">
+                            <span class="text-base mb-0.5">🚚</span>
+                            <span>{% if item.delivery_available %}Delivery ✓{% else %}Self Pickup{% endif %}</span>
+                        </div>
+                        <div class="flex flex-col items-center p-2 rounded-xl {% if item.fuel_included %}bg-amber-50 text-amber-800 border border-amber-100{% else %}bg-slate-50 text-slate-400 border border-slate-100{% endif %}">
+                            <span class="text-base mb-0.5">⛽</span>
+                            <span>{% if item.fuel_included %}Fuel Incl.{% else %}Fuel Extra{% endif %}</span>
+                        </div>
+                    </div>
+
+                    <!-- Multi-Rate Pricing Section -->
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 mb-3">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2">Live Rental Rates</div>
+                        <div class="grid grid-cols-3 gap-2 text-center">
+                            <div>
+                                <div class="text-[10px] text-slate-500">Per Hour</div>
+                                <div class="text-xs font-black text-green-700">₹{{ item.display_hourly_rate|floatformat:0 }}</div>
+                            </div>
+                            <div class="border-x border-slate-200">
+                                <div class="text-[10px] text-slate-500">Per Day</div>
+                                <div class="text-xs font-black text-green-700">₹{{ item.rent_amount|floatformat:0 }}</div>
+                            </div>
+                            <div>
+                                <div class="text-[10px] text-slate-500">Per Acre</div>
+                                <div class="text-xs font-black text-green-700">₹{{ item.display_acre_rate|floatformat:0 }}</div>
+                            </div>
+                        </div>
+                        {% if item.security_deposit > 0 %}
+                        <div class="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px]">
+                            <span class="text-slate-400">Security Deposit</span>
+                            <span class="font-black text-slate-700">₹{{ item.security_deposit }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="grid grid-cols-2 gap-2 mt-auto">
+                        <a href="{% url 'equipment:detail' item.id %}"
+                           class="py-2.5 rounded-xl border border-green-200 bg-green-50 hover:bg-green-100 text-green-800 font-bold text-xs text-center transition flex items-center justify-center gap-1">
+                            ℹ️ Full Specs
+                        </a>
+                        {% if item.status == 'available' %}
+                        <button type="button"
+                                onclick="openBookingModal('{{ item.id }}', '{{ item.name|escapejs }}', '{{ item.rent_amount }}', '{{ item.get_rent_type_display|escapejs }}', '{{ item.security_deposit }}', '{{ item.operator_available|yesno:'Yes,No' }}', '{{ item.delivery_available|yesno:'Yes,No' }}', '{{ item.display_hourly_rate }}', '{{ item.display_acre_rate }}')"
+                                class="py-2.5 rounded-xl bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold text-xs text-center transition shadow-sm flex items-center justify-center gap-1">
+                            ⚡ Book Now
+                        </button>
+                        {% else %}
+                        <button disabled class="py-2.5 rounded-xl bg-slate-200 text-slate-400 font-bold text-xs text-center cursor-not-allowed flex items-center justify-center">
+                            🔴 Unavailable
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <!-- LIST VIEW (hidden by default) -->
+        <div id="listView" class="hidden flex flex-col gap-3">
+            {% for item in equipment %}
+            <div class="eq-card flex flex-row items-center gap-4 p-4">
+                <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-slate-100 to-green-50 flex items-center justify-center text-4xl flex-shrink-0 overflow-hidden">
+                    {% if item.image %}
+                    <img src="{{ item.image.url }}" alt="{{ item.name }}" class="w-full h-full object-cover rounded-2xl">
+                    {% else %}
+                    {% if item.equipment_type == "tractor" %}🚜
+                    {% elif item.equipment_type == "harvester" %}🌾
+                    {% elif item.equipment_type == "drone" %}🛸
+                    {% else %}🛠️{% endif %}
+                    {% endif %}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-0.5">
+                        <h4 class="font-black text-slate-900 text-sm">{{ item.name }}</h4>
+                        {% if item.is_verified %}<span class="text-[10px] px-1.5 py-0.5 bg-green-100 text-green-800 rounded font-bold">✓ Verified</span>{% endif %}
+                        <div class="live-dot {% if item.status == 'available' %}green{% else %}red{% endif %}"></div>
+                    </div>
+                    <div class="text-xs text-slate-500">📍 {{ item.location }}{% if item.district %}, {{ item.district }}{% endif %} &nbsp;|&nbsp; ⭐ {{ item.rating }} &nbsp;|&nbsp; {{ item.total_trips }}+ trips</div>
+                    <div class="flex items-center gap-3 mt-1.5 text-[11px]">
+                        <span class="{% if item.operator_available %}text-green-700{% else %}text-slate-400{% endif %}">👨‍🌾 {% if item.operator_available %}Driver{% else %}No Driver{% endif %}</span>
+                        <span class="{% if item.delivery_available %}text-blue-700{% else %}text-slate-400{% endif %}">🚚 {% if item.delivery_available %}Delivery{% else %}Pickup{% endif %}</span>
+                        <span class="{% if item.fuel_included %}text-amber-700{% else %}text-slate-400{% endif %}">⛽ {% if item.fuel_included %}Fuel Incl.{% else %}Fuel Extra{% endif %}</span>
+                    </div>
+                </div>
+                <div class="text-right flex-shrink-0">
+                    <div class="text-lg font-black text-green-700">₹{{ item.rent_amount }}</div>
+                    <div class="text-[11px] text-slate-500">{{ item.get_rent_type_display }}</div>
+                    <div class="mt-2 flex gap-1.5">
+                        <a href="{% url 'equipment:detail' item.id %}" class="text-[11px] px-2.5 py-1 rounded-lg bg-green-50 text-green-800 font-bold border border-green-200 hover:bg-green-100">Specs</a>
+                        {% if item.status == 'available' %}
+                        <button onclick="openBookingModal('{{ item.id }}','{{ item.name|escapejs }}','{{ item.rent_amount }}','{{ item.get_rent_type_display|escapejs }}','{{ item.security_deposit }}','{{ item.operator_available|yesno:'Yes,No' }}','{{ item.delivery_available|yesno:'Yes,No' }}','{{ item.display_hourly_rate }}','{{ item.display_acre_rate }}')" class="text-[11px] px-2.5 py-1 rounded-lg bg-green-600 text-white font-bold hover:bg-green-700">Book</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="bg-white rounded-3xl border border-slate-200 p-14 text-center max-w-lg mx-auto my-12 shadow-sm">
+            <div class="w-20 h-20 bg-green-50 rounded-2xl flex items-center justify-center text-5xl mx-auto mb-4">🚜</div>
+            <h3 class="text-xl font-black text-slate-900 mb-2">No Equipment Found</h3>
+            <p class="text-sm text-slate-500 mb-6">Try resetting filters or be the first to list equipment in your area!</p>
+            <div class="flex items-center justify-center gap-3">
+                <a href="{% url 'equipment:home' %}" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">Reset Filters</a>
+                <a href="{% url 'equipment:add' %}" class="px-5 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold text-xs transition shadow-sm">+ List Equipment</a>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ════ HOW IT WORKS ════ -->
+        <section class="mt-16 bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+            <div class="text-center mb-8">
+                <span class="text-[11px] font-black text-green-700 uppercase tracking-widest bg-green-50 px-3 py-1 rounded-full">CHC Rental Process</span>
+                <h3 class="text-2xl font-black text-slate-900 mt-2">Book in 3 Simple Steps</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="relative p-6 rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-100">
+                    <div class="w-12 h-12 rounded-xl bg-green-600 text-white font-black text-lg flex items-center justify-center mb-4 shadow-sm">1</div>
+                    <div class="text-3xl mb-3">🗺️</div>
+                    <h4 class="font-black text-slate-800 text-sm mb-1.5">Find on Live Map</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">Use the GPS live map to locate machinery near your village. View real-time availability and distance.</p>
+                </div>
+                <div class="relative p-6 rounded-2xl bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-100">
+                    <div class="w-12 h-12 rounded-xl bg-blue-600 text-white font-black text-lg flex items-center justify-center mb-4 shadow-sm">2</div>
+                    <div class="text-3xl mb-3">📅</div>
+                    <h4 class="font-black text-slate-800 text-sm mb-1.5">Select Dates & Price Plan</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">Choose hourly, per-day or per-acre pricing. Live cost calculator shows exact amount before booking.</p>
+                </div>
+                <div class="relative p-6 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100">
+                    <div class="w-12 h-12 rounded-xl bg-amber-600 text-white font-black text-lg flex items-center justify-center mb-4 shadow-sm">3</div>
+                    <div class="text-3xl mb-3">🚜</div>
+                    <h4 class="font-black text-slate-800 text-sm mb-1.5">Machine at Your Field</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">Certified operator delivers the machine to your field. Complete your work and pay after completion.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ════ BOOKING MODAL ════ -->
+    <div id="bookingModal" class="modal-backdrop fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm items-center justify-center p-4">
+        <div class="modal-box bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-green-600 to-green-700 p-5">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-3xl" id="modalEmoji">🚜</span>
+                        <div>
+                            <h4 class="font-black text-white text-base" id="modalEquipmentName">Book Equipment</h4>
+                            <p class="text-green-200 text-xs font-semibold" id="modalRentRate">₹0 / Day</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="closeBookingModal()" class="w-8 h-8 rounded-full bg-white/20 text-white hover:bg-white/30 flex items-center justify-center font-bold text-sm">✕</button>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex border-b border-slate-200 text-xs font-black">
+                <button onclick="switchTab('hourly')" id="tabHourly" class="flex-1 py-3 text-green-700 border-b-2 border-green-600">⏱ Hourly</button>
+                <button onclick="switchTab('daily')" id="tabDaily" class="flex-1 py-3 text-slate-500 hover:text-slate-700">📅 Daily</button>
+                <button onclick="switchTab('acre')" id="tabAcre" class="flex-1 py-3 text-slate-500 hover:text-slate-700">🌾 Per Acre</button>
+            </div>
+
+            <form id="modalBookingForm" method="POST" action="" class="p-5 space-y-4">
+                {% csrf_token %}
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Start Date *</label>
+                        <input type="date" id="modalStartDate" name="start_date" required
+                               class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">End Date *</label>
+                        <input type="date" id="modalEndDate" name="end_date" required
+                               class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-green-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1" id="qtyLabel">Rental Units *</label>
+                    <input type="number" id="modalQuantity" name="quantity" value="4" min="1" step="0.5" required
+                           class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-green-500">
+                    <p class="text-[11px] text-slate-400 mt-1" id="qtyHint">Enter hours (e.g. 4 hours of use)</p>
+                </div>
+
+                <!-- Message -->
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-600 mb-1">Message to Owner</label>
+                    <textarea name="message" rows="2" placeholder="Field location, specific requirement, timing..."
+                              class="w-full text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-green-500 resize-none"></textarea>
+                </div>
+
+                <!-- Dynamic Cost Breakdown -->
+                <div class="p-4 rounded-2xl bg-green-50 border border-green-200 space-y-2">
+                    <div class="text-[11px] font-black text-green-800 uppercase tracking-wider">Live Cost Breakdown</div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-slate-600">Base Rental</span>
+                        <span class="font-black text-slate-800" id="costBase">₹0</span>
+                    </div>
+                    <div class="flex justify-between text-xs" id="costSecRow">
+                        <span class="text-slate-600">Security Deposit (refundable)</span>
+                        <span class="font-black text-slate-800" id="costSec">₹0</span>
+                    </div>
+                    <div class="border-t border-green-200 pt-2 flex justify-between">
+                        <span class="text-sm font-black text-green-800">Total Estimated</span>
+                        <span class="text-xl font-black text-green-900" id="modalEstimatedCost">₹0</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button type="button" onclick="closeBookingModal()" class="flex-1 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 transition">Cancel</button>
+                    <button type="submit" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-black text-xs shadow-sm transition">⚡ Confirm Booking</button>
+                </div>
+            </form>
+        </div>
     </div>
-
-    {% else %}
-
-    <div class="empty">
-
-        <h2>🚜 No equipment found</h2>
-
-        <p>
-            Try searching another equipment or district.
-        </p>
-
-    </div>
-
-    {% endif %}
-
 
 </div>
 
+<!-- ════ SCRIPTS ════ -->
+<script>
+// ── Theme Toggle ──
+function toggleTheme() {
+    const root = document.getElementById('eqRoot');
+    const btn  = document.getElementById('themeToggle');
+    const isDark = root.classList.toggle('dark-mode');
+    btn.textContent = isDark ? '☀️' : '🌙';
+    localStorage.setItem('eqTheme', isDark ? 'dark' : 'light');
+}
+(function() {
+    if (localStorage.getItem('eqTheme') === 'dark') {
+        document.getElementById('eqRoot').classList.add('dark-mode');
+        document.getElementById('themeToggle').textContent = '☀️';
+    }
+})();
 
-</body>
-</html>
+// ── View Toggle ──
+function setView(v) {
+    document.getElementById('gridView').classList.toggle('hidden', v !== 'grid');
+    document.getElementById('listView').classList.toggle('hidden', v !== 'list');
+    document.getElementById('btnGrid').className = v === 'grid'
+        ? 'px-3 py-1.5 bg-green-600 text-white transition'
+        : 'px-3 py-1.5 bg-white text-slate-600 hover:bg-slate-50 transition';
+    document.getElementById('btnList').className = v === 'list'
+        ? 'px-3 py-1.5 bg-green-600 text-white transition'
+        : 'px-3 py-1.5 bg-white text-slate-600 hover:bg-slate-50 transition';
+}
+
+// ── Cost Estimator (Hero) ──
+const calcType     = document.getElementById('calcType');
+const calcQty      = document.getElementById('calcQty');
+const calcUnit     = document.getElementById('calcUnit');
+const calcOperator = document.getElementById('calcOperator');
+const calcDelivery = document.getElementById('calcDelivery');
+const calcResult   = document.getElementById('calcResult');
+
+function updateEstimator() {
+    const base  = parseFloat(calcType.value) || 0;
+    const qty   = parseFloat(calcQty.value)  || 1;
+    const unit  = calcUnit.value;
+    const withOp  = calcOperator.checked;
+    const withDel = calcDelivery.checked;
+
+    let total = 0;
+    if (unit === 'hour') total = base * qty;
+    else if (unit === 'day') total = base * 8 * qty * 0.88;  // 12% day discount
+    else if (unit === 'acre') total = base * 1.4 * qty;
+
+    if (withOp)  total += unit === 'day' ? 600 * qty : 300;
+    if (withDel) total += 200;
+
+    calcResult.textContent = '₹' + Math.round(total).toLocaleString('en-IN');
+}
+[calcType, calcQty, calcUnit, calcOperator, calcDelivery].forEach(el => el && el.addEventListener('input', updateEstimator));
+updateEstimator();
+
+// ── Modal Logic ──
+let currentRate = 0, currentSec = 0, currentHourly = 0, currentAcre = 0;
+let currentTab = 'hourly';
+const modal     = document.getElementById('bookingModal');
+const modalForm = document.getElementById('modalBookingForm');
+const modalName = document.getElementById('modalEquipmentName');
+const modalRate = document.getElementById('modalRentRate');
+const modalQty  = document.getElementById('modalQuantity');
+const modalStart = document.getElementById('modalStartDate');
+const modalEnd   = document.getElementById('modalEndDate');
+const modalCost  = document.getElementById('modalEstimatedCost');
+const costBase   = document.getElementById('costBase');
+const costSec    = document.getElementById('costSec');
+
+const today = new Date().toISOString().split('T')[0];
+if (modalStart) { modalStart.min = today; modalEnd.min = today; }
+
+function openBookingModal(id, name, rentAmount, rentLabel, deposit, operator, delivery, hourly, acre) {
+    currentRate   = parseFloat(rentAmount) || 0;
+    currentSec    = parseFloat(deposit)    || 0;
+    currentHourly = parseFloat(hourly)     || currentRate / 8;
+    currentAcre   = parseFloat(acre)       || currentRate * 1.4;
+
+    modalName.textContent = name;
+    modalRate.textContent = '₹' + rentAmount + ' / ' + rentLabel;
+    modalForm.action = '/equipment/' + id + '/book/';
+
+    modalStart.value = today;
+    const tmrw = new Date(); tmrw.setDate(tmrw.getDate() + 1);
+    modalEnd.value = tmrw.toISOString().split('T')[0];
+    modalQty.value = '4';
+
+    // Set emoji based on name
+    const emojis = {tractor:'🚜', harvester:'🌾', drone:'🛸', sprayer:'💦', rotavator:'🔄', leveler:'⚡', thresher:'⚙️'};
+    const lc = name.toLowerCase();
+    let em = '🛠️';
+    for (const [k,v] of Object.entries(emojis)) { if (lc.includes(k)) { em = v; break; } }
+    document.getElementById('modalEmoji').textContent = em;
+
+    switchTab('hourly');
+    recalculateModalCost();
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeBookingModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function switchTab(tab) {
+    currentTab = tab;
+    const tabs = ['hourly','daily','acre'];
+    tabs.forEach(t => {
+        const el = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (el) el.className = t === tab
+            ? 'flex-1 py-3 text-green-700 border-b-2 border-green-600'
+            : 'flex-1 py-3 text-slate-500 hover:text-slate-700';
+    });
+    const qtyLabel = document.getElementById('qtyLabel');
+    const qtyHint  = document.getElementById('qtyHint');
+    if (tab === 'hourly') {
+        qtyLabel.textContent = 'Number of Hours *';
+        qtyHint.textContent  = 'Enter hours of use (e.g. 4 hours)';
+        modalQty.value = '4';
+    } else if (tab === 'daily') {
+        qtyLabel.textContent = 'Number of Days *';
+        qtyHint.textContent  = 'Enter rental days';
+        modalQty.value = '1';
+    } else {
+        qtyLabel.textContent = 'Land Area (Acres) *';
+        qtyHint.textContent  = 'Enter acres to be covered';
+        modalQty.value = '2';
+    }
+    recalculateModalCost();
+}
+
+function recalculateModalCost() {
+    const qty = parseFloat(modalQty.value) || 1;
+    let base = 0;
+    if (currentTab === 'hourly') base = currentHourly * qty;
+    else if (currentTab === 'daily') base = currentRate * qty;
+    else base = currentAcre * qty;
+
+    const total = base + currentSec;
+    costBase.textContent = '₹' + Math.round(base).toLocaleString('en-IN');
+    costSec.textContent  = '₹' + Math.round(currentSec).toLocaleString('en-IN');
+    modalCost.textContent = '₹' + Math.round(total).toLocaleString('en-IN');
+}
+
+[modalQty, modalStart, modalEnd].forEach(el => el && el.addEventListener('input', recalculateModalCost));
+
+window.addEventListener('click', e => { if (e.target === modal) closeBookingModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBookingModal(); });
+
+// ── Leaflet Map ──
+(function initMap() {
+    const map = L.map('liveMap', { zoomControl: true }).setView([26.8467, 80.9462], 7);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 18
+    }).addTo(map);
+
+    // Equipment markers from Django context
+    const equipmentData = [
+        {% for item in equipment %}
+        {
+            id: {{ item.id }},
+            name: "{{ item.name|escapejs }}",
+            lat: {{ item.latitude|default:26.8467 }},
+            lng: {{ item.longitude|default:80.9462 }},
+            rate: "₹{{ item.rent_amount }}/{{ item.get_rent_type_display|escapejs }}",
+            status: "{{ item.status }}",
+            type: "{{ item.equipment_type }}",
+            rating: {{ item.rating }},
+            operator: {{ item.operator_available|yesno:"true,false" }},
+            location: "{{ item.location|escapejs }}"
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    const typeEmoji = { tractor:'🚜', harvester:'🌾', sprayer:'💦', rotavator:'🔄', seed_drill:'🌱', drone:'🛸', leveler:'⚡', cultivator:'⛏️', thresher:'⚙️', pump:'💧' };
+    const markerMap = {};
+
+    equipmentData.forEach(eq => {
+        const em = typeEmoji[eq.type] || '🛠️';
+        const isAvail = eq.status === 'available';
+        const color = isAvail ? '#16a34a' : '#ef4444';
+
+        const icon = L.divIcon({
+            className: '',
+            html: `<div style="background:${color};color:white;padding:5px 10px;border-radius:10px;font-size:11px;font-weight:800;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.25);border:2px solid white;">${em} ${eq.name.substring(0, 18)}</div>`,
+            iconAnchor: [0, 0]
+        });
+
+        const marker = L.marker([eq.lat, eq.lng], { icon }).addTo(map);
+        marker.bindPopup(`
+            <div style="font-family:Inter,sans-serif;min-width:200px;padding:4px 0">
+                <div style="font-size:15px;font-weight:900;color:#0f172a;margin-bottom:4px">${em} ${eq.name}</div>
+                <div style="font-size:11px;color:#64748b;margin-bottom:6px">📍 ${eq.location}</div>
+                <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+                    <span style="background:${isAvail ? '#dcfce7':'#fee2e2'};color:${isAvail ? '#16a34a':'#ef4444'};padding:2px 8px;border-radius:6px;font-size:10px;font-weight:800">${isAvail ? '🟢 Available' : '🔴 Booked'}</span>
+                    <span style="background:#f0fdf4;color:#16a34a;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:900">${eq.rate}</span>
+                    ${eq.operator ? '<span style="background:#eff6ff;color:#1d4ed8;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700">👨‍🌾 Driver</span>' : ''}
+                </div>
+                <div style="font-size:11px;color:#475569">⭐ ${eq.rating} rating</div>
+                <a href="/equipment/${eq.id}/" style="display:inline-block;margin-top:8px;background:#16a34a;color:white;padding:5px 12px;border-radius:8px;font-size:11px;font-weight:800;text-decoration:none">View Details →</a>
+            </div>
+        `);
+
+        markerMap[eq.id] = marker;
+    });
+
+    // Expose for sidebar clicks
+    window.focusMapMarker = function(lat, lng, id) {
+        map.setView([lat, lng], 13, { animate: true });
+        if (markerMap[id]) markerMap[id].openPopup();
+    };
+
+    // My Location
+    window.locateMe = function() {
+        if (!navigator.geolocation) { alert('Geolocation not supported'); return; }
+        navigator.geolocation.getCurrentPosition(pos => {
+            const { latitude: lt, longitude: ln } = pos.coords;
+            map.setView([lt, ln], 12);
+            L.marker([lt, ln], {
+                icon: L.divIcon({
+                    className: '',
+                    html: '<div style="background:#2563eb;color:white;padding:5px 10px;border-radius:10px;font-size:11px;font-weight:800;box-shadow:0 4px 12px rgba(0,0,0,0.25);border:2px solid white;">📍 You</div>',
+                    iconAnchor: [0, 0]
+                })
+            }).addTo(map).bindPopup('<b>Your Location</b>').openPopup();
+        }, err => alert('Could not get location: ' + err.message));
+    };
+})();
+
+// ── Animated Counters ──
+document.querySelectorAll('.stat-animate [id^="stat-"]').forEach(() => {});
+</script>
+
+{% endblock %}

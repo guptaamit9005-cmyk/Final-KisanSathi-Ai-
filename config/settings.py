@@ -35,6 +35,17 @@ DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
+    "testserver",
+    "*",
+]
+
+# Allow ngrok and other public tunnels (forms/CSRF will work)
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "https://*.ngrok-free.app",
+    "https://*.ngrok.io",
+    "https://*.loca.lt",
 ]
 
 
@@ -66,7 +77,6 @@ INSTALLED_APPS = [
 
     # Equipment Rental
     "equipment",
-    "soil_prediction",
     "model_training",
 ]
 

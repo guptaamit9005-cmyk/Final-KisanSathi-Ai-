@@ -2,1191 +2,754 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Land Marketplace | AgriVision AI</title>
 
+    <!-- Tailwind CSS (Using exact color scheme: Slate/Green/Emerald) -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="/static/js/kisansathi-i18n.js"></script>
 
     <style>
-
         * {
             box-sizing: border-box;
         }
 
-        body {
-            font-family:
-                Inter,
-                ui-sans-serif,
-                system-ui,
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                sans-serif;
+        body {\n            letter-spacing: -0.01em;\n            line-height: 1.6;\n
+            font-family: Inter, 'Noto Sans Devanagari', 'Noto Sans Bengali', 'Noto Sans Telugu', 'Noto Sans Tamil', ui-sans-serif, system-ui, -apple-system, sans-serif;
         }
 
         .land-card {
-            transition: all 0.25s ease;
+            transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .land-card:hover {
-            transform: translateY(-6px);
-            box-shadow:
-                0 20px 45px rgba(15, 23, 42, 0.10);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 35px -5px rgba(15, 23, 42, 0.08), 0 8px 16px -6px rgba(15, 23, 42, 0.04);
         }
 
         .hero-bg {
             background:
-                radial-gradient(
-                    circle at 10% 20%,
-                    rgba(34, 197, 94, 0.12),
-                    transparent 30%
-                ),
-                radial-gradient(
-                    circle at 90% 10%,
-                    rgba(16, 185, 129, 0.10),
-                    transparent 25%
-                ),
-                linear-gradient(
-                    135deg,
-                    #ffffff,
-                    #f0fdf4
-                );
+                radial-gradient(circle at 10% 20%, rgba(34, 197, 94, 0.12), transparent 30%),
+                radial-gradient(circle at 90% 10%, rgba(16, 185, 129, 0.10), transparent 25%),
+                linear-gradient(135deg, #ffffff, #f0fdf4);
         }
 
-    </style>
+        /* Glassmorphism Quick Calculator */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
 
+        /* Modal styling */
+        .modal-active {
+            display: flex !important;
+        }
+    </style>
 </head>
 
-
-<body class="bg-slate-50 text-slate-900 min-h-screen">
-
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
 
 <!-- =====================================================
      NAVBAR
 ====================================================== -->
-
-<header
-    class="sticky top-0 z-50
-           bg-white/95 backdrop-blur
-           border-b border-slate-200"
->
-
-    <div
-        class="max-w-7xl mx-auto
-               px-5 sm:px-8"
-    >
-
-        <div
-            class="h-16
-                   flex items-center
-                   justify-between"
-        >
-
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+        <div class="h-16 flex items-center justify-between">
             <!-- BRAND -->
-
-            <a
-                href="/dashboard/"
-                class="flex items-center gap-3"
-            >
-
-                <div
-                    class="w-10 h-10
-                           rounded-xl
-                           bg-green-600
-                           text-white
-                           flex items-center
-                           justify-center
-                           font-black
-                           text-lg
-                           shadow-sm"
-                >
+            <a href="/dashboard/" class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-green-600 text-white flex items-center justify-center font-black text-lg shadow-sm">
                     A
                 </div>
-
                 <div>
-
-                    <h1
-                        class="font-bold
-                               text-slate-900"
-                    >
-                        AgriVisionAI
-                    </h1>
-
-                    <p
-                        class="text-xs
-                               text-slate-500"
-                    >
-                        Smart Agriculture Platform
-                    </p>
-
+                    <h1 class="font-bold text-slate-900 leading-tight">AgriVisionAI</h1>
+                    <p class="text-xs text-slate-500">Smart Agriculture Platform</p>
                 </div>
-
             </a>
 
-
-            <!-- DASHBOARD -->
-
-            <a
-                href="/dashboard/"
-                class="inline-flex
-                       items-center
-                       gap-2
-                       px-4 py-2.5
-                       rounded-xl
-                       border
-                       border-slate-200
-                       bg-white
-                       hover:bg-slate-50
-                       text-slate-700
-                       font-semibold
-                       text-sm
-                       transition"
-            >
-
-                ← Dashboard
-
-            </a>
-
+            <!-- QUICK NAVIGATION & ACTIONS -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <span id="ksLangSelectorPlaceholder"></span>
+                <a href="{% url 'land_marketplace:my_land' %}"
+                   class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm transition">
+                    📋 My Land
+                </a>
+                <a href="{% url 'land_marketplace:my_requests' %}"
+                   class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm transition">
+                    🚜 My Requests
+                </a>
+                <a href="{% url 'land_marketplace:create' %}"
+                   class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold text-xs sm:text-sm transition shadow-sm">
+                    + List Land
+                </a>
+                <a href="/dashboard/"
+                   class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm transition" data-i18n="nav_dashboard">
+                    ← Dashboard
+                </a>
+            </div>
         </div>
-
     </div>
-
 </header>
 
 
-
 <!-- =====================================================
-     HERO
+     HERO SECTION
 ====================================================== -->
+<section class="hero-bg border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 py-12 lg:py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            
+            <!-- Left Info -->
+            <div class="lg:col-span-7">
+                <!-- BADGE -->
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase tracking-wider">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    AgriVisionAI Land Marketplace
+                </div>
 
-<section
-    class="hero-bg
-           border-b
-           border-slate-200"
->
+                <!-- TITLE -->
+                <h2 class="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 mt-4 leading-tight">
+                    Find the Right Farmland
+                    <span class="block text-green-600">For Your Farming Dreams</span>
+                </h2>
 
-    <div
-        class="max-w-7xl mx-auto
-               px-5 sm:px-8
-               py-14"
-    >
+                <!-- DESCRIPTION -->
+                <p class="mt-4 text-base sm:text-lg leading-relaxed text-slate-600 max-w-xl">
+                    Discover fertile agricultural plots with verified water sources, live rental calculations, direct landowner contact, and lease protection.
+                </p>
 
-        <div
-            class="max-w-3xl"
-        >
-
-            <!-- BADGE -->
-
-            <div
-                class="inline-flex
-                       items-center
-                       gap-2
-                       px-3 py-1.5
-                       bg-green-100
-                       text-green-700
-                       rounded-full
-                       text-sm
-                       font-bold"
-            >
-
-                <span
-                    class="w-2 h-2
-                           rounded-full
-                           bg-green-500"
-                ></span>
-
-                AGRIVISIONAI LAND MARKETPLACE
-
+                <!-- HERO BUTTONS -->
+                <div class="flex flex-wrap gap-3 mt-7">
+                    <a href="{% url 'land_marketplace:create' %}"
+                       class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg shadow-green-600/20 transition">
+                        + List Your Land
+                    </a>
+                    <a href="#marketplace-explorer"
+                       class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold rounded-xl transition">
+                        🔍 Explore Listings
+                    </a>
+                    <button type="button" onclick="openCalcModal()"
+                            class="inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-green-50 hover:bg-green-100 border border-green-200 text-green-800 font-semibold rounded-xl transition">
+                        🧮 Lease Calculator
+                    </button>
+                </div>
             </div>
 
+            <!-- Right Interactive Quick Calculator Widget -->
+            <div class="lg:col-span-5">
+                <div class="glass-panel p-6 sm:p-7 rounded-3xl shadow-xl shadow-slate-200/50">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+                        <div>
+                            <span class="text-xs font-bold text-green-700 uppercase tracking-wider">Interactive Utility</span>
+                            <h3 class="text-lg font-black text-slate-900 mt-0.5">Quick Lease Estimator</h3>
+                        </div>
+                        <span class="text-2xl">🌱</span>
+                    </div>
 
-            <!-- TITLE -->
+                    <div class="mt-4 space-y-4">
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+                                <span>Desired Area (Acres):</span>
+                                <span id="quickAreaLabel" class="text-green-700 font-bold text-sm">2 Acres</span>
+                            </div>
+                            <input type="range" id="quickAreaSlider" min="0.5" max="25" step="0.5" value="2"
+                                   class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-green-600">
+                        </div>
 
-            <h2
-                class="text-4xl
-                       sm:text-5xl
-                       font-black
-                       tracking-tight
-                       text-slate-900
-                       mt-5"
-            >
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+                                <span>Duration (Months):</span>
+                                <span id="quickDurLabel" class="text-green-700 font-bold text-sm">6 Months</span>
+                            </div>
+                            <input type="range" id="quickDurSlider" min="1" max="36" step="1" value="6"
+                                   class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-green-600">
+                        </div>
 
-                Find the Right Land
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Avg Rent Rate (₹/Acre/Month):</label>
+                            <input type="number" id="quickRateInput" value="3000" step="100" min="500"
+                                   class="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl bg-white focus:outline-none focus:border-green-600">
+                        </div>
 
-                <span
-                    class="block
-                           text-green-600"
-                >
-                    For Your Farming
-                </span>
-
-            </h2>
-
-
-            <!-- DESCRIPTION -->
-
-            <p
-                class="mt-5
-                       text-lg
-                       leading-8
-                       text-slate-600
-                       max-w-2xl"
-            >
-
-                Discover agricultural land available for farming,
-                connect with landowners and find opportunities
-                that match your farming requirements.
-
-            </p>
-
-
-            <!-- ACTIONS -->
-
-            <div
-                class="flex
-                       flex-col
-                       sm:flex-row
-                       gap-3
-                       mt-8"
-            >
-
-                <a
-                    href="{% url 'land_marketplace:create' %}"
-                    class="inline-flex
-                           items-center
-                           justify-center
-                           gap-2
-                           px-6 py-3.5
-                           bg-green-600
-                           hover:bg-green-700
-                           text-white
-                           font-bold
-                           rounded-xl
-                           shadow-lg
-                           shadow-green-600/20
-                           transition"
-                >
-
-                    + List Your Land
-
-                </a>
-
-
-                <a
-                    href="#land-listings"
-                    class="inline-flex
-                           items-center
-                           justify-center
-                           px-6 py-3.5
-                           bg-white
-                           hover:bg-slate-50
-                           border
-                           border-slate-200
-                           text-slate-700
-                           font-semibold
-                           rounded-xl
-                           transition"
-                >
-
-                    Browse Available Land
-
-                </a>
-
+                        <!-- Result Display -->
+                        <div class="p-3.5 bg-green-50/80 border border-green-200 rounded-2xl flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-green-800 font-medium block">Estimated Budget</span>
+                                <span class="text-xl font-black text-green-700" id="quickTotalDisplay">₹36,000</span>
+                            </div>
+                            <a href="#marketplace-explorer" class="text-xs font-bold text-green-700 hover:text-green-800 underline">
+                                Match Land Plots →
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
-
     </div>
-
 </section>
 
 
-
 <!-- =====================================================
-     QUICK STATS
+     QUICK STATS SUMMARY
 ====================================================== -->
-
-<section
-    class="max-w-7xl mx-auto
-           px-5 sm:px-8
-           -mt-7
-           relative z-10"
->
-
-    <div
-        class="grid
-               grid-cols-1
-               sm:grid-cols-3
-               gap-4"
-    >
-
-
-        <!-- CARD -->
-
-        <div
-            class="bg-white
-                   border
-                   border-slate-200
-                   rounded-2xl
-                   p-5
-                   shadow-sm"
-        >
-
-            <div
-                class="flex
-                       items-center
-                       gap-4"
-            >
-
-                <div
-                    class="w-12 h-12
-                           rounded-xl
-                           bg-green-100
-                           text-green-700
-                           flex items-center
-                           justify-center
-                           text-2xl"
-                >
-                    🌾
-                </div>
-
-                <div>
-
-                    <p
-                        class="text-sm
-                               text-slate-500"
-                    >
-                        Marketplace
-                    </p>
-
-                    <p
-                        class="font-bold
-                               text-slate-900"
-                    >
-                        Agricultural Land
-                    </p>
-
-                </div>
-
+<section class="max-w-7xl mx-auto px-5 sm:px-8 -mt-6 relative z-10">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        
+        <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-green-100 text-green-700 flex items-center justify-center text-2xl shrink-0">
+                🌾
             </div>
-
+            <div>
+                <p class="text-xs text-slate-500 font-medium">Available Plots</p>
+                <p class="font-bold text-slate-900 text-base sm:text-lg">Agricultural Farmland</p>
+            </div>
         </div>
 
-
-
-        <!-- CARD -->
-
-        <div
-            class="bg-white
-                   border
-                   border-slate-200
-                   rounded-2xl
-                   p-5
-                   shadow-sm"
-        >
-
-            <div
-                class="flex
-                       items-center
-                       gap-4"
-            >
-
-                <div
-                    class="w-12 h-12
-                           rounded-xl
-                           bg-blue-100
-                           text-blue-700
-                           flex items-center
-                           justify-center
-                           text-2xl"
-                >
-                    📍
-                </div>
-
-                <div>
-
-                    <p
-                        class="text-sm
-                               text-slate-500"
-                    >
-                        Location Based
-                    </p>
-
-                    <p
-                        class="font-bold
-                               text-slate-900"
-                    >
-                        Find Suitable Land
-                    </p>
-
-                </div>
-
+        <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-2xl shrink-0">
+                📍
             </div>
-
+            <div>
+                <p class="text-xs text-slate-500 font-medium">Verified Criteria</p>
+                <p class="font-bold text-slate-900 text-base sm:text-lg">Soil, Water & Road Access</p>
+            </div>
         </div>
 
-
-
-        <!-- CARD -->
-
-        <div
-            class="bg-white
-                   border
-                   border-slate-200
-                   rounded-2xl
-                   p-5
-                   shadow-sm"
-        >
-
-            <div
-                class="flex
-                       items-center
-                       gap-4"
-            >
-
-                <div
-                    class="w-12 h-12
-                           rounded-xl
-                           bg-amber-100
-                           text-amber-700
-                           flex items-center
-                           justify-center
-                           text-2xl"
-                >
-                    🤝
-                </div>
-
-                <div>
-
-                    <p
-                        class="text-sm
-                               text-slate-500"
-                    >
-                        Direct Connection
-                    </p>
-
-                    <p
-                        class="font-bold
-                               text-slate-900"
-                    >
-                        Connect With Owners
-                    </p>
-
-                </div>
-
+        <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-2xl shrink-0">
+                🤝
             </div>
-
+            <div>
+                <p class="text-xs text-slate-500 font-medium">Zero Brokerage</p>
+                <p class="font-bold text-slate-900 text-base sm:text-lg">Direct Farmer Inquiries</p>
+            </div>
         </div>
-
 
     </div>
-
 </section>
 
 
-
 <!-- =====================================================
-     MESSAGES
+     MESSAGES / FEEDBACK
 ====================================================== -->
-
 {% if messages %}
-
-<section
-    class="max-w-7xl mx-auto
-           px-5 sm:px-8
-           pt-10"
->
-
+<section class="max-w-7xl mx-auto px-5 sm:px-8 pt-8">
     {% for message in messages %}
-
-    <div
-        class="flex
-               items-start
-               gap-3
-               bg-green-50
-               border
-               border-green-200
-               text-green-800
-               rounded-xl
-               px-5 py-4
-               mb-3"
-    >
-
-        <span
-            class="text-xl"
-        >
-            ✓
-        </span>
-
-        <p
-            class="font-medium"
-        >
-            {{ message }}
-        </p>
-
+    <div class="flex items-start gap-3 bg-green-50 border border-green-200 text-green-800 rounded-xl px-5 py-4 mb-3 shadow-sm">
+        <span class="text-xl">✓</span>
+        <p class="font-medium text-sm sm:text-base">{{ message }}</p>
     </div>
-
     {% endfor %}
-
 </section>
-
 {% endif %}
 
 
-
 <!-- =====================================================
-     LAND LISTINGS
+     SEARCH, FILTER & EXPLORER
 ====================================================== -->
+<main id="marketplace-explorer" class="max-w-7xl mx-auto px-5 sm:px-8 py-12 flex-1">
 
-<main
-    id="land-listings"
-    class="max-w-7xl mx-auto
-           px-5 sm:px-8
-           py-14"
->
+    <!-- SEARCH & FILTER TOOLBAR -->
+    <div class="bg-white border border-slate-200 rounded-3xl p-5 sm:p-7 shadow-sm mb-10">
+        <form method="GET" action="{% url 'land_marketplace:list' %}" class="space-y-4">
+            <!-- Keyword search row -->
+            <div class="flex flex-col sm:flex-row gap-3">
+                <div class="relative flex-1">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        🔍
+                    </span>
+                    <input type="text" name="q" id="searchInput" value="{{ request.GET.q|default:'' }}"
+                           placeholder="Search by village, district, crop (e.g. Wheat, Sugarcane) or soil..."
+                           class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-green-600 bg-slate-50/50">
+                </div>
 
+                <div class="flex gap-2 shrink-0">
+                    <button type="submit"
+                            class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl text-sm transition shadow-sm">
+                        Filter Land
+                    </button>
+                    <a href="{% url 'land_marketplace:list' %}"
+                       class="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition flex items-center justify-center">
+                        Reset
+                    </a>
+                </div>
+            </div>
 
-    <!-- HEADER -->
+            <!-- Granular Filter Tags & Fields -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 pt-3 border-t border-slate-100">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">District / Region</label>
+                    <input type="text" name="district" value="{{ request.GET.district|default:'' }}" placeholder="e.g. Nashik"
+                           class="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white">
+                </div>
 
-    <div
-        class="flex
-               flex-col
-               md:flex-row
-               md:items-end
-               md:justify-between
-               gap-5
-               mb-8"
-    >
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Crop Type</label>
+                    <input type="text" name="crop" value="{{ request.GET.crop|default:'' }}" placeholder="e.g. Cotton"
+                           class="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white">
+                </div>
 
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Land Category</label>
+                    <select name="land_type" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white">
+                        <option value="">All Categories</option>
+                        <option value="agricultural" {% if request.GET.land_type == 'agricultural' %}selected{% endif %}>Agricultural</option>
+                        <option value="orchard" {% if request.GET.land_type == 'orchard' %}selected{% endif %}>Orchard</option>
+                        <option value="greenhouse" {% if request.GET.land_type == 'greenhouse' %}selected{% endif %}>Greenhouse</option>
+                        <option value="mixed" {% if request.GET.land_type == 'mixed' %}selected{% endif %}>Mixed Farming</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Min Area (Acres)</label>
+                    <input type="number" step="0.5" name="min_area" value="{{ request.GET.min_area|default:'' }}" placeholder="Min Acres"
+                           class="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Max Rent (₹/Acre)</label>
+                    <input type="number" name="max_price" value="{{ request.GET.max_price|default:'' }}" placeholder="Max ₹/Month"
+                           class="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white">
+                </div>
+            </div>
+
+            <!-- Interactive Quick Filter Chips -->
+            <div class="flex flex-wrap items-center gap-2 pt-2">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Quick Filters:</span>
+                <button type="button" onclick="setFilterQuick('crop', 'Wheat')" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 hover:bg-green-100 hover:text-green-800 text-slate-600 transition">🌾 Wheat</button>
+                <button type="button" onclick="setFilterQuick('crop', 'Soybean')" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 hover:bg-green-100 hover:text-green-800 text-slate-600 transition">🌱 Soybean</button>
+                <button type="button" onclick="setFilterQuick('crop', 'Vegetables')" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 hover:bg-green-100 hover:text-green-800 text-slate-600 transition">🥦 Vegetables</button>
+                <button type="button" onclick="setFilterQuick('land_type', 'agricultural')" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 hover:bg-green-100 hover:text-green-800 text-slate-600 transition">🚜 Pure Farm</button>
+                <button type="button" onclick="setFilterQuick('land_type', 'orchard')" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 hover:bg-green-100 hover:text-green-800 text-slate-600 transition">🍎 Orchard</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- LISTINGS HEADER & VIEW TOGGLES -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-
-            <p
-                class="text-green-600
-                       font-bold
-                       text-sm
-                       uppercase
-                       tracking-wider"
-            >
-                Explore Land
-            </p>
-
-            <h2
-                class="text-3xl
-                       font-black
-                       text-slate-900
-                       mt-2"
-            >
+            <h2 class="text-2xl sm:text-3xl font-black text-slate-900">
                 Available Agricultural Land
             </h2>
-
-            <p
-                class="text-slate-500
-                       mt-2"
-            >
-                Explore land listings and find
-                an opportunity suitable for your farm.
+            <p class="text-sm text-slate-500 mt-1">
+                Found {{ lands|length }} farmland listing{{ lands|length|pluralize }} matching your parameters.
             </p>
-
         </div>
 
+        <div class="flex items-center gap-3">
+            <!-- Client-side Sort Selector -->
+            <select id="sortSelect" onchange="sortCards()" class="px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 bg-white">
+                <option value="default">Default Sort</option>
+                <option value="price-asc">Rent: Low to High</option>
+                <option value="price-desc">Rent: High to Low</option>
+                <option value="area-desc">Area: Largest First</option>
+            </select>
 
-        <a
-            href="{% url 'land_marketplace:create' %}"
-            class="inline-flex
-                   items-center
-                   justify-center
-                   gap-2
-                   px-5 py-3
-                   bg-green-600
-                   hover:bg-green-700
-                   text-white
-                   font-semibold
-                   rounded-xl
-                   transition"
-        >
-
-            + List Your Land
-
-        </a>
-
+            <a href="{% url 'land_marketplace:create' %}"
+               class="inline-flex items-center gap-1.5 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-bold text-xs sm:text-sm rounded-xl transition shadow-sm">
+                + List Land
+            </a>
+        </div>
     </div>
 
 
-
     {% if lands %}
-
-
-    <!-- GRID -->
-
-    <div
-        class="grid
-               grid-cols-1
-               sm:grid-cols-2
-               lg:grid-cols-3
-               gap-6"
-    >
-
+    <!-- LAND LISTINGS GRID -->
+    <div id="landGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
         {% for land in lands %}
+        <!-- CARD -->
+        <article class="land-card bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between"
+                 data-price="{{ land.rent_per_acre_month|default:0 }}"
+                 data-area="{{ land.available_area|default:0 }}"
+                 data-title="{{ land.title|lower }}"
+                 data-location="{{ land.location|lower }}"
+                 data-crop="{{ land.suitable_crops|lower }}">
 
+            <div>
+                <!-- IMAGE BANNER -->
+                <div class="h-44 relative bg-gradient-to-br from-green-100 via-emerald-50 to-lime-100 flex items-center justify-center overflow-hidden">
+                    {% if land.image %}
+                    <img src="{{ land.image.url }}" alt="{{ land.title }}" class="w-full h-full object-cover">
+                    {% else %}
+                    <span class="text-6xl select-none">🌾</span>
+                    {% endif %}
 
-        <!-- LAND CARD -->
+                    <!-- BADGES ON IMAGE -->
+                    <div class="absolute top-3 left-3 flex gap-1.5">
+                        <span class="px-2.5 py-1 rounded-full bg-slate-900/80 backdrop-blur-sm text-white text-xs font-bold">
+                            {{ land.get_land_type_display|default:"Agricultural" }}
+                        </span>
+                        {% if land.is_verified %}
+                        <span class="px-2.5 py-1 rounded-full bg-green-600 text-white text-xs font-bold flex items-center gap-1">
+                            ✓ Verified
+                        </span>
+                        {% endif %}
+                    </div>
 
-        <article
-            class="land-card
-                   bg-white
-                   border
-                   border-slate-200
-                   rounded-2xl
-                   overflow-hidden
-                   shadow-sm"
-        >
+                    <div class="absolute top-3 right-3">
+                        <span class="px-2.5 py-1 rounded-full bg-white/95 text-slate-800 text-xs font-black shadow-sm">
+                            ₹{{ land.rent_per_acre_month }}/Ac/Mo
+                        </span>
+                    </div>
 
+                    <div class="absolute bottom-2.5 left-3">
+                        <span class="px-2 py-0.5 rounded-md bg-white/90 backdrop-blur-sm text-slate-700 text-xs font-medium">
+                            📍 {{ land.location }}
+                        </span>
+                    </div>
+                </div>
 
-            <!-- IMAGE / HEADER -->
+                <!-- BODY CONTENT -->
+                <div class="p-5">
+                    <h3 class="text-lg font-bold text-slate-900 leading-snug line-clamp-1">
+                        {{ land.title }}
+                    </h3>
 
-            <div
-                class="h-36
-                       bg-gradient-to-br
-                       from-green-100
-                       via-emerald-50
-                       to-lime-100
-                       flex items-center
-                       justify-center
-                       text-6xl"
-            >
-                🌾
+                    <!-- DETAILS GRID -->
+                    <div class="grid grid-cols-3 gap-2 mt-4 text-center">
+                        <div class="bg-slate-50 rounded-xl p-2 border border-slate-100">
+                            <span class="text-xs text-slate-400 font-semibold block">Available</span>
+                            <span class="text-sm font-extrabold text-slate-800">{{ land.available_area }} Ac</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-xl p-2 border border-slate-100">
+                            <span class="text-xs text-slate-400 font-semibold block">Soil</span>
+                            <span class="text-sm font-extrabold text-slate-800 truncate block">{{ land.soil_type|default:"Loam" }}</span>
+                        </div>
+                        <div class="bg-slate-50 rounded-xl p-2 border border-slate-100">
+                            <span class="text-xs text-slate-400 font-semibold block">Water</span>
+                            <span class="text-xs font-extrabold text-green-700 truncate block mt-0.5">
+                                {{ land.get_water_source_display|default:"Available" }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- CROPS & AMENITIES -->
+                    <div class="mt-4 space-y-2 text-xs">
+                        <div class="flex items-start gap-1.5 text-slate-600">
+                            <span class="font-semibold text-slate-400 uppercase tracking-wide shrink-0">Crops:</span>
+                            <span class="text-slate-700 truncate">{{ land.suitable_crops|default:"Suitable for multiple seasonal crops" }}</span>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                            <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-100 font-bold">
+                                🤝 {{ land.get_listing_type_display|default:"Lease / Rent" }}
+                            </span>
+                            {% if land.electricity_available %}
+                            <span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-100 font-semibold">
+                                ⚡ Electricity
+                            </span>
+                            {% endif %}
+                            {% if land.road_access %}
+                            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold">
+                                🛣️ Road
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
             </div>
 
-
-            <!-- CONTENT -->
-
-            <div
-                class="p-6"
-            >
-
-
-                <!-- TITLE -->
-
-                <h3
-                    class="text-xl
-                           font-bold
-                           text-slate-900
-                           leading-7"
-                >
-
-                    {{ land.title }}
-
-                </h3>
-
-
-                <!-- LOCATION -->
-
-                <div
-                    class="flex
-                           items-start
-                           gap-2
-                           mt-4
-                           text-slate-600"
-                >
-
-                    <span>
-                        📍
-                    </span>
-
-                    <span>
-                        <strong
-                            class="text-slate-800"
-                        >
-                            Location:
-                        </strong>
-
-                        {{ land.location }}
-
-                    </span>
-
-                </div>
-
-
-                <!-- DETAILS -->
-
-                <div
-                    class="mt-5
-                           space-y-3
-                           text-sm"
-                >
-
-
-                    <div
-                        class="flex
-                               items-center
-                               justify-between
-                               bg-slate-50
-                               rounded-lg
-                               px-3 py-2.5"
-                    >
-
-                        <span
-                            class="text-slate-500"
-                        >
-                            📐 Area
-                        </span>
-
-                        <span
-                            class="font-semibold
-                                   text-slate-800"
-                        >
-                            {{ land.area }}
-                        </span>
-
-                    </div>
-
-
-                    <div
-                        class="flex
-                               items-center
-                               justify-between
-                               bg-slate-50
-                               rounded-lg
-                               px-3 py-2.5"
-                    >
-
-                        <span
-                            class="text-slate-500"
-                        >
-                            🌱 Soil
-                        </span>
-
-                        <span
-                            class="font-semibold
-                                   text-slate-800"
-                        >
-                            {{ land.soil_type }}
-                        </span>
-
-                    </div>
-
-
-                    <div
-                        class="flex
-                               items-center
-                               justify-between
-                               bg-slate-50
-                               rounded-lg
-                               px-3 py-2.5"
-                    >
-
-                        <span
-                            class="text-slate-500"
-                        >
-                            💧 Irrigation
-                        </span>
-
-                        {% if land.irrigation %}
-
-                        <span
-                            class="text-green-600
-                                   font-bold"
-                        >
-                            Available
-                        </span>
-
-                        {% else %}
-
-                        <span
-                            class="text-red-500
-                                   font-semibold"
-                        >
-                            Not Available
-                        </span>
-
-                        {% endif %}
-
-                    </div>
-
-
-                </div>
-
-
-                <!-- CROPS -->
-
-                <div
-                    class="mt-5"
-                >
-
-                    <p
-                        class="text-xs
-                               uppercase
-                               tracking-wide
-                               text-slate-400
-                               font-bold"
-                    >
-                        Suitable Crops
-                    </p>
-
-                    <p
-                        class="text-slate-700
-                               mt-1
-                               leading-6"
-                    >
-                        🌾 {{ land.suitable_crops }}
-                    </p>
-
-                </div>
-
-
-
-                {% if land.agreement_type %}
-
-                <div
-                    class="mt-4
-                           flex
-                           items-center
-                           gap-2"
-                >
-
-                    <span
-                        class="px-3 py-1.5
-                               rounded-full
-                               bg-blue-50
-                               text-blue-700
-                               border
-                               border-blue-100
-                               text-xs
-                               font-bold"
-                    >
-
-                        🤝 {{ land.agreement_type }}
-
-                    </span>
-
-                </div>
-
-                {% endif %}
-
-
-
-                <!-- DIVIDER -->
-
-                <div
-                    class="border-t
-                           border-slate-100
-                           mt-6
-                           pt-5"
-                >
-
-                    <a
-                        href="{% url 'land_marketplace:detail' land.id %}"
-                        class="w-full
-                               inline-flex
-                               items-center
-                               justify-center
-                               gap-2
-                               px-5 py-3
-                               bg-green-600
-                               hover:bg-green-700
-                               text-white
-                               font-bold
-                               rounded-xl
-                               transition"
-                    >
-
-                        View Land Details
-
-                        <span>
-                            →
-                        </span>
-
-                    </a>
-
-                </div>
-
-
+            <!-- FOOTER BUTTONS -->
+            <div class="px-5 pb-5 pt-2 flex gap-2">
+                <button type="button"
+                        onclick="openLandCalc('{{ land.id }}', '{{ land.title|escapejs }}', '{{ land.rent_per_acre_month }}', '{{ land.security_deposit }}', '{{ land.available_area }}')"
+                        class="p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition"
+                        title="Calculate Cost for this Land">
+                    🧮
+                </button>
+                <a href="{% url 'land_marketplace:detail' land.id %}"
+                   class="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl text-sm transition shadow-sm">
+                    View Land & Apply →
+                </a>
             </div>
 
         </article>
-
-
         {% endfor %}
 
     </div>
 
 
-    {% else %}
-
-
-    <!-- =================================================
-         EMPTY STATE
-    ================================================== -->
-
-    <div
-        class="bg-white
-               border
-               border-slate-200
-               rounded-3xl
-               py-20
-               px-6
-               text-center
-               shadow-sm"
-    >
-
-        <div
-            class="w-20 h-20
-                   mx-auto
-                   rounded-2xl
-                   bg-green-100
-                   flex items-center
-                   justify-center
-                   text-4xl"
-        >
-            🌾
-        </div>
-
-
-        <h3
-            class="text-2xl
-                   font-black
-                   text-slate-900
-                   mt-6"
-        >
-
-            No Land Available Right Now
-
-        </h3>
-
-
-        <p
-            class="max-w-md
-                   mx-auto
-                   text-slate-500
-                   mt-3
-                   leading-6"
-        >
-
-            There are currently no agricultural land
-            listings available. Be the first landowner
-            to list your land.
-
-        </p>
-
-
-        <a
-            href="{% url 'land_marketplace:create' %}"
-            class="inline-flex
-                   items-center
-                   gap-2
-                   mt-7
-                   px-6 py-3.5
-                   bg-green-600
-                   hover:bg-green-700
-                   text-white
-                   font-bold
-                   rounded-xl
-                   transition"
-        >
-
-            + List Your Land
-
+    <!-- PAGINATION -->
+    {% if page_obj.has_other_pages %}
+    <div class="flex justify-center items-center gap-2 mt-12">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}"
+           class="px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm transition">
+            ← Previous
         </a>
+        {% endif %}
 
+        <span class="px-4 py-2 text-sm font-semibold text-slate-500">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}"
+           class="px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm transition">
+            Next →
+        </a>
+        {% endif %}
     </div>
-
-
     {% endif %}
 
+
+    {% else %}
+    <!-- EMPTY STATE -->
+    <div class="bg-white border border-slate-200 rounded-3xl py-16 px-6 text-center shadow-sm">
+        <div class="w-20 h-20 mx-auto rounded-2xl bg-green-100 flex items-center justify-center text-4xl">
+            🌾
+        </div>
+        <h3 class="text-2xl font-black text-slate-900 mt-5">
+            No Matching Farmland Found
+        </h3>
+        <p class="max-w-md mx-auto text-slate-500 mt-2 text-sm sm:text-base leading-relaxed">
+            Try adjusting your search criteria or reset filters to browse all available agricultural plots.
+        </p>
+        <div class="mt-6 flex justify-center gap-3">
+            <a href="{% url 'land_marketplace:list' %}"
+               class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition">
+                Reset Filters
+            </a>
+            <a href="{% url 'land_marketplace:create' %}"
+               class="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl text-sm transition shadow-sm">
+                + List Your Land
+            </a>
+        </div>
+    </div>
+    {% endif %}
 
 </main>
 
 
-
 <!-- =====================================================
-     CTA
+     CALL TO ACTION (CTA)
 ====================================================== -->
-
-<section
-    class="max-w-7xl mx-auto
-           px-5 sm:px-8
-           pb-14"
->
-
-    <div
-        class="relative
-               overflow-hidden
-               bg-green-600
-               rounded-3xl
-               px-7 sm:px-12
-               py-10
-               text-white"
-    >
-
-        <div
-            class="relative z-10
-                   flex
-                   flex-col
-                   md:flex-row
-                   md:items-center
-                   md:justify-between
-                   gap-7"
-        >
-
-            <div
-                class="max-w-2xl"
-            >
-
-                <p
-                    class="text-green-100
-                           font-semibold
-                           text-sm"
-                >
-                    LANDOWNERS
+<section class="max-w-7xl mx-auto px-5 sm:px-8 pb-14">
+    <div class="relative overflow-hidden bg-green-600 rounded-3xl px-7 sm:px-12 py-10 text-white shadow-xl shadow-green-700/20">
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-7">
+            <div class="max-w-2xl">
+                <p class="text-green-100 font-semibold text-xs tracking-wider uppercase">Landowners & Farmers</p>
+                <h2 class="text-3xl font-black mt-1">Have Agricultural Land?</h2>
+                <p class="text-green-50 mt-2 leading-relaxed text-sm sm:text-base">
+                    List your farmland on AgriVisionAI to connect directly with dedicated farmers, receive crop proposals, and secure lease agreements.
                 </p>
-
-                <h2
-                    class="text-3xl
-                           font-black
-                           mt-2"
-                >
-
-                    Have Agricultural Land?
-
-                </h2>
-
-                <p
-                    class="text-green-50
-                           mt-3
-                           leading-6"
-                >
-
-                    List your land on AgriVisionAI
-                    and connect with farmers looking
-                    for farming opportunities.
-
-                </p>
-
             </div>
-
-
-            <a
-                href="{% url 'land_marketplace:create' %}"
-                class="shrink-0
-                       inline-flex
-                       items-center
-                       justify-center
-                       gap-2
-                       px-6 py-3.5
-                       bg-white
-                       hover:bg-green-50
-                       text-green-700
-                       font-bold
-                       rounded-xl
-                       transition"
-            >
-
-                List Your Land
-
-                <span>
-                    →
-                </span>
-
-            </a>
-
+            <div class="flex gap-3 shrink-0">
+                <a href="{% url 'land_marketplace:create' %}"
+                   class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-white hover:bg-green-50 text-green-700 font-bold rounded-xl transition shadow-md">
+                    List Your Land →
+                </a>
+            </div>
         </div>
 
-
-        <div
-            class="absolute
-                   -right-16
-                   -top-20
-                   w-56 h-56
-                   rounded-full
-                   bg-white/10"
-        ></div>
-
-
-        <div
-            class="absolute
-                   -right-5
-                   -bottom-24
-                   w-48 h-48
-                   rounded-full
-                   bg-white/10"
-        ></div>
-
+        <div class="absolute -right-16 -top-20 w-56 h-56 rounded-full bg-white/10"></div>
+        <div class="absolute -right-5 -bottom-24 w-48 h-48 rounded-full bg-white/10"></div>
     </div>
-
 </section>
 
+
+<!-- =====================================================
+     INTERACTIVE COST CALCULATOR MODAL
+====================================================== -->
+<div id="calcModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 rounded-3xl max-w-md w-full p-6 shadow-2xl relative animate-in fade-in zoom-in duration-200">
+        <button onclick="closeCalcModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center font-bold">
+            ✕
+        </button>
+
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-green-100 text-green-700 flex items-center justify-center text-xl font-bold">
+                🧮
+            </div>
+            <div>
+                <h3 class="text-lg font-bold text-slate-900" id="modalLandTitle">Lease Cost Calculator</h3>
+                <p class="text-xs text-slate-500">Live breakdown for your farming proposal</p>
+            </div>
+        </div>
+
+        <div class="space-y-4 text-sm">
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Requested Area (Acres):</label>
+                <input type="number" id="modalAreaInput" step="0.1" min="0.1" value="2"
+                       class="w-full px-3 py-2 border border-slate-200 rounded-xl bg-slate-50/50 focus:outline-none focus:border-green-600">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Duration (Months):</label>
+                <input type="number" id="modalDurInput" min="1" max="60" value="6"
+                       class="w-full px-3 py-2 border border-slate-200 rounded-xl bg-slate-50/50 focus:outline-none focus:border-green-600">
+            </div>
+
+            <div class="bg-green-50 border border-green-200 rounded-2xl p-4 space-y-2">
+                <div class="flex justify-between text-slate-600">
+                    <span>Rent Subtotal:</span>
+                    <strong id="modalRentSubtotal" class="text-slate-900">₹0</strong>
+                </div>
+                <div class="flex justify-between text-slate-600">
+                    <span>Security Deposit:</span>
+                    <strong id="modalDeposit" class="text-slate-900">₹0</strong>
+                </div>
+                <div class="border-t border-green-200 pt-2 flex justify-between text-base font-extrabold text-green-800">
+                    <span>Total Estimate:</span>
+                    <span id="modalTotalPayable">₹0</span>
+                </div>
+            </div>
+
+            <div id="modalActionContainer" class="pt-2">
+                <button type="button" onclick="closeCalcModal()" class="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition">
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <!-- =====================================================
      FOOTER
 ====================================================== -->
-
-<footer
-    class="border-t
-           border-slate-200
-           bg-white"
->
-
-    <div
-        class="max-w-7xl mx-auto
-               px-5 sm:px-8
-               py-7"
-    >
-
-        <div
-            class="flex
-                   flex-col
-                   sm:flex-row
-                   items-center
-                   justify-between
-                   gap-4"
-        >
-
+<footer class="border-t border-slate-200 bg-white mt-auto">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 py-7">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-
-                <p
-                    class="font-bold
-                           text-slate-900"
-                >
-                    AgriVisionAI
-                </p>
-
-                <p
-                    class="text-sm
-                           text-slate-500
-                           mt-1"
-                >
-                    Smart Agriculture Platform
-                </p>
-
+                <p class="font-bold text-slate-900">AgriVisionAI</p>
+                <p class="text-xs text-slate-500 mt-0.5">Smart Agriculture & Farmland Marketplace</p>
             </div>
-
-
-            <p
-                class="text-sm
-                       text-slate-400"
-            >
-
-                Connecting farmers with
-                better opportunities 🌱
-
+            <p class="text-xs text-slate-400">
+                Empowering farmers with verified arable land & seamless leasing 🌱
             </p>
-
         </div>
-
     </div>
-
 </footer>
 
 
-</body>
+<!-- =====================================================
+     SCRIPTS: DYNAMIC CALCULATOR & FILTERING
+====================================================== -->
+<script>
+    // Quick Estimator Widget (Hero)
+    const quickAreaSlider = document.getElementById("quickAreaSlider");
+    const quickDurSlider = document.getElementById("quickDurSlider");
+    const quickRateInput = document.getElementById("quickRateInput");
+    const quickAreaLabel = document.getElementById("quickAreaLabel");
+    const quickDurLabel = document.getElementById("quickDurLabel");
+    const quickTotalDisplay = document.getElementById("quickTotalDisplay");
 
+    function updateQuickEstimator() {
+        if (!quickAreaSlider || !quickDurSlider || !quickRateInput) return;
+        const area = parseFloat(quickAreaSlider.value) || 0;
+        const dur = parseInt(quickDurSlider.value) || 0;
+        const rate = parseFloat(quickRateInput.value) || 0;
+
+        quickAreaLabel.innerText = area + " Acres";
+        quickDurLabel.innerText = dur + " Months";
+
+        const total = area * dur * rate;
+        quickTotalDisplay.innerText = "₹" + total.toLocaleString("en-IN");
+    }
+
+    if (quickAreaSlider && quickDurSlider && quickRateInput) {
+        quickAreaSlider.addEventListener("input", updateQuickEstimator);
+        quickDurSlider.addEventListener("input", updateQuickEstimator);
+        quickRateInput.addEventListener("input", updateQuickEstimator);
+        updateQuickEstimator();
+    }
+
+    // Modal Calculation
+    let activeModalRate = 3000;
+    let activeModalDeposit = 0;
+    let activeLandId = null;
+
+    function openCalcModal() {
+        activeModalRate = parseFloat(quickRateInput ? quickRateInput.value : 3000) || 3000;
+        activeModalDeposit = 0;
+        document.getElementById("modalLandTitle").innerText = "Lease Budget Calculator";
+        document.getElementById("modalDeposit").innerText = "₹0";
+        document.getElementById("calcModal").classList.add("modal-active");
+        recalculateModal();
+    }
+
+    function openLandCalc(landId, landTitle, rate, deposit, maxArea) {
+        activeLandId = landId;
+        activeModalRate = parseFloat(rate) || 0;
+        activeModalDeposit = parseFloat(deposit) || 0;
+
+        document.getElementById("modalLandTitle").innerText = landTitle;
+        document.getElementById("modalDeposit").innerText = "₹" + activeModalDeposit.toLocaleString("en-IN");
+        const areaInput = document.getElementById("modalAreaInput");
+        if (areaInput) {
+            areaInput.value = maxArea || 2;
+            areaInput.max = maxArea || 100;
+        }
+
+        const actionContainer = document.getElementById("modalActionContainer");
+        actionContainer.innerHTML = `
+            <a href="/land/${landId}/" class="w-full block text-center py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition">
+                Proceed to Apply for this Land →
+            </a>
+        `;
+
+        document.getElementById("calcModal").classList.add("modal-active");
+        recalculateModal();
+    }
+
+    function closeCalcModal() {
+        document.getElementById("calcModal").classList.remove("modal-active");
+    }
+
+    function recalculateModal() {
+        const area = parseFloat(document.getElementById("modalAreaInput").value) || 0;
+        const dur = parseInt(document.getElementById("modalDurInput").value) || 0;
+
+        const rent = area * dur * activeModalRate;
+        const total = rent + activeModalDeposit;
+
+        document.getElementById("modalRentSubtotal").innerText = "₹" + rent.toLocaleString("en-IN");
+        document.getElementById("modalTotalPayable").innerText = "₹" + total.toLocaleString("en-IN");
+    }
+
+    const modalArea = document.getElementById("modalAreaInput");
+    const modalDur = document.getElementById("modalDurInput");
+    if (modalArea && modalDur) {
+        modalArea.addEventListener("input", recalculateModal);
+        modalDur.addEventListener("input", recalculateModal);
+    }
+
+    // Quick Tag Setter
+    function setFilterQuick(name, val) {
+        const field = document.querySelector(`[name="${name}"]`);
+        if (field) {
+            field.value = val;
+            field.form.submit();
+        }
+    }
+
+    // Client-side Sorting of Land Cards
+    function sortCards() {
+        const select = document.getElementById("sortSelect");
+        const grid = document.getElementById("landGrid");
+        if (!grid || !select) return;
+
+        const cards = Array.from(grid.querySelectorAll("article"));
+        const mode = select.value;
+
+        if (mode === "price-asc") {
+            cards.sort((a, b) => parseFloat(a.dataset.price) - parseFloat(b.dataset.price));
+        } else if (mode === "price-desc") {
+            cards.sort((a, b) => parseFloat(b.dataset.price) - parseFloat(a.dataset.price));
+        } else if (mode === "area-desc") {
+            cards.sort((a, b) => parseFloat(b.dataset.area) - parseFloat(a.dataset.area));
+        }
+
+        cards.forEach(card => grid.appendChild(card));
+    }
+</script>
+
+</body>
 </html>

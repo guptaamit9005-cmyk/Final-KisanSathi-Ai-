@@ -62,9 +62,25 @@ def equipment_home(request):
                 rent_type=rent_type
             )
 
+    all_available = Equipment.objects.filter(status="available")
+    total_count = all_available.count()
+    tractors_count = all_available.filter(equipment_type="tractor").count()
+    harvesters_count = all_available.filter(equipment_type="harvester").count()
+    drones_count = all_available.filter(equipment_type="drone").count()
+    verified_count = all_available.filter(is_verified=True).count()
+    with_operator_count = all_available.filter(operator_available=True).count()
+    with_delivery_count = all_available.filter(delivery_available=True).count()
+
     context = {
         "equipment": equipment,
         "form": form,
+        "total_count": total_count,
+        "tractors_count": tractors_count,
+        "harvesters_count": harvesters_count,
+        "drones_count": drones_count,
+        "verified_count": verified_count,
+        "with_operator_count": with_operator_count,
+        "with_delivery_count": with_delivery_count,
     }
 
     return render(

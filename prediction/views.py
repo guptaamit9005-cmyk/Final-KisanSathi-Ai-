@@ -22,9 +22,10 @@ from reportlab.platypus import (
     Image as PDFImage,
 )
 
-from .models import CropAnalysis
-from .forms import CropImageForm, ExpertReviewForm
+from .models import CropAnalysis, SeedAnalysis
+from .forms import CropImageForm, ExpertReviewForm, SeedAnalysisForm
 from .ai_model import predict_disease
+from .seed_analyzer import analyze_seed_quality, get_crop_standard
 
 
 # ============================================================
@@ -32,15 +33,16 @@ from .ai_model import predict_disease
 # ============================================================
 
 DISEASE_SYMPTOMS = {
+    # ── Rice diseases ────────────────────────────────────────────
     "brown spot": {
         "visual_signs": [
-            "Small brown or dark-brown spots may appear on leaves.",
+            "Small brown or dark-brown spots may appear on rice leaves.",
             "Spots may increase in size as symptoms progress.",
             "Affected leaf tissue may become dry or necrotic.",
             "Severely affected leaves may show extensive discoloration.",
         ],
         "early_symptoms": (
-            "Small brown spots may appear on leaf surfaces. "
+            "Small brown spots may appear on rice leaf surfaces. "
             "Monitor whether spots increase in number or size."
         ),
         "severity_indicators": (
@@ -52,13 +54,13 @@ DISEASE_SYMPTOMS = {
     "bacterial leaf blight": {
         "visual_signs": [
             "Water-soaked or pale-yellow areas may appear near leaf tips or margins.",
-            "Yellowing may extend along the leaf.",
+            "Yellowing may extend along the rice leaf.",
             "Affected tissue may become straw-colored.",
             "Leaves may dry from the tip or edge.",
         ],
         "early_symptoms": (
             "Water-soaked or yellowish leaf areas may appear, often near "
-            "the leaf tip or margin."
+            "the leaf tip or margin of rice plants."
         ),
         "severity_indicators": (
             "Long yellow-to-straw-colored lesions and extensive leaf drying "
@@ -68,25 +70,147 @@ DISEASE_SYMPTOMS = {
 
     "leaf blast": {
         "visual_signs": [
-            "Spindle-shaped or diamond-shaped lesions may develop.",
-            "Lesions may have gray or pale centers.",
-            "Lesion margins may appear brown.",
+            "Spindle-shaped or diamond-shaped lesions may develop on rice leaves.",
+            "Lesions may have gray or pale centers with brown margins.",
             "Multiple lesions may occur on the same leaf.",
+            "Neck blast may cause whitish or grayish panicles.",
         ],
         "early_symptoms": (
-            "Small lesions may develop on leaves and later become "
-            "spindle-shaped."
+            "Small lesions may develop on rice leaves and later become "
+            "spindle-shaped with pale centers."
         ),
         "severity_indicators": (
-            "Increasing lesion count, expanding lesions, or affected "
-            "plant parts should be reviewed by an agricultural expert."
+            "Increasing lesion count, expanding lesions, or panicle "
+            "infection should be reviewed by an agricultural expert."
         ),
     },
 
+    # ── Maize diseases ───────────────────────────────────────────
+    "leaf blight": {
+        "visual_signs": [
+            "Long, grayish-green or tan lesions may appear on maize leaves.",
+            "Lesions may extend parallel to leaf veins.",
+            "Affected areas may turn brown and dry.",
+            "Entire leaves may die in severe cases.",
+        ],
+        "early_symptoms": (
+            "Small, water-soaked or pale lesions may appear on lower maize "
+            "leaves first, then spread upward."
+        ),
+        "severity_indicators": (
+            "Widespread lesion coverage, premature leaf death, or spread "
+            "to upper canopy leaves may indicate severe infection."
+        ),
+    },
+
+    "streak virus": {
+        "visual_signs": [
+            "Bright yellow or white streaks may run along maize leaf veins.",
+            "Streaking may appear on younger leaves first.",
+            "Leaves may appear pale or chlorotic overall.",
+            "Severely affected plants may show stunted growth.",
+        ],
+        "early_symptoms": (
+            "Fine yellow or white streaks may appear on young maize leaves, "
+            "usually following vein patterns."
+        ),
+        "severity_indicators": (
+            "Intense streaking across most leaves and stunted plant "
+            "development suggest significant viral spread."
+        ),
+    },
+
+    # ── Cashew diseases ──────────────────────────────────────────
+    "leaf miner": {
+        "visual_signs": [
+            "Irregular silvery or brown winding trails may appear inside leaves.",
+            "Leaf surface may blister or pucker along the mine trail.",
+            "Affected leaf areas may dry out and die.",
+            "Small exit holes may be visible at the end of each mine.",
+        ],
+        "early_symptoms": (
+            "Small winding tunnels or trails may appear beneath the leaf "
+            "surface of cashew plants."
+        ),
+        "severity_indicators": (
+            "Numerous mines per leaf, extensive leaf area loss, or widespread "
+            "infestation should prompt expert evaluation."
+        ),
+    },
+
+    "red rust": {
+        "visual_signs": [
+            "Orange-red powdery or rust-colored pustules may appear on leaves.",
+            "Pustules may rupture and release rust-colored spores.",
+            "Affected leaves may yellow and drop prematurely.",
+            "Stems or petioles may also show reddish discoloration.",
+        ],
+        "early_symptoms": (
+            "Small orange or rust-colored spots may appear on cashew leaf "
+            "surfaces, often on the underside."
+        ),
+        "severity_indicators": (
+            "Heavy pustule coverage, significant defoliation, or spread to "
+            "stems may indicate severe rust infection."
+        ),
+    },
+
+    # ── Tomato diseases ──────────────────────────────────────────
+    "septoria leaf spot": {
+        "visual_signs": [
+            "Small, circular spots with dark borders and lighter centers may appear on tomato leaves.",
+            "Tiny dark dots (pycnidia) may be visible within the spots.",
+            "Lower and older leaves are typically affected first.",
+            "Severely infected leaves may turn yellow and drop.",
+        ],
+        "early_symptoms": (
+            "Small water-soaked or grayish circular spots may first appear "
+            "on lower tomato leaves."
+        ),
+        "severity_indicators": (
+            "Rapidly increasing spots, yellowing, and premature leaf drop "
+            "suggest spreading infection that requires expert review."
+        ),
+    },
+
+    "verticillium wilt": {
+        "visual_signs": [
+            "Lower leaves may show V-shaped yellow lesions from the edge.",
+            "Yellowing and wilting may begin on one side of the leaf or plant.",
+            "Stems may show brown discoloration in vascular tissue when cut.",
+            "Plants may appear stunted or wilted during warmer parts of the day.",
+        ],
+        "early_symptoms": (
+            "Mild yellowing or wilting of lower tomato leaves, particularly "
+            "in warm conditions, may be an early indicator."
+        ),
+        "severity_indicators": (
+            "Progressive wilting, V-shaped lesions on multiple leaves, and "
+            "internal stem browning indicate systemic infection."
+        ),
+    },
+
+    "verticulium wilt": {
+        "visual_signs": [
+            "Lower leaves may show V-shaped yellow lesions from the edge.",
+            "Yellowing and wilting may begin on one side of the leaf or plant.",
+            "Stems may show brown discoloration in vascular tissue when cut.",
+            "Plants may appear stunted or wilted during warmer parts of the day.",
+        ],
+        "early_symptoms": (
+            "Mild yellowing or wilting of lower tomato leaves, particularly "
+            "in warm conditions, may be an early indicator."
+        ),
+        "severity_indicators": (
+            "Progressive wilting, V-shaped lesions on multiple leaves, and "
+            "internal stem browning indicate systemic infection."
+        ),
+    },
+
+    # ── General / multi-crop conditions ──────────────────────────
     "early blight": {
         "visual_signs": [
-            "Brown lesions may appear on leaves.",
-            "Some lesions may show concentric ring patterns.",
+            "Brown lesions may appear on leaves with concentric ring patterns.",
             "Yellowing may develop around affected areas.",
             "Older leaves may show more visible symptoms.",
         ],
@@ -104,7 +228,6 @@ DISEASE_SYMPTOMS = {
             "Irregular dark-green, brown, or water-soaked-looking patches may appear.",
             "Lesions may expand under favorable conditions.",
             "Leaf tissue may become brown and necrotic.",
-            "Affected areas may appear irregular rather than circular.",
         ],
         "early_symptoms": (
             "Irregular pale, dark, or water-soaked-looking patches may "
@@ -113,6 +236,39 @@ DISEASE_SYMPTOMS = {
         "severity_indicators": (
             "Rapidly expanding dark lesions or widespread tissue damage "
             "requires prompt expert assessment."
+        ),
+    },
+
+    "fungi": {
+        "visual_signs": [
+            "Fungal-type discoloration or lesions may be visible on leaves or stems.",
+            "Powdery, fuzzy, or rust-colored growth may be present.",
+            "Affected tissue may turn yellow, brown, or necrotic.",
+        ],
+        "early_symptoms": (
+            "The classifier detected possible fungal symptoms. "
+            "Monitor closely and consult an agricultural expert for confirmation."
+        ),
+        "severity_indicators": (
+            "Expanding affected areas, spore production, or widespread "
+            "plant involvement may indicate serious fungal disease."
+        ),
+    },
+
+    "nematode": {
+        "visual_signs": [
+            "Stunted plant growth compared to healthy neighbours may be observed.",
+            "Root galls or swellings may be visible on excavated roots.",
+            "Leaves may yellow despite adequate moisture and nutrients.",
+            "Plants may wilt during hot periods and recover at night.",
+        ],
+        "early_symptoms": (
+            "Patchy poor growth, unexplained wilting, or root swelling may "
+            "indicate nematode activity in the soil."
+        ),
+        "severity_indicators": (
+            "Widespread root galling, severe stunting, and yield loss are "
+            "indicators of heavy nematode pressure."
         ),
     },
 
@@ -166,36 +322,255 @@ def get_disease_symptoms(disease_name):
 
 def get_disease_advisory(crop_name, disease_name):
     """
-    General fallback guidance.
+    General crop-and-disease advisory guidance.
     Do not invent pesticide brands, application doses, or schedules.
     """
 
-    crop = str(crop_name or "").lower()
-    disease = str(disease_name or "").lower()
+    crop = str(crop_name or "").lower().strip()
+    disease = str(disease_name or "").lower().strip()
 
-    if crop == "rice" and "brown spot" in disease:
-        return {
-            "solution": (
-                "Remove severely affected plant material where practical. "
-                "Monitor nearby plants and avoid prolonged crop stress. "
-                "Confirm the diagnosis with an agricultural expert."
-            ),
-            "fertilizer": (
-                "Follow a soil-test-based, balanced nutrient plan for rice. "
-                "Avoid applying extra nitrogen without considering crop stage "
-                "and local agricultural recommendations."
-            ),
-            "pesticide": (
-                "No pesticide has been verified for this analysis. "
-                "Ask an agricultural expert to confirm the disease and select "
-                "a locally registered product and label dose, if treatment is needed."
-            ),
-            "prevention": (
-                "Use healthy seed, maintain suitable field and water management, "
-                "monitor the crop regularly, and follow local extension advice."
-            ),
-        }
+    # ── Rice advisories ──────────────────────────────────────────
+    if crop == "rice":
+        if "brown spot" in disease:
+            return {
+                "solution": (
+                    "Remove and destroy severely affected plant material where practical. "
+                    "Improve drainage and reduce crop stress. "
+                    "Confirm the diagnosis with an agricultural expert."
+                ),
+                "fertilizer": (
+                    "Follow a soil-test-based, balanced nutrient plan for rice. "
+                    "Ensure adequate potassium; avoid excess nitrogen during "
+                    "susceptible growth stages."
+                ),
+                "pesticide": (
+                    "No pesticide has been automatically verified for this analysis. "
+                    "Ask an agricultural expert to confirm the disease and select "
+                    "a locally registered fungicide and label dose if treatment is needed."
+                ),
+                "prevention": (
+                    "Use certified disease-free seed, maintain proper field drainage, "
+                    "avoid nutrient stress, and follow local extension advice."
+                ),
+            }
+        if "bacterial leaf blight" in disease:
+            return {
+                "solution": (
+                    "Remove and destroy infected crop debris. "
+                    "Avoid excessive nitrogen fertilizer. "
+                    "Confirm with an agricultural expert before taking action."
+                ),
+                "fertilizer": (
+                    "Reduce nitrogen applications that promote lush, susceptible growth. "
+                    "Maintain balanced potassium and phosphorus levels."
+                ),
+                "pesticide": (
+                    "Bacterial leaf blight has limited chemical control options. "
+                    "Consult an agricultural extension officer for copper-based or "
+                    "locally registered bactericide recommendations."
+                ),
+                "prevention": (
+                    "Plant resistant varieties where available, manage irrigation water "
+                    "carefully, and avoid mechanical damage that allows bacterial entry."
+                ),
+            }
+        if "leaf blast" in disease or "blast" in disease:
+            return {
+                "solution": (
+                    "Monitor the crop closely, especially during flowering and tillering. "
+                    "Consult an agricultural expert promptly if blast is confirmed."
+                ),
+                "fertilizer": (
+                    "Avoid heavy nitrogen applications which increase blast susceptibility. "
+                    "Split nitrogen doses across crop stages as recommended."
+                ),
+                "pesticide": (
+                    "Fungicides may be recommended for blast control when applied at "
+                    "the correct growth stage. Consult an expert for locally registered "
+                    "products and application timing."
+                ),
+                "prevention": (
+                    "Use blast-resistant varieties, avoid late or heavy nitrogen applications, "
+                    "and maintain proper plant spacing for good airflow."
+                ),
+            }
+        if "healthy" in disease:
+            return {
+                "solution": "No treatment needed. The plant appears healthy.",
+                "fertilizer": (
+                    "Continue standard soil-test-based nutrient management for rice."
+                ),
+                "pesticide": "No pesticide application is required for healthy rice.",
+                "prevention": (
+                    "Continue regular monitoring, maintain proper field drainage, "
+                    "and use certified seed in future seasons."
+                ),
+            }
 
+    # ── Maize advisories ─────────────────────────────────────────
+    if crop == "maize":
+        if "leaf blight" in disease or "blight" in disease:
+            return {
+                "solution": (
+                    "Remove heavily infected leaves. Improve air circulation by managing "
+                    "plant density. Seek expert confirmation before applying fungicides."
+                ),
+                "fertilizer": (
+                    "Maintain balanced nutrition. Ensure adequate potassium to support "
+                    "plant defense. Follow soil-test recommendations."
+                ),
+                "pesticide": (
+                    "Fungicide applications may reduce turcicum blight severity when "
+                    "applied early. Consult an expert for locally registered products."
+                ),
+                "prevention": (
+                    "Plant resistant hybrids, rotate crops to reduce pathogen load, "
+                    "and avoid working in wet fields to limit disease spread."
+                ),
+            }
+        if "streak virus" in disease or "streak" in disease:
+            return {
+                "solution": (
+                    "Remove and destroy severely affected plants to reduce viral spread. "
+                    "Control leafhopper vectors that transmit maize streak virus."
+                ),
+                "fertilizer": (
+                    "Maintain adequate nutrition to support crop recovery. "
+                    "Avoid excess nitrogen which may attract more vectors."
+                ),
+                "pesticide": (
+                    "Insecticides targeting leafhopper vectors may help limit spread. "
+                    "Consult an agricultural expert for registered products and timing."
+                ),
+                "prevention": (
+                    "Plant streak-resistant maize varieties, plant early to avoid "
+                    "peak vector populations, and use insecticide seed dressings "
+                    "where recommended by local extension services."
+                ),
+            }
+        if "healthy" in disease:
+            return {
+                "solution": "No treatment needed. The maize plant appears healthy.",
+                "fertilizer": (
+                    "Continue standard soil-test-based nutrient management for maize."
+                ),
+                "pesticide": "No pesticide application is required for healthy maize.",
+                "prevention": (
+                    "Continue regular scouting and follow local extension "
+                    "recommendations for your maize variety."
+                ),
+            }
+
+    # ── Cashew advisories ────────────────────────────────────────
+    if crop == "cashew":
+        if "leaf miner" in disease:
+            return {
+                "solution": (
+                    "Remove and destroy heavily mined leaves. "
+                    "Encourage natural predators. Consult an expert for "
+                    "targeted management options."
+                ),
+                "fertilizer": (
+                    "Maintain balanced nutrition to support plant vigour "
+                    "and recovery from leaf miner damage."
+                ),
+                "pesticide": (
+                    "Systemic insecticides or targeted sprays may be recommended. "
+                    "Consult an agricultural expert for locally registered products "
+                    "and appropriate timing."
+                ),
+                "prevention": (
+                    "Monitor for early signs of mining activity, avoid dense planting "
+                    "that reduces airflow, and use yellow sticky traps for monitoring."
+                ),
+            }
+        if "red rust" in disease:
+            return {
+                "solution": (
+                    "Remove heavily infected leaves and destroy fallen leaf debris. "
+                    "Improve air circulation around the canopy."
+                ),
+                "fertilizer": (
+                    "Maintain balanced nutrition, especially adequate potassium, "
+                    "to support plant resistance to fungal infections."
+                ),
+                "pesticide": (
+                    "Copper-based fungicides or locally registered products may be "
+                    "effective. Consult an agricultural expert for timing and dosage."
+                ),
+                "prevention": (
+                    "Prune dense canopies to improve airflow, avoid overhead "
+                    "irrigation, and remove infected leaf litter regularly."
+                ),
+            }
+        if "healthy" in disease:
+            return {
+                "solution": "No treatment needed. The cashew plant appears healthy.",
+                "fertilizer": (
+                    "Continue standard soil-test-based nutrient management for cashew."
+                ),
+                "pesticide": "No pesticide application is required for healthy cashew.",
+                "prevention": (
+                    "Continue regular monitoring and canopy management practices."
+                ),
+            }
+
+    # ── Tomato advisories ────────────────────────────────────────
+    if crop == "tomato":
+        if "septoria" in disease:
+            return {
+                "solution": (
+                    "Remove and destroy infected lower leaves. Avoid overhead "
+                    "watering. Seek expert confirmation before applying treatments."
+                ),
+                "fertilizer": (
+                    "Maintain balanced nutrition. Calcium sufficiency may support "
+                    "cell wall integrity and reduce infection entry points."
+                ),
+                "pesticide": (
+                    "Fungicides containing chlorothalonil or copper may reduce "
+                    "septoria spread. Consult an expert for locally registered "
+                    "products and appropriate application intervals."
+                ),
+                "prevention": (
+                    "Use mulch to prevent soil splash, stake plants to improve "
+                    "airflow, and rotate tomatoes away from solanaceous crops."
+                ),
+            }
+        if "verticillium" in disease or "verticulium" in disease:
+            return {
+                "solution": (
+                    "There is no cure once a plant is systemically infected. "
+                    "Remove and destroy affected plants to limit soil inoculum. "
+                    "Consult an expert for integrated management."
+                ),
+                "fertilizer": (
+                    "Avoid excessive nitrogen. Maintain balanced nutrients to "
+                    "support healthy root development."
+                ),
+                "pesticide": (
+                    "Fungicide soil drenches have limited efficacy against "
+                    "Verticillium wilt. Soil solarization or biological agents "
+                    "may help—consult an agricultural expert."
+                ),
+                "prevention": (
+                    "Plant resistant varieties, practice crop rotation for 3–4 years, "
+                    "and avoid working infected soil into uninfested areas."
+                ),
+            }
+        if "healthy" in disease:
+            return {
+                "solution": "No treatment needed. The tomato plant appears healthy.",
+                "fertilizer": (
+                    "Continue standard soil-test-based nutrient management for tomato."
+                ),
+                "pesticide": "No pesticide application is required for healthy tomato.",
+                "prevention": (
+                    "Continue regular scouting and good cultural practices."
+                ),
+            }
+
+    # ── Generic fallback ─────────────────────────────────────────
     return {
         "solution": (
             "A verified disease-specific solution is not available in the "
@@ -395,19 +770,39 @@ def crop_analysis_home(request):
         .order_by("-created_at")
     )
 
+    user_seed_analyses = (
+        SeedAnalysis.objects
+        .filter(farmer=request.user)
+        .order_by("-created_at")
+    )
+
+    total = user_analyses.count()
+    verified = user_analyses.filter(status=CropAnalysis.STATUS_VERIFIED).count()
+    pending = user_analyses.filter(status=CropAnalysis.STATUS_SENT_TO_EXPERT).count()
+    rejected = user_analyses.filter(status=CropAnalysis.STATUS_REJECTED).count()
+
+    accuracy_rate = round((verified / total) * 100, 1) if total > 0 else 0
+
+    total_seeds = user_seed_analyses.count()
+    good_seeds = user_seed_analyses.filter(quality_status=SeedAnalysis.QUALITY_GOOD).count()
+    bad_seeds = user_seed_analyses.filter(quality_status=SeedAnalysis.QUALITY_BAD).count()
+
     context = {
-        "total_analyses": user_analyses.count(),
-
-        "pending_analyses": user_analyses.filter(
-            status=CropAnalysis.STATUS_SENT_TO_EXPERT
-        ).count(),
-
-        "verified_analyses": user_analyses.filter(
-            status=CropAnalysis.STATUS_VERIFIED
-        ).count(),
-
+        "total_analyses": total,
+        "pending_analyses": pending,
+        "verified_analyses": verified,
+        "rejected_analyses": rejected,
+        "accuracy_rate": accuracy_rate,
         "recent_analyses": user_analyses[:5],
+        "all_analyses": user_analyses,
         "form": CropImageForm(),
+
+        # Seed Analysis metrics
+        "total_seeds": total_seeds,
+        "good_seeds": good_seeds,
+        "bad_seeds": bad_seeds,
+        "recent_seeds": user_seed_analyses[:5],
+        "seed_form": SeedAnalysisForm(),
     }
 
     return render(
@@ -1035,3 +1430,445 @@ def expert_review_view(request, pk):
     else:
         form = ExpertReviewForm(instance=analysis)
     return render(request, "prediction/expert_review.html", {"analysis": analysis, "form": form})
+
+
+# ============================================================
+# 10. SEED QUALITY & VIABILITY ANALYSIS
+# URL: /prediction/seed/
+# ============================================================
+
+def get_seed_report_data(seed_analysis):
+    """
+    Format seed assessment report data for UI templates and PDF generator.
+    """
+    defects_raw = seed_analysis.defects_detected or ""
+    defects_list = [d.strip() for d in defects_raw.split("\n") if d.strip()]
+    if not defects_list and defects_raw:
+        defects_list = [defects_raw]
+
+    crop_key, crop_info = get_crop_standard(seed_analysis.crop_type)
+
+    image_url = ""
+    try:
+        if seed_analysis.image and seed_analysis.image.name:
+            image_url = seed_analysis.image.url
+    except Exception:
+        pass
+
+    quality_display = "Good / Fit for Sowing"
+    if seed_analysis.quality_status == SeedAnalysis.QUALITY_BAD:
+        quality_display = "Bad / Unfit for Agriculture"
+    elif seed_analysis.quality_status == SeedAnalysis.QUALITY_MODERATE:
+        quality_display = "Moderate / Treatment Required"
+
+    return {
+        "seed": seed_analysis,
+        "image_url": image_url,
+        "crop_type": seed_analysis.crop_type,
+        "crop_info": crop_info,
+        "quality_status": seed_analysis.quality_status,
+        "quality_display": quality_display,
+        "is_good": seed_analysis.is_good_for_agriculture,
+        "viability_score": seed_analysis.viability_score,
+        "purity_score": seed_analysis.purity_score,
+        "health_rating": seed_analysis.health_rating,
+        "risk_level": seed_analysis.risk_level,
+        "defects_list": defects_list,
+        "suitability_verdict": seed_analysis.suitability_verdict,
+        "treatment_advisory": seed_analysis.treatment_advisory,
+        "sowing_guidelines": seed_analysis.sowing_guidelines,
+        "yield_impact": seed_analysis.yield_impact,
+        "created_at_display": seed_analysis.created_at.strftime("%d %B %Y, %I:%M %p") if seed_analysis.created_at else "Recently",
+    }
+
+
+@login_required(login_url="accounts:login")
+def seed_analysis_view(request):
+    """
+    Seed Quality Testing View:
+    Farmers can upload seed photos or input physical indicators to predict
+    whether the seed is Good (suitable for agriculture) or Bad (defective / unfit).
+    """
+    if request.method != "POST":
+        form = SeedAnalysisForm()
+        recent_seeds = SeedAnalysis.objects.filter(farmer=request.user).order_by("-created_at")[:6]
+        return render(
+            request,
+            "prediction/seed_analysis.html",
+            {
+                "form": form,
+                "recent_seeds": recent_seeds,
+            },
+        )
+
+    form = SeedAnalysisForm(request.POST, request.FILES)
+    if not form.is_valid():
+        messages.error(request, "Please review the form errors and try again.")
+        recent_seeds = SeedAnalysis.objects.filter(farmer=request.user).order_by("-created_at")[:6]
+        return render(
+            request,
+            "prediction/seed_analysis.html",
+            {
+                "form": form,
+                "recent_seeds": recent_seeds,
+            },
+        )
+
+    try:
+        crop_type = form.cleaned_data.get("crop_type", "Wheat")
+        visual_condition = form.cleaned_data.get("visual_condition", "good")
+        has_insect_holes = form.cleaned_data.get("has_insect_holes", False)
+        broken_coat_level = form.cleaned_data.get("broken_coat_level", "none")
+        moisture_status = form.cleaned_data.get("moisture_status", "normal")
+        float_test_result = form.cleaned_data.get("float_test_result", "sink")
+        uploaded_image = request.FILES.get("image")
+
+        # Create model instance
+        seed_record = SeedAnalysis(
+            farmer=request.user,
+            crop_type=crop_type,
+            image=uploaded_image,
+        )
+        seed_record.save()
+
+        # Run AI seed analysis engine
+        image_path = seed_record.image.path if seed_record.image else None
+        analysis_result = analyze_seed_quality(
+            image_path=image_path,
+            crop_type=crop_type,
+            visual_condition=visual_condition,
+            has_insect_holes=has_insect_holes,
+            broken_coat_level=broken_coat_level,
+            moisture_status=moisture_status,
+            float_test_result=float_test_result,
+        )
+
+        # Update record with AI output
+        seed_record.quality_status = analysis_result["quality_status"]
+        seed_record.is_good_for_agriculture = analysis_result["is_good_for_agriculture"]
+        seed_record.viability_score = analysis_result["viability_score"]
+        seed_record.purity_score = analysis_result["purity_score"]
+        seed_record.health_rating = analysis_result["health_rating"]
+        seed_record.risk_level = analysis_result["risk_level"]
+        seed_record.defects_detected = "\n".join(analysis_result["defects_detected"])
+        seed_record.suitability_verdict = analysis_result["suitability_verdict"]
+        seed_record.treatment_advisory = analysis_result["treatment_advisory"]
+        seed_record.sowing_guidelines = analysis_result["sowing_guidelines"]
+        seed_record.yield_impact = analysis_result["yield_impact"]
+        seed_record.moisture_condition = moisture_status
+        seed_record.float_test_verdict = float_test_result
+        seed_record.save()
+
+        if seed_record.is_good_for_agriculture:
+            messages.success(request, f"🌱 Seed Analysis Complete: Seed is GOOD for agriculture ({seed_record.viability_score}% Viability).")
+        else:
+            messages.warning(request, f"⚠️ Seed Analysis Alert: Seed is BAD / Unfit for agriculture ({seed_record.viability_score}% Viability). Do not sow directly.")
+
+        return redirect("prediction:seed_analysis_result", pk=seed_record.pk)
+
+    except Exception as error:
+        messages.error(request, f"Seed analysis error: {error}")
+        return render(
+            request,
+            "prediction/seed_analysis.html",
+            {
+                "form": form,
+                "recent_seeds": SeedAnalysis.objects.filter(farmer=request.user).order_by("-created_at")[:6],
+            },
+        )
+
+
+# ============================================================
+# 11. SEED ANALYSIS RESULT DASHBOARD
+# URL: /prediction/seed/status/<pk>/
+# ============================================================
+
+@login_required(login_url="accounts:login")
+def seed_analysis_result_view(request, pk):
+    """
+    Detailed Seed Quality Diagnostic & Viability Dashboard.
+    """
+    seed_analysis = get_object_or_404(
+        SeedAnalysis,
+        pk=pk,
+        farmer=request.user,
+    )
+
+    context = get_seed_report_data(seed_analysis)
+    return render(
+        request,
+        "prediction/seed_analysis_result.html",
+        context,
+    )
+
+
+# ============================================================
+# 12. SEED ANALYSIS PDF REPORT
+# URL: /prediction/seed/report/<pk>/pdf/
+# ============================================================
+
+@login_required(login_url="accounts:login")
+def download_seed_analysis_pdf(request, pk):
+    """
+    Generate downloadable PDF Seed Testing Certificate.
+    """
+    seed_analysis = get_object_or_404(
+        SeedAnalysis,
+        pk=pk,
+        farmer=request.user,
+    )
+
+    report = get_seed_report_data(seed_analysis)
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = (
+        f'attachment; filename="KisanSathi_Seed_Certificate_{seed_analysis.pk}.pdf"'
+    )
+
+    buffer = BytesIO()
+    document = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=18 * mm,
+        leftMargin=18 * mm,
+        topMargin=18 * mm,
+        bottomMargin=19 * mm,
+        title=f"KisanSathi Seed Quality Certificate #{seed_analysis.pk}",
+        author="KisanSathi AI",
+    )
+
+    GREEN = colors.HexColor("#166534")
+    DARK_GREEN = colors.HexColor("#14532D")
+    LIGHT_GREEN = colors.HexColor("#DCFCE7")
+    PALE_GREEN = colors.HexColor("#F0FDF4")
+    RED = colors.HexColor("#DC2626")
+    LIGHT_RED = colors.HexColor("#FEF2F2")
+    AMBER = colors.HexColor("#D97706")
+    LIGHT_AMBER = colors.HexColor("#FEF3C7")
+    BLUE = colors.HexColor("#2563EB")
+    LIGHT_BLUE = colors.HexColor("#EFF6FF")
+    PURPLE = colors.HexColor("#805AD5")
+    LIGHT_PURPLE = colors.HexColor("#FAF7FF")
+    TEXT = colors.HexColor("#1F2937")
+    MUTED = colors.HexColor("#64748B")
+    BORDER = colors.HexColor("#D1D5DB")
+    WHITE = colors.white
+
+    styles = getSampleStyleSheet()
+
+    styles.add(ParagraphStyle(
+        name="KSTitle",
+        parent=styles["Title"],
+        fontName="Helvetica-Bold",
+        fontSize=22,
+        leading=26,
+        textColor=WHITE,
+        alignment=TA_LEFT,
+        spaceAfter=4,
+    ))
+
+    styles.add(ParagraphStyle(
+        name="KSSubtitle",
+        parent=styles["Normal"],
+        fontName="Helvetica",
+        fontSize=10,
+        leading=14,
+        textColor=colors.HexColor("#E5F5E9"),
+    ))
+
+    styles.add(ParagraphStyle(
+        name="KSSection",
+        parent=styles["Heading2"],
+        fontName="Helvetica-Bold",
+        fontSize=13,
+        leading=17,
+        textColor=DARK_GREEN,
+        spaceBefore=8,
+        spaceAfter=6,
+    ))
+
+    styles.add(ParagraphStyle(
+        name="KSSeedBody",
+        parent=styles["BodyText"],
+        fontName="Helvetica",
+        fontSize=9,
+        leading=13,
+        textColor=TEXT,
+    ))
+
+    styles.add(ParagraphStyle(
+        name="KSSeedLabel",
+        parent=styles["BodyText"],
+        fontName="Helvetica-Bold",
+        fontSize=8,
+        leading=11,
+        textColor=MUTED,
+    ))
+
+    styles.add(ParagraphStyle(
+        name="KSSeedVal",
+        parent=styles["BodyText"],
+        fontName="Helvetica-Bold",
+        fontSize=10,
+        leading=14,
+        textColor=TEXT,
+    ))
+
+    def p(text, style="KSSeedBody"):
+        safe = escape(str(text or "")).replace("\n", "<br/>")
+        return Paragraph(safe, styles[style])
+
+    story = []
+
+    # Header
+    header_color = GREEN if report["is_good"] else (AMBER if report["quality_status"] == "moderate" else RED)
+    header = Table(
+        [[
+            [
+                Paragraph("KisanSathi AI — Seed Quality Certificate", styles["KSTitle"]),
+                Paragraph("Agricultural Seed Viability & Germination Assessment Report", styles["KSSubtitle"]),
+            ]
+        ]],
+        colWidths=[174 * mm],
+    )
+    header.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), header_color),
+        ("LEFTPADDING", (0, 0), (-1, -1), 14),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 14),
+        ("TOPPADDING", (0, 0), (-1, -1), 12),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 12),
+    ]))
+    story.append(header)
+    story.append(Spacer(1, 4 * mm))
+
+    # Meta table
+    meta_table = Table(
+        [
+            [
+                p("CERTIFICATE ID", "KSSeedLabel"),
+                p("CROP / SEED TYPE", "KSSeedLabel"),
+                p("TEST DATE", "KSSeedLabel"),
+            ],
+            [
+                p(f"KSS-{seed_analysis.pk}", "KSSeedVal"),
+                p(f"{report['crop_type']} ({report['crop_info']['name_hi']})", "KSSeedVal"),
+                p(report["created_at_display"]),
+            ],
+        ],
+        colWidths=[48 * mm, 68 * mm, 58 * mm],
+    )
+    meta_table.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), PALE_GREEN),
+        ("BOX", (0, 0), (-1, -1), 0.7, BORDER),
+        ("INNERGRID", (0, 0), (-1, -1), 0.5, BORDER),
+        ("LEFTPADDING", (0, 0), (-1, -1), 8),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+        ("TOPPADDING", (0, 0), (-1, -1), 6),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+    ]))
+    story.append(meta_table)
+    story.append(Spacer(1, 4 * mm))
+
+    # Verdict Card
+    verdict_bg = LIGHT_GREEN if report["is_good"] else (LIGHT_AMBER if report["quality_status"] == "moderate" else LIGHT_RED)
+    verdict_box = Table(
+        [
+            [
+                p("AGRICULTURAL SUITABILITY VERDICT", "KSSeedLabel"),
+                p("PREDICTED VIABILITY", "KSSeedLabel"),
+                p("PHYSICAL PURITY", "KSSeedLabel"),
+                p("RISK LEVEL", "KSSeedLabel"),
+            ],
+            [
+                p(f"<b>{report['quality_display']}</b>", "KSSeedVal"),
+                p(f"<b>{report['viability_score']}%</b>", "KSSeedVal"),
+                p(f"<b>{report['purity_score']}%</b>", "KSSeedVal"),
+                p(f"<b>{report['risk_level']}</b>", "KSSeedVal"),
+            ],
+        ],
+        colWidths=[66 * mm, 36 * mm, 36 * mm, 36 * mm],
+    )
+    verdict_box.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), verdict_bg),
+        ("BOX", (0, 0), (-1, -1), 0.8, header_color),
+        ("INNERGRID", (0, 0), (-1, -1), 0.5, BORDER),
+        ("LEFTPADDING", (0, 0), (-1, -1), 8),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+        ("TOPPADDING", (0, 0), (-1, -1), 8),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+    ]))
+    story.append(verdict_box)
+    story.append(Spacer(1, 4 * mm))
+
+    # Detailed Verdict Section
+    story.append(Paragraph("1. Expert Quality Verdict & Field Suitability", styles["KSSection"]))
+    verdict_desc_table = Table([[p(report["suitability_verdict"])]], colWidths=[174 * mm])
+    verdict_desc_table.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), PALE_GREEN if report["is_good"] else LIGHT_RED),
+        ("BOX", (0, 0), (-1, -1), 0.7, BORDER),
+        ("LINEBEFORE", (0, 0), (0, -1), 3.5, header_color),
+        ("LEFTPADDING", (0, 0), (-1, -1), 10),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+        ("TOPPADDING", (0, 0), (-1, -1), 7),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
+    ]))
+    story.append(verdict_desc_table)
+    story.append(Spacer(1, 3 * mm))
+
+    # Defects & Observations
+    story.append(Paragraph("2. Physical Inspection & Defect Breakdown", styles["KSSection"]))
+    defect_rows = []
+    for d in report["defects_list"]:
+        defect_rows.append([Paragraph("&#8226; " + escape(str(d)), styles["KSSeedBody"])])
+    if defect_rows:
+        defect_table = Table(defect_rows, colWidths=[174 * mm])
+        defect_table.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, -1), LIGHT_PURPLE),
+            ("BOX", (0, 0), (-1, -1), 0.6, colors.HexColor("#D8C9F5")),
+            ("LEFTPADDING", (0, 0), (-1, -1), 10),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+            ("TOPPADDING", (0, 0), (-1, -1), 6),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+        ]))
+        story.append(defect_table)
+        story.append(Spacer(1, 3 * mm))
+
+    # Pre-sowing Treatment Advisory
+    story.append(Paragraph("3. Recommended Pre-Sowing Seed Treatment (बीजोपचार विधि)", styles["KSSection"]))
+    treatment_table = Table([[p(report["treatment_advisory"])]], colWidths=[174 * mm])
+    treatment_table.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), LIGHT_BLUE),
+        ("BOX", (0, 0), (-1, -1), 0.7, BLUE),
+        ("LINEBEFORE", (0, 0), (0, -1), 3.5, BLUE),
+        ("LEFTPADDING", (0, 0), (-1, -1), 10),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+        ("TOPPADDING", (0, 0), (-1, -1), 7),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
+    ]))
+    story.append(treatment_table)
+    story.append(Spacer(1, 3 * mm))
+
+    # Sowing & Yield
+    story.append(Paragraph("4. Agronomic Sowing Guidelines & Yield Impact", styles["KSSection"]))
+    sowing_table = Table(
+        [
+            [p("SOWING GUIDELINES", "KSSeedLabel"), p("ESTIMATED YIELD IMPACT", "KSSeedLabel")],
+            [p(report["sowing_guidelines"]), p(report["yield_impact"])],
+        ],
+        colWidths=[87 * mm, 87 * mm],
+    )
+    sowing_table.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), PALE_GREEN),
+        ("BOX", (0, 0), (-1, -1), 0.6, BORDER),
+        ("INNERGRID", (0, 0), (-1, -1), 0.5, BORDER),
+        ("LEFTPADDING", (0, 0), (-1, -1), 8),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+        ("TOPPADDING", (0, 0), (-1, -1), 6),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+    ]))
+    story.append(sowing_table)
+
+    document.build(story)
+    buffer.seek(0)
+    response.write(buffer.getvalue())
+    return response
