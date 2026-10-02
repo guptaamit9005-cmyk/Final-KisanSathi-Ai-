@@ -46,3 +46,20 @@ datasets/
 # Local ML caches/checkpoints
 __pycache__/
 .cache/
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# Local database
+db.sqlite3
+
+# Frontend dependencies/build
+frontend/node_modules/
+frontend/dist/
