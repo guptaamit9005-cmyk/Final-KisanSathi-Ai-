@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KisanSathi AI | Crop Expert Review</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --bg-color: #fafafa;
+            --card-bg: #ffffff;
+            --text-main: #334155;
+            --text-muted: #94a3b8;
+            --border-color: #f1f5f9;
+            --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 40px rgba(16, 185, 129, 0.08);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --green: var(--primary);
+            --green-dark: var(--primary-dark);
+            --green-deep: #06472d;
+            --green-soft: #ecfdf5;
+            --green-light: #f0fdf4;
+            --background: var(--bg-color);
+            --white: #ffffff;
+            --text: var(--text-main);
+            --muted: var(--text-muted);
+            --border: var(--border-color);
+            --yellow: var(--accent);
+            --yellow-soft: #fffbeb;
+            --blue: #3b82f6;
+            --blue-soft: #eff6ff;
+            --orange: #f97316;
+            --orange-soft: #fff7ed;
+            --red: #ef4444;
+            --red-soft: #fef2f2;
+        }
+    
+
+* { box-sizing: border-box; }
+
+body {\n            letter-spacing: -0.01em;\n            line-height: 1.6;\n
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 12% 0%, #e4f5e8 0, transparent 31%),
+    radial-gradient(circle at 90% 15%, #f0f8e9 0, transparent 25%),
+    var(--bg);
+  color: var(--ink);
+  font-family: "DM Sans", sans-serif;
+}
+
+button, input, select, textarea { font: inherit; }
+
+.page {
+  width: min(1120px, calc(100% - 32px));
+  margin: auto;
+  padding: 28px 0 55px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 25px;
+  font: 800 19px "Manrope", sans-serif;
+}
+
+.brand-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  color: white;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #39a45f, #17633a);
+  font-size: 21px;
+}
+
+.hero { text-align: center; margin-bottom: 28px; }
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 13px;
+  border: 1px solid #d5eadb;
+  border-radius: 100px;
+  background: #f4fbf5;
+  color: var(--green-dark);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+h1 {
+  margin: 15px 0 9px;
+  font: 800 clamp(30px, 5vw, 43px) "Manrope", sans-serif;
+  letter-spacing: -1.5px;
+}
+
+.hero p {
+  max-width: 610px;
+  margin: auto;
+  color: var(--muted);
+  font-size: 22px;
+  line-height: 1.7;
+}
+
+.panel {
+  max-width: 850px;
+  margin: auto;
+  border: 1px solid var(--line);
+  border-radius: 21px;
+  background: var(--white);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.panel-inner { padding: clamp(20px, 4vw, 34px); }
+
+.panel-heading { margin-bottom: 22px; }
+
+.panel-heading h2 {
+  margin: 0 0 7px;
+  font: 800 19px "Manrope", sans-serif;
+}
+
+.panel-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 20px;
+  line-height: 1.6;
+}
+
+.upload-area {
+  display: grid;
+  place-items: center;
+  min-height: 230px;
+  padding: 24px;
+  border: 1.5px dashed #b8d4c0;
+  border-radius: 17px;
+  background: #f8fcf8;
+  text-align: center;
+}
+
+.upload-icon {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  margin-bottom: 13px;
+  border-radius: 20px;
+  background: var(--green-soft);
+  color: var(--green);
+  font-size: 28px;
+}
+
+.upload-area h3 {
+  margin: 0 0 7px;
+  font: 700 16px "Manrope", sans-serif;
+}
+
+.upload-area p {
+  margin: 0 0 15px;
+  color: var(--muted);
+  font-size: 18px;
+}
+
+.hidden-input { display: none; }
+
+.preview-wrap {
+  display: none;
+  margin-top: 15px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #fbfdfb;
+}
+
+.preview-wrap.visible { display: block; }
+
+.preview-image {
+  display: block;
+  max-width: 100%;
+  max-height: 330px;
+  margin: auto;
+  border-radius: 9px;
+  object-fit: contain;
+}
+
+.preview-name {
+  margin: 10px 0 0;
+  color: var(--muted);
+  text-align: center;
+  font-size: 26px;
+  overflow-wrap: anywhere;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 12px 17px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 800;
+  transition: .2s ease;
+}
+
+.btn-primary { color: white; background: var(--green); }
+.btn-primary:hover { background: var(--green-dark); }
+.btn-secondary { color: var(--ink); background: white; border-color: var(--line); }
+.btn-secondary:hover { background: #f6faf7; border-color: #a9cdb3; }
+.btn:disabled { opacity: .55; cursor: not-allowed; }
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin: 22px 0;
+}
+
+.form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: #344b3b;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.form-grid input,
+.form-grid select,
+.form-grid textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 11px 12px;
+  border: 1px solid #dce8df;
+  border-radius: 10px;
+  outline: none;
+  background: #fbfdfb;
+  color: #17251c;
+  font: 400 13px "DM Sans", sans-serif;
+}
+
+.form-grid textarea { resize: vertical; }
+
+.form-grid input:focus,
+.form-grid select:focus,
+.form-grid textarea:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(35,131,74,.1);
+}
+
+.full-width { grid-column: 1 / -1; }
+
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 5px 0 18px;
+  color: #647568;
+  font-size: 26px;
+  line-height: 1.5;
+}
+
+.consent input {
+  margin-top: 2px;
+  accent-color: var(--green);
+}
+
+.submit-button { width: 100%; }
+
+.status {
+  display: none;
+  margin-top: 17px;
+  padding: 15px;
+  border-radius: 12px;
+  font-size: 20px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.status.visible { display: block; }
+.status.success { border: 1px solid #b9dfc4; background: #f0faf2; color: #176b38; }
+.status.error { border: 1px solid #f1c4c0; background: #fff5f4; color: #a4231b; }
+
+.saved-requests {
+  margin-top: 22px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fbfdfb;
+}
+
+.saved-requests h3 {
+  margin: 0 0 8px;
+  font: 800 14px "Manrope", sans-serif;
+}
+
+.saved-requests p {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 26px;
+  line-height: 1.6;
+}
+
+.request-item {
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.request-item strong { color: var(--green-dark); }
+
+.footer-note {
+  max-width: 750px;
+  margin: 22px auto 0;
+  color: var(--muted);
+  text-align: center;
+  font-size: 26px;
+  line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .full-width { grid-column: auto; }
+  .btn-row .btn { width: 100%; }
+}
+</style>
+</head>
+
+<body>
+<main class="page">
+
+  <div class="brand">
+    <div class="brand-icon">🌱</div>
+    <span>KisanSathi <span style="color:#2c8b50">AI</span></span>
+  </div>
+
+  <header class="hero">
+    <div class="eyebrow">✦ Agricultural expert support</div>
+    <h1>Request Expert Review</h1>
+    <p>Upload a crop photo and describe the symptoms to prepare an expert review request.</p>
+  </header>
+
+  <section class="panel">
+    <div class="panel-inner">
+
+      <div class="panel-heading">
+        <h2>Crop details</h2>
+        <p>Complete the form below. Your request will be saved locally in this browser in demo mode.</p>
+      </div>
+
+      <div class="upload-area">
+        <div>
+          <div class="upload-icon">🌿</div>
+          <h3>Upload crop image</h3>
+          <p>Choose a clear JPG, PNG, or WEBP photo (up to 10 MB).</p>
+          <div class="btn-row">
+            <button class="btn btn-primary" id="chooseImageBtn" type="button">Choose Image</button>
+            <button class="btn btn-secondary" id="removeImageBtn" type="button">Remove Image</button>
+          </div>
+        </div>
+      </div>
+
+      <input id="imageInput" class="hidden-input" type="file" accept="image/jpeg,image/png,image/webp">
+
+      <div class="preview-wrap" id="previewWrap">
+        <img id="imagePreview" class="preview-image" alt="Crop image preview">
+        <p id="imageName" class="preview-name"></p>
+      </div>
+
+      <form id="expertReviewForm">
+        <div class="form-grid">
+          <label>
+            Your name
+            <input id="farmerName" name="name" type="text" placeholder="Enter your name" required>
+          </label>
+
+          <label>
+            Mobile number
+            <input id="farmerPhone" name="phone" type="tel"
+                   placeholder="Enter mobile number"
+                   pattern="[0-9+\-\s]{10,15}" required>
+          </label>
+
+          <label>
+            Crop name
+            <input id="cropName" name="crop" type="text"
+                   placeholder="e.g. Rice, Wheat, Tomato" required>
+          </label>
+
+          <label>
+            Preferred language
+            <select id="language" name="language" required>
+              <option value="">Select language</option>
+              <option value="Hindi">Hindi</option>
+              <option value="English">English</option>
+              <option value="Urdu">Urdu</option>
+              <option value="Other">Other</option>
+            </select>
+          </label>
+
+          <label class="full-width">
+            Describe the symptoms
+            <textarea id="symptoms" name="symptoms" rows="4"
+              placeholder="Describe spots, yellowing, wilting, insects, or other symptoms..."
+              required></textarea>
+          </label>
+        </div>
+
+        <div class="consent">
+          <input id="consent" type="checkbox" required>
+          <label for="consent">I agree to save and share these details for agricultural expert review.</label>
+        </div>
+
+        <button class="btn btn-primary submit-button" id="submitBtn" type="submit">
+          Submit for Expert Review
+        </button>
+
+        <div id="statusMessage" class="status" role="status" aria-live="polite"></div>
+      </form>
+
+      <section class="saved-requests">
+        <h3>Saved requests on this browser</h3>
+        <p>Demo requests are stored only in this browser. They are not visible to an expert or on another device.</p>
+        <div id="requestList">No requests saved yet.</div>
+      </section>
+
+    </div>
+  </section>
+
+  <p class="footer-note">
+    This standalone HTML demo stores requests in your browser only.
+    For actual expert review, connect the form to a backend service that securely stores and routes requests.
+  </p>
+</main>
+
+<script>
+const STORAGE_KEY = "kisansathi_expert_review_requests_v1";
+
+const imageInput = document.getElementById("imageInput");
+const imagePreview = document.getElementById("imagePreview");
+const previewWrap = document.getElementById("previewWrap");
+const imageName = document.getElementById("imageName");
+const statusMessage = document.getElementById("statusMessage");
+const requestList = document.getElementById("requestList");
+const submitBtn = document.getElementById("submitBtn");
+
+let selectedImage = null;
+let previewUrl = null;
+
+function readRequests() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function showStatus(message, type) {
+  statusMessage.textContent = message;
+  statusMessage.className = `status visible ${type}`;
+}
+
+function updateRequestList() {
+  const requests = readRequests();
+
+  if (!requests.length) {
+    requestList.textContent = "No requests saved yet.";
+    return;
+  }
+
+  requestList.innerHTML = "";
+
+  requests.slice().reverse().forEach(request => {
+    const item = document.createElement("div");
+    item.className = "request-item";
+
+    const title = document.createElement("strong");
+    title.textContent = `${request.crop} — ${request.requestId}`;
+
+    const details = document.createElement("div");
+    details.textContent =
+      `Submitted by ${request.name} · ${new Date(request.createdAt).toLocaleString()}`;
+
+    const state = document.createElement("div");
+    state.textContent = "Status: Saved locally — not yet sent to an expert";
+
+    item.append(title, details, state);
+    requestList.appendChild(item);
+  });
+}
+
+document.getElementById("chooseImageBtn").addEventListener("click", () => {
+  imageInput.click();
+});
+
+document.getElementById("removeImageBtn").addEventListener("click", () => {
+  selectedImage = null;
+  imageInput.value = "";
+  previewWrap.classList.remove("visible");
+  imagePreview.removeAttribute("src");
+  imageName.textContent = "";
+
+  if (previewUrl) {
+    URL.revokeObjectURL(previewUrl);
+    previewUrl = null;
+  }
+});
+
+imageInput.addEventListener("change", event => {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+    showStatus("Please select a JPG, PNG, or WEBP image.", "error");
+    imageInput.value = "";
+    return;
+  }
+
+  if (file.size > 10 * 1024 * 1024) {
+    showStatus("Image size must be 10 MB or less.", "error");
+    imageInput.value = "";
+    return;
+  }
+
+  selectedImage = file;
+
+  if (previewUrl) URL.revokeObjectURL(previewUrl);
+  previewUrl = URL.createObjectURL(file);
+
+  imagePreview.src = previewUrl;
+  imageName.textContent = `${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+  previewWrap.classList.add("visible");
+
+  statusMessage.className = "status";
+  statusMessage.textContent = "";
+});
+
+document.getElementById("expertReviewForm").addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const form = event.currentTarget;
+
+  if (!form.reportValidity()) return;
+
+  if (!selectedImage) {
+    showStatus("Please upload a crop image before submitting your request.", "error");
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Saving request...";
+
+  try {
+    /*
+      Store the image as a data URL so this standalone demo can retain it
+      locally. This is browser storage only, not an expert-service upload.
+    */
+    const imageDataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error("Could not read the selected image."));
+      reader.readAsDataURL(selectedImage);
+    });
+
+    const request = {
+      requestId: "KS-" + Date.now().toString(36).toUpperCase(),
+      name: document.getElementById("farmerName").value.trim(),
+      phone: document.getElementById("farmerPhone").value.trim(),
+      crop: document.getElementById("cropName").value.trim(),
+      language: document.getElementById("language").value,
+      symptoms: document.getElementById("symptoms").value.trim(),
+      imageName: selectedImage.name,
+      imageDataUrl: imageDataUrl,
+      createdAt: new Date().toISOString(),
+      status: "saved_locally"
+    };
+
+    const requests = readRequests();
+    requests.push(request);
+
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(requests));
+    } catch (storageError) {
+      throw new Error("Browser storage is full or unavailable. Try a smaller image or clear saved requests.");
+    }
+
+    showStatus(
+      `Request saved successfully. Your demo request ID is ${request.requestId}. This request is stored only in this browser and has not been sent to an expert.`,
+      "success"
+    );
+
+    form.reset();
+    selectedImage = null;
+    imageInput.value = "";
+    previewWrap.classList.remove("visible");
+    imagePreview.removeAttribute("src");
+    imageName.textContent = "";
+
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      previewUrl = null;
+    }
+
+    updateRequestList();
+
+  } catch (error) {
+    showStatus(error.message || "Could not save the request.", "error");
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Submit for Expert Review";
+  }
+});
+
+updateRequestList();
+</script>
+</body>
+</html>

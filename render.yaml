@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: kisansathi-ai
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn config.wsgi:application -c gunicorn.conf.py"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: TF_ENABLE_ONEDNN_OPTS
+        value: "0"
+      - key: TF_NUM_INTRAOP_THREADS
+        value: "1"
+      - key: TF_NUM_INTEROP_THREADS
+        value: "1"
+      - key: OMP_NUM_THREADS
+        value: "1"
+      - key: WEB_CONCURRENCY
+        value: "1"
+      - key: DJANGO_SETTINGS_MODULE
+        value: "config.settings"

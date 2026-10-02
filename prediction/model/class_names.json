@@ -1,40 +1,18 @@
-import json
-from pathlib import Path
-
-from django.conf import settings
-
-
-MODEL_DIR = (
-    Path(settings.BASE_DIR)
-    / "prediction"
-    / "model"
-)
-
-MODEL_PATH = (
-    MODEL_DIR /
-    "crop_disease_model.keras"
-)
-
-CLASS_NAMES_PATH = (
-    MODEL_DIR /
-    "class_names.json"
-)
-
-
-def load_class_names():
-
-    if not CLASS_NAMES_PATH.exists():
-
-        raise FileNotFoundError(
-            "class_names.json not found."
-        )
-
-    with open(
-        CLASS_NAMES_PATH,
-        "r"
-    ) as file:
-
-        return json.load(file)
-
-
-CLASS_NAMES = load_class_names()
+[
+  "Cashew healthy",
+  "Cashew leaf miner",
+  "Cashew red rust",
+  "Fungi",
+  "Healthy",
+  "Maize healthy",
+  "Maize leaf blight",
+  "Maize streak virus",
+  "Nematode",
+  "Tomato healthy",
+  "Tomato septoria leaf spot",
+  "Tomato verticulium wilt",
+  "bacterial_leaf_blight",
+  "brown_spot",
+  "leaf_blast",
+  "rice_healthy"
+]

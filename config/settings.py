@@ -35,7 +35,7 @@ ALLOWED_HOSTS = [
     host.strip()
     for host in os.getenv(
         "ALLOWED_HOSTS",
-        "localhost,127.0.0.1,testserver"
+        "localhost,127.0.0.1,testserver,.onrender.com"
     ).split(",")
     if host.strip()
 ]
@@ -44,7 +44,7 @@ CSRF_TRUSTED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "CSRF_TRUSTED_ORIGINS",
-        "http://localhost:8000,http://127.0.0.1:8000"
+        "http://localhost:8000,http://127.0.0.1:8000,https://*.onrender.com"
     ).split(",")
     if origin.strip()
 ]
@@ -301,9 +301,23 @@ OPENAI_API_KEY = os.getenv(
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "[{asctime}] {levelname} [{name}:{lineno}] {message}",
+            "style": "{",
+        },
+    },
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "prediction": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
         },
     },
     "root": {

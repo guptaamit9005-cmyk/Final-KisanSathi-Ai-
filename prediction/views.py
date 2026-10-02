@@ -1,3 +1,4 @@
+import logging
 from io import BytesIO
 from xml.sax.saxutils import escape
 
@@ -26,6 +27,8 @@ from .models import CropAnalysis, SeedAnalysis
 from .forms import CropImageForm, ExpertReviewForm, SeedAnalysisForm
 from .ai_model import predict_disease
 from .seed_analyzer import analyze_seed_quality, get_crop_standard
+
+logger = logging.getLogger(__name__)
 
 
 # ============================================================
@@ -819,46 +822,77 @@ def crop_analysis_home(request):
 
 @login_required(login_url="accounts:login")
 def crop_analysis_view(request):
+    logger.info(
+        "Crop analysis request received from user: '%s' (Method: %s)",
+        request.user.username,
+        request.method,
+    )
 
     if request.method != "POST":
         return render(
             request,
-            "prediction/crop_analysis.html",
-            {"form": CropImageForm()},
+            "prediction/crop_analysis_home.html",
+            {
+                "form": CropImageForm(),
+                "seed_form": SeedAnalysisForm(),
+            },
         )
 
     form = CropImageForm(request.POST, request.FILES)
 
     if not form.is_valid():
+        logger.warning(
+            "Crop analysis form validation failed for user '%s': %s",
+            request.user.username,
+            form.errors.as_json(),
+        )
         messages.error(
             request,
-            "Please correct the errors in the uploaded image form.",
+            "Please upload a valid image file (JPG, PNG, or WebP).",
         )
-
         return render(
             request,
-            "prediction/crop_analysis.html",
-            {"form": form},
+            "prediction/crop_analysis_home.html",
+            {
+                "form": form,
+                "seed_form": SeedAnalysisForm(),
+            },
         )
 
     analysis = form.save(commit=False)
     analysis.farmer = request.user
-
     saved_image_name = None
 
     try:
         analysis.save()
 
         if not analysis.image:
-            raise ValueError("No crop image was saved.")
+            raise ValueError("No crop image was saved to storage.")
 
         saved_image_name = analysis.image.name
+        image_full_path = getattr(analysis.image, "path", None)
 
-        result = predict_disease(analysis.image.path)
+        logger.info(
+            "Image upload completed. Analysis ID: %d, Path: %s, Storage Name: %s",
+            analysis.pk,
+            image_full_path,
+            saved_image_name,
+        )
+
+        # Optional user-selected crop hint from form POST
+        user_selected_crop = (
+            request.POST.get("crop")
+            or request.POST.get("crop_name")
+            or request.POST.get("selected_crop")
+            or ""
+        )
+
+        # Run AI disease prediction using the optimized, thread-safe TensorFlow pipeline
+        result = predict_disease(image_full_path)
 
         if not isinstance(result, dict):
             raise ValueError(
-                "AI model returned an invalid result. Expected a dictionary."
+                "AI model returned an unexpected result format. Expected a dictionary."
             )
 
         disease_raw = (
@@ -869,14 +903,14 @@ def crop_analysis_view(request):
         )
 
         crop_raw = (
-            result.get("crop_name")
+            user_selected_crop
+            or result.get("crop_name")
             or result.get("crop")
             or result.get("plant")
             or ""
         )
 
         confidence = result.get("confidence", "")
-
         disease_name = str(disease_raw).strip() or "Unknown"
         crop_name = infer_crop_name(crop_raw, disease_name)
 
@@ -885,55 +919,28 @@ def crop_analysis_view(request):
             disease_name,
         )
 
-        set_if_field_exists(
-            analysis,
-            "ai_disease",
-            disease_name,
-        )
-
-        set_if_field_exists(
-            analysis,
-            "ai_crop",
-            crop_name,
-        )
-
-        set_if_field_exists(
-            analysis,
-            "ai_confidence",
-            str(confidence),
-        )
-
-        set_if_field_exists(
-            analysis,
-            "ai_solution",
-            str(result.get("solution") or advisory["solution"]),
-        )
-
-        set_if_field_exists(
-            analysis,
-            "ai_fertilizer",
-            str(result.get("fertilizer") or advisory["fertilizer"]),
-        )
-
-        set_if_field_exists(
-            analysis,
-            "ai_pesticide",
-            str(result.get("pesticide") or advisory["pesticide"]),
-        )
-
-        set_if_field_exists(
-            analysis,
-            "ai_prevention",
-            str(result.get("prevention") or advisory["prevention"]),
-        )
+        set_if_field_exists(analysis, "ai_disease", disease_name)
+        set_if_field_exists(analysis, "ai_crop", crop_name)
+        set_if_field_exists(analysis, "ai_confidence", str(confidence))
+        set_if_field_exists(analysis, "ai_solution", str(result.get("solution") or advisory["solution"]))
+        set_if_field_exists(analysis, "ai_fertilizer", str(result.get("fertilizer") or advisory["fertilizer"]))
+        set_if_field_exists(analysis, "ai_pesticide", str(result.get("pesticide") or advisory["pesticide"]))
+        set_if_field_exists(analysis, "ai_prevention", str(result.get("prevention") or advisory["prevention"]))
 
         analysis.status = CropAnalysis.STATUS_SENT_TO_EXPERT
         analysis.save()
 
+        logger.info(
+            "Database save completed for analysis ID: %d. Disease: %s, Crop: %s, Confidence: %s",
+            analysis.pk,
+            disease_name,
+            crop_name,
+            confidence,
+        )
+
         messages.success(
             request,
-            "Crop analysis completed successfully. "
-            "Your result has been submitted for expert review.",
+            "Crop analysis completed successfully. Your result has been submitted for expert review.",
         )
 
         return redirect(
@@ -942,26 +949,51 @@ def crop_analysis_view(request):
         )
 
     except Exception as error:
+        logger.exception(
+            "Crop analysis failed for user '%s' on analysis record ID: %s. Error: %s",
+            request.user.username,
+            getattr(analysis, "pk", None),
+            error,
+        )
 
-        if analysis.pk:
-            analysis.delete()
+        # Safe database cleanup on error
+        if analysis and getattr(analysis, "pk", None):
+            try:
+                analysis.delete()
+            except Exception as cleanup_err:
+                logger.warning(
+                    "Cleanup warning: failed to delete aborted analysis record %s: %s",
+                    analysis.pk,
+                    cleanup_err,
+                )
 
+        # Safe storage cleanup on error
         if saved_image_name:
             try:
                 if default_storage.exists(saved_image_name):
                     default_storage.delete(saved_image_name)
-            except Exception:
-                pass
+            except Exception as storage_err:
+                logger.warning(
+                    "Cleanup warning: failed to remove temporary uploaded image %s: %s",
+                    saved_image_name,
+                    storage_err,
+                )
 
-        messages.error(
-            request,
-            f"Crop analysis failed: {error}",
-        )
+        # User-facing message without exposing internal server tracebacks
+        if isinstance(error, ValueError) and "image" in str(error).lower():
+            user_msg = "The uploaded file is not a valid or readable image. Please upload a clear photo of the crop leaf (JPG, PNG, or WebP)."
+        else:
+            user_msg = "Crop analysis could not be completed right now. Please verify your photo and try again."
+
+        messages.error(request, user_msg)
 
         return render(
             request,
-            "prediction/crop_analysis.html",
-            {"form": form},
+            "prediction/crop_analysis_home.html",
+            {
+                "form": form,
+                "seed_form": SeedAnalysisForm(),
+            },
         )
 
 
@@ -974,9 +1006,7 @@ def crop_analysis_view(request):
 def analysis_status_view(request, pk):
     """
     Render the crop-analysis result page.
-
-    The template path is intentionally analysis_status.html because this is
-    the template used by the current analysis-status route.
+    Supports case-insensitive template lookups for cross-platform Linux/Windows compatibility.
     """
     analysis = get_object_or_404(
         CropAnalysis,
@@ -985,14 +1015,17 @@ def analysis_status_view(request, pk):
     )
 
     context = get_analysis_report_data(analysis)
-
-    # Keep the model instance available to the template for any additional
-    # project-specific fields, while preserving the existing report context.
     context["analysis"] = analysis
+
+    # Both lowercase and uppercase variants to ensure compatibility on Linux/Render
+    template_candidates = [
+        "prediction/analysis_status.html",
+        "prediction/Analysis_status.html",
+    ]
 
     return render(
         request,
-        "prediction/analysis_status.html",
+        template_candidates,
         context,
     )
 
@@ -1429,7 +1462,14 @@ def expert_review_view(request, pk):
         messages.error(request, "Please correct the errors in the review form.")
     else:
         form = ExpertReviewForm(instance=analysis)
-    return render(request, "prediction/expert_review.html", {"analysis": analysis, "form": form})
+    return render(
+        request,
+        [
+            "prediction/expert_review.html",
+            "prediction/crop_scanner_expert_review.html",
+        ],
+        {"analysis": analysis, "form": form},
+    )
 
 
 # ============================================================
