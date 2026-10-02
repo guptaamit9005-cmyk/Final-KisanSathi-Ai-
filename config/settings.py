@@ -15,9 +15,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ENVIRONMENT VARIABLES
 # ============================================================
 
-# Loads:
-# AgriVisionAi-main/.env
-
+# Loads local .env file during development.
+# On hosting platforms, set environment variables in the host dashboard.
 load_dotenv(BASE_DIR / ".env")
 
 
@@ -30,22 +29,24 @@ SECRET_KEY = os.getenv(
     "django-insecure-change-this-secret-key"
 )
 
-DEBUG = os.getenv("DEBUG", "True").lower() == "true"
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    "testserver",
-    "*",
+    host.strip()
+    for host in os.getenv(
+        "ALLOWED_HOSTS",
+        "localhost,127.0.0.1,testserver"
+    ).split(",")
+    if host.strip()
 ]
 
-# Allow ngrok and other public tunnels (forms/CSRF will work)
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    "https://*.ngrok-free.app",
-    "https://*.ngrok.io",
-    "https://*.loca.lt",
+    origin.strip()
+    for origin in os.getenv(
+        "CSRF_TRUSTED_ORIGINS",
+        "http://localhost:8000,http://127.0.0.1:8000"
+    ).split(",")
+    if origin.strip()
 ]
 
 
@@ -77,8 +78,10 @@ INSTALLED_APPS = [
 
     # Equipment Rental
     "equipment",
+
     "model_training",
 ]
+
 
 # ============================================================
 # MIDDLEWARE
@@ -87,16 +90,14 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
 
+    # Serve collected static files through WhiteNoise
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+
     "django.contrib.sessions.middleware.SessionMiddleware",
-
     "django.middleware.common.CommonMiddleware",
-
     "django.middleware.csrf.CsrfViewMiddleware",
-
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-
     "django.contrib.messages.middleware.MessageMiddleware",
-
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -115,19 +116,14 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-
         "DIRS": [
             BASE_DIR / "templates",
         ],
-
         "APP_DIRS": True,
-
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.request",
-
                 "django.contrib.auth.context_processors.auth",
-
                 "django.contrib.messages.context_processors.messages",
             ],
         },
@@ -180,6 +176,12 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": (
             "django.contrib.auth.password_validation."
+            "CommonPasswordValidator"
+        ),
+    },
+    {
+        "NAME": (
+            "django.contrib.auth.password_validation."
             "NumericPasswordValidator"
         ),
     },
@@ -211,6 +213,17 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": (
+            "whitenoise.storage.CompressedManifestStaticFilesStorage"
+        ),
+    },
+}
+
 
 # ============================================================
 # MEDIA FILES
@@ -240,14 +253,20 @@ LOGOUT_REDIRECT_URL = "/"
 
 
 # ============================================================
-# DEVELOPMENT SECURITY SETTINGS
+# PRODUCTION SECURITY
 # ============================================================
 
-SECURE_SSL_REDIRECT = False
+SECURE_SSL_REDIRECT = (
+    os.getenv("SECURE_SSL_REDIRECT", "False").lower() == "true"
+)
 
-SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = (
+    os.getenv("SESSION_COOKIE_SECURE", "False").lower() == "true"
+)
 
-CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = (
+    os.getenv("CSRF_COOKIE_SECURE", "False").lower() == "true"
+)
 
 
 # ============================================================
@@ -263,7 +282,6 @@ OPENWEATHER_API_KEY = os.getenv(
 # ============================================================
 # OPTIONAL AI API KEYS
 # ============================================================
-# Keep these empty unless you actually configure them in .env
 
 GEMINI_API_KEY = os.getenv(
     "GEMINI_API_KEY",
@@ -282,15 +300,12 @@ OPENAI_API_KEY = os.getenv(
 
 LOGGING = {
     "version": 1,
-
     "disable_existing_loggers": False,
-
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
         },
     },
-
     "root": {
         "handlers": ["console"],
         "level": "INFO",
